@@ -14,7 +14,7 @@ require("dotenv").config();
 
 // CORS options
 const corsOptions = {
-  origin: "https://project-harmonix.vercel.app",
+  origin: process.env.CLIENT_LINK || "http://localhost:5173",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 // Enable compression
