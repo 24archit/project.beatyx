@@ -1,0 +1,129 @@
+.section {
+  padding-top: 0.6rem;
+  background: transparent; /* Ensures no unwanted background */
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 1rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0389f777, rgba(15, 1, 35, 0.6), #01294a1c);
+  border-radius: 2rem;
+  padding: 1.2rem; /* Slightly increased for a balanced layout */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+}
+
+.track-cards {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+  will-change: transform;
+  width: 100%; /* Ensures cards occupy the full width */
+}
+
+.track-cards > * {
+  flex: 0 0 calc(100% / var(--slides-to-show)); /* Dynamically calculate card width */
+}
+
+.slider-btn {
+  background-color: #ffffffcc;
+  border: none;
+  font-size: 2rem;
+  color: #0389f7;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 50px; /* Fixed size for circular buttons */
+  height: 50px; /* Fixed size for circular buttons */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+  z-index: 2; /* Ensure buttons stay on top of content */
+}
+
+
+/* General button styling */
+.prev-btn,
+.next-btn {
+  position: absolute;
+  top: 50%;
+  background-color: rgba(0, 123, 255, 0.8); /* Transparent blue background */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50%;
+  font-size: 2rem; /* Large arrow size */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  display: flex; /* Flexbox to center the content */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 50px; /* Fixed width for a circular button */
+  height: 50px; /* Fixed height for a circular button */
+  transform: translateY(-50%); /* Center vertically */
+}
+
+.prev-btn {
+  left: 1rem; /* Adjusted for better spacing */
+}
+
+.next-btn {
+  right: 1rem; /* Adjusted for better spacing */
+}
+
+/* Hover effect */
+.prev-btn:hover,
+.next-btn:hover {
+  background-color: rgba(0, 123, 255, 1); /* Full opacity blue on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Slightly larger shadow */
+}
+
+/* Disabled state */
+.prev-btn:disabled,
+.next-btn:disabled {
+  background-color: rgba(0, 123, 255, 0.3); /* Lighter color */
+  cursor: not-allowed;
+  box-shadow: none; /* Remove shadow when disabled */
+}
+
+/* Accessibility focus styles */
+.prev-btn:focus,
+.next-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.6); /* Blue focus ring */
+}
+
+@media (max-width: 800px) {
+  .slider-container {
+    padding: 0.8rem;
+    border-radius: 1.5rem; /* Slightly smaller radius for mobile */
+  }
+
+  .section {
+    margin-left: 8px;
+  }
+
+  .slider-btn {
+    font-size: 1.5rem;
+    width: 40px; /* Adjust size for mobile */
+    height: 40px; /* Adjust size for mobile */
+  }
+
+  .track-cards {
+    gap: 0.5rem; /* Reduce gap between cards for smaller screens */
+  }
+}
+
+@media (max-width: 400px) {
+  .slider-container {
+    padding: 0.5rem;
+  }
+
+  .slider-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+}

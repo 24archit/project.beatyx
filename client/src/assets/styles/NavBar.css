@@ -1,0 +1,15 @@
+.nav-bar {
+    justify-content: left;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0rem;
+    left: 0rem;
+    background: linear-gradient(to bottom, #080044, #00151ff6 80%, transparent 100%);
+    width: 100%;
+    z-index: 1000;
+    padding-left: 0.7rem;
+    padding-top: 0.2rem;  /* Increased padding to give more height */
+    padding-bottom: 0.3rem;
+    margin-left: 60px;
+}

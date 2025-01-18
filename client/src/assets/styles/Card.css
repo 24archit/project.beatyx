@@ -1,0 +1,125 @@
+.card-container{
+    height: 20rem; /* Reduced height */
+    width: 14rem; /* Reduced width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.5rem; /* Slightly smaller rounding */
+    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+    margin-left: 0.8rem;
+    margin-right: 0.8rem;
+}
+.card {
+    flex: 1;
+    background: linear-gradient(#010d2bcb, #0000009b, #010d2dbc, rgba(255, 255, 255, 0.145));
+    height: 100%;
+    width:100%;
+    padding-top: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 1.5rem; /* Slightly smaller rounding */
+    border-top-left-radius: 1.5rem; /* Slightly smaller rounding */
+    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+.card-img{
+    height: 10rem; /* Reduced height */
+    width: 11rem; /* Reduced width */
+    border-radius: 0.8rem; /* Smaller rounding */
+    border: 0.1rem solid rgb(0, 242, 255);
+    margin-top: 1rem;
+    
+}
+.card-photo {
+    height: 100%; /* Reduced height */
+    width: 100%; /* Reduced width */
+    border-radius: 0.8rem; /* Smaller rounding */
+}  
+.card-stat-container{
+    height: 3rem;
+    width: 100%;
+}
+.card-name-container{
+    height: 3rem;
+    width: 100%;
+}
+
+.card-name {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    color: white;
+    font-size: 1rem; /* Reduced font size */
+    letter-spacing: 0.08rem; /* Slightly tighter spacing */
+    text-align: center;
+    margin-top: 0.4rem;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}
+
+
+
+.card-stat,
+.card-stat-2,
+.card-stat-3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8rem; /* Reduced font size */
+    color: rgba(189, 110, 0, 0.806);
+    margin: 0.2rem 0; /* Tighter margins */
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}
+
+.card-stat-links {
+    color: #e4a81dbb;
+    text-decoration: none;
+}
+
+.card-stat-links:hover {
+    text-decoration: underline;
+    color: #d6e1e282;
+}
+
+.spotify-logo {
+    height: 1.5rem; /* Reduced size */
+    width: 1.5rem; /* Reduced size */
+    border-radius: 50%;
+    opacity: 0.6;
+    margin-top: 0.5rem; /* Adds spacing between the logo and content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spotify-logo a {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.spotify-logo img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+}
+
+.spotify-logo:hover {
+    opacity: 1;
+}
