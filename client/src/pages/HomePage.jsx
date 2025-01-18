@@ -25,12 +25,14 @@ export default function HomePage({ setPlayerMeta }) {
   useEffect(() => {
     const fetchData = async () => {await fetchTracks(getTopTracksIndia, setTopIndiaTracks);};
     fetchData();
+    window.scrollTo(0, 0);
     
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {fetchTracks(getTopTracksGlobal, setTopGlobalTracks);};
     fetchData();
+    window.scrollTo(0, 0);
   }, []);
 
   // useEffect(() => {
