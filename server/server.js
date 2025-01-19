@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const compression = require("compression");
@@ -8,9 +9,16 @@ const playerRoutes = require("./routes/player");
 const searchRoutes = require("./routes/search");
 const playlistRoutes = require("./routes/playlist");
 const cors = require("cors");
-const { getFreshTokens } = require("./utils/getFreshTokens");
 const { connectToDb } = require("./utils/connectToDb");
-require("dotenv").config();
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+
+
+
+
 
 // CORS options
 const corsOptions = {
@@ -25,7 +33,6 @@ app.use(cors(corsOptions));
 
 connectToDb();
 
-setInterval(getFreshTokens, 3000000);
 
 app.use("/home", homeRoutes);
 app.use("/auth", authRoutes);
@@ -33,6 +40,17 @@ app.use("/artist", artistRoutes);
 app.use("/player", playerRoutes);
 app.use("/search", searchRoutes);
 app.use("/playlist", playlistRoutes);
+
+app.get("/gemini", async (req, res) => {
+  const prompt = "Give a list of songs on theme: road trip, just give the list no description";
+  if (!prompt) {
+    return res.status(400).send("Please provide a prompt.");
+  }
+  const result = await model.generateContent(prompt);
+  console.log(result.response.text());
+  console.log(result.res);
+  res.json(result.response.text());
+});
 
 // const axios = require("axios");
 // const cheerio = require("cheerio");
@@ -97,7 +115,7 @@ app.use("/playlist", playlistRoutes);
 //       return []; // Return an empty array if there's an error
 //   }
 // };
-
-app.listen(2424, () => {
-  console.log("Server is running on http://localhost:2424");
-});
+module.exports = app;
+// app.listen(2424, () => {
+//   console.log("Server is running on http://localhost:2424");
+// });

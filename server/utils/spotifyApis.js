@@ -2,7 +2,7 @@ const UniToken = require("../models/uniToken");
 const axios = require("axios");
 const { getFreshTokens } = require("./getFreshTokens");
 
-async function getTopTracksIndia(retries = 4, delay = 800) {
+async function getTopTracksIndia() {
   try {
     const Token = await UniToken.find();
     const accessToken = Token[0].accessToken;
@@ -18,24 +18,19 @@ async function getTopTracksIndia(retries = 4, delay = 800) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching top tracks: Status Code from Spotify : ", error.response?.status || error.message);
+    console.error(
+      "Error fetching top tracks India: Status Code from Spotify : ",
+      error.response?.status || error.message
+    );
 
     if (error.response?.status === 401) {
       await getFreshTokens();
     }
-
-    if (retries > 0) {
-      console.log(`Retrying to fetch top tracks India... (${4 - retries + 1}/4)`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return getTopTracksIndia(retries - 1, delay);
-    } else {
-      console.error("Max retries reached. Could not fetch top tracks India.");
-      throw error;
-    }
+    return null;
   }
 }
 
-async function getTopTracksGlobal(retries = 4, delay = 800) {
+async function getTopTracksGlobal() {
   try {
     const Token = await UniToken.find();
     const accessToken = Token[0].accessToken;
@@ -51,24 +46,19 @@ async function getTopTracksGlobal(retries = 4, delay = 800) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching top tracks: Status Code from Spotify : ", error.response?.status || error.message);
+    console.error(
+      "Error fetching top tracks Global: Status Code from Spotify : ",
+      error.response?.status || error.message
+    );
 
     if (error.response?.status === 401) {
       await getFreshTokens();
     }
-
-    if (retries > 0) {
-      console.log(`Retrying to fetch top tracks Global... (${4 - retries + 1}/4)`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return getTopTracksGlobal(retries - 1, delay);
-    } else {
-      console.error("Max retries reached. Could not fetch top tracks Global.");
-      throw error;
-    }
+    return null;
   }
 }
 
-async function getArtistInfo(id, retries = 4, delay = 800) {
+async function getArtistInfo(id) {
   try {
     const Token = await UniToken.find();
     const accessToken = Token[0].accessToken;
@@ -107,24 +97,19 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
     };
     return response;
   } catch (error) {
-    console.error("Error fetching artist info: Status Code from Spotify : ", error.response?.status || error.message);
+    console.error(
+      "Error fetching artist info: Status Code from Spotify : ",
+      error.response?.status || error.message
+    );
 
     if (error.response?.status === 401) {
       await getFreshTokens();
     }
-
-    if (retries > 0) {
-      console.log(`Retrying to fetch artist info... (${4 - retries + 1}/4)`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return getArtistInfo(id, retries - 1, delay);
-    } else {
-      console.error("Max retries reached. Could not fetch artist info.");
-      throw error;
-    }
+    return null;
   }
 }
 
-async function getSearchResult(query, type, retries = 4, delay = 800) {
+async function getSearchResult(query, type) {
   try {
     const Token = await UniToken.find();
     const accessToken = Token[0].accessToken;
@@ -140,30 +125,25 @@ async function getSearchResult(query, type, retries = 4, delay = 800) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching search results: Status Code from Spotify: ", error.response?.status || error.message);
+    console.error(
+      "Error fetching search results: Status Code from Spotify : ",
+      error.response?.status || error.message
+    );
 
     if (error.response?.status === 401) {
       await getFreshTokens();
     }
-
-    if (retries > 0) {
-      console.log(`Retrying to fetch search results... (${4 - retries + 1}/4)`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return getSearchResult(query, type, retries - 1, delay);
-    } else {
-      console.error("Max retries reached. Could not fetch search results.");
-      throw error;
-    }
+    return null;
   }
 }
 
-async function getPlaylist(id, retries = 4, delay = 800) {
+async function getPlaylist(id) {
   try {
     const Token = await UniToken.find();
     const accessToken = Token[0].accessToken;
 
     const response = await axios.get(
-      `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type)images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`,
+      `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type),images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -173,21 +153,22 @@ async function getPlaylist(id, retries = 4, delay = 800) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching playlist: Status Code from Spotify : ", error.response?.status || error.message);
+    console.error(
+      "Error fetching playlist: Status Code from Spotify : ",
+      error.response?.status || error.message
+    );
 
     if (error.response?.status === 401) {
       await getFreshTokens();
     }
-
-    if (retries > 0) {
-      console.log(`Retrying to fetch playlist... (${4 - retries + 1}/4)`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return getPlaylist(id, retries - 1, delay);
-    } else {
-      console.error("Max retries reached. Could not fetch playlist.");
-      throw error;
-    }
+    return null;
   }
 }
 
-module.exports = { getTopTracksIndia, getTopTracksGlobal, getArtistInfo, getSearchResult, getPlaylist };
+module.exports = {
+  getTopTracksIndia,
+  getTopTracksGlobal,
+  getArtistInfo,
+  getSearchResult,
+  getPlaylist,
+};
