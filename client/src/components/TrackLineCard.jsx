@@ -16,7 +16,6 @@ export function TrackLineCard({
   setPlayerMeta,
   spotifyUrl,
 }) {
-  const [alertVisibility, setAlertVisibility] = useState(false);
   const handelOnClick = async () => {
     try {
       const data = await getAudioLink(cardId);
@@ -25,7 +24,6 @@ export function TrackLineCard({
     } catch (error) {
       console.error("Error:", error.message || "Cannot SetUrl To Player");
       alert("This audio is not available right now");
-      setAlertVisibility(true);
     }
   };
   return (

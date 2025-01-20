@@ -40,15 +40,15 @@ const Footer = () => {
             (MongoDB, Express.js, React, Node.js) and integrated with
             <strong>Spotify’s API</strong> to fetch music data. Every feature was designed to solve real-world problems, from playlist management to intuitive UI.
           </p>
-          <p>
-            Milestones:
+          <div>
+            <p>Milestones:</p>
             <ul>
               <li>Phase 1: UI/UX Design with Figma</li>
               <li>Phase 2: Backend API with Node.js & Express</li>
               <li>Phase 3: MongoDB integration for playlists</li>
               <li>Phase 4: Deployment on Vercel</li>
             </ul>
-          </p>
+          </div>
         </div>
 
         <div className="footer-section">

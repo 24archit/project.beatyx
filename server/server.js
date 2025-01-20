@@ -16,10 +16,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 
-
-
-
-
 // CORS options
 const corsOptions = {
   origin: process.env.CLIENT_LINK || "http://localhost:5173",
@@ -115,7 +111,8 @@ app.get("/gemini", async (req, res) => {
 //       return []; // Return an empty array if there's an error
 //   }
 // };
-module.exports = app;
 // app.listen(2424, () => {
 //   console.log("Server is running on http://localhost:2424");
 // });
+
+module.exports = app;
