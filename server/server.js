@@ -48,6 +48,7 @@ app.get("/gemini", async (req, res) => {
   res.json(result.response.text());
 });
 
+
 // const axios = require("axios");
 // const cheerio = require("cheerio");
 // const puppeteer = require('puppeteer');
