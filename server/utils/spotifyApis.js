@@ -1,14 +1,33 @@
-const UniToken = require("../models/uniToken");
+const mongoose = require("mongoose");
 const axios = require("axios");
+const UniToken = require("../models/uniToken");
 const { getFreshTokens } = require("./getFreshTokens");
 
-// Utility function to validate tokens
+const TOKEN_EXPIRY_TIME = 50 * 60 * 1000; // 50 minutes in milliseconds
+
+// Utility function to validate or refresh tokens
 async function getAccessToken() {
-  const Token = await UniToken.find();
-  if (!Token || Token.length === 0 || !Token[0].accessToken) {
-    throw new Error("Access token not found. Ensure tokens are initialized properly.");
+  const Token = await UniToken.findOne(); // Assuming there's only one token document.
+  if (!Token) {
+    throw new Error("Token not found. Please initialize the token collection.");
   }
-  return Token[0].accessToken;
+
+  const currentTime = new Date();
+  const tokenAge = currentTime - new Date(Token.updationTime);
+
+  // Check if token is expired
+  if (tokenAge >= TOKEN_EXPIRY_TIME) {
+    console.log("Token expired. Generating a fresh token...");
+    await getFreshTokens(); // Refresh tokens and update the database
+    const updatedToken = await UniToken.findOne(); // Re-fetch the updated token
+    if (!updatedToken || !updatedToken.accessToken) {
+      throw new Error("Failed to refresh the token. Please check the refresh logic.");
+    }
+    return updatedToken.accessToken;
+  }
+
+  console.log("Token is valid. Proceeding with the current token.");
+  return Token.accessToken;
 }
 
 // Generic function to handle retries and API requests
@@ -40,75 +59,114 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
   }
 }
 
-// Fetch top tracks for India
+// Function to fetch top tracks in India
 async function getTopTracksIndia(retries = 4, delay = 800) {
   const accessToken = await getAccessToken();
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbLZ52XmnySJg";
 
-  return makeApiRequest(url, "GET", {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  }, retries, delay);
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
 }
 
-// Fetch top tracks globally
+// Function to fetch top tracks globally
 async function getTopTracksGlobal(retries = 4, delay = 800) {
   const accessToken = await getAccessToken();
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbMDoHDwVN2tF";
 
-  return makeApiRequest(url, "GET", {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  }, retries, delay);
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
 }
 
-// Fetch artist information
+// Function to fetch artist info
 async function getArtistInfo(id, retries = 4, delay = 800) {
-  if (!id) throw new Error("Artist ID is required.");
   const accessToken = await getAccessToken();
 
-  const urls = [
-    `https://api.spotify.com/v1/artists/${id}`,
-    `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`,
-    `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single,album,appears_on,compilation&market=IN&limit=10&offset=0`,
-  ];
+  const artistDataUrl = `https://api.spotify.com/v1/artists/${id}`;
+  const topTracksUrl = `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`;
+  const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=10&offset=0`;
 
-  const [ArtistData, ArtistTopTracks, ArtistTopAlbums] = await Promise.all(
-    urls.map((url) =>
-      makeApiRequest(url, "GET", {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      }, retries, delay)
-    )
+  const artistData = await makeApiRequest(
+    artistDataUrl,
+    "GET",
+    { Authorization: `Bearer ${accessToken}` },
+    retries,
+    delay
   );
 
-  return { ArtistData, ArtistTopTracks, ArtistTopAlbums };
+  const topTracks = await makeApiRequest(
+    topTracksUrl,
+    "GET",
+    { Authorization: `Bearer ${accessToken}` },
+    retries,
+    delay
+  );
+
+  const albums = await makeApiRequest(
+    albumsUrl,
+    "GET",
+    { Authorization: `Bearer ${accessToken}` },
+    retries,
+    delay
+  );
+
+  return {
+    ArtistData: artistData,
+    ArtistTopTracks: topTracks,
+    ArtistTopAlbums: albums,
+  };
 }
 
-// Fetch search results
+// Function to fetch search results
 async function getSearchResult(query, type, retries = 4, delay = 800) {
-  if (!query || !type) throw new Error("Query and type are required.");
   const accessToken = await getAccessToken();
-  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${type}&market=IN&limit=9`;
+  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=9`;
 
-  return makeApiRequest(url, "GET", {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  }, retries, delay);
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
 }
 
-// Fetch playlist
+// Function to fetch playlist details
 async function getPlaylist(id, retries = 4, delay = 800) {
-  if (!id) throw new Error("Playlist ID is required.");
   const accessToken = await getAccessToken();
   const url = `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type),images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`;
 
-  return makeApiRequest(url, "GET", {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  }, retries, delay);
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
 }
 
+// Export all functions
 module.exports = {
   getTopTracksIndia,
   getTopTracksGlobal,
