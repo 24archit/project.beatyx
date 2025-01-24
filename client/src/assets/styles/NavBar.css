@@ -1,15 +1,66 @@
 .nav-bar {
-    justify-content: left;
     display: flex;
+    justify-content: center;
     align-items: center;
     position: fixed;
-    top: 0rem;
-    left: 0rem;
+    top: 0;
+    left: 0;
     background: linear-gradient(to bottom, #080044, #00151ff6 80%, transparent 100%);
     width: 100%;
     z-index: 1000;
-    padding-left: 0.7rem;
-    padding-top: 0.2rem;  /* Increased padding to give more height */
+    padding-left: 1rem;
+    padding-top: 0.2rem;
     padding-bottom: 0.3rem;
-    margin-left: 60px;
+    box-sizing: border-box;
+    gap: 0.5rem;
+    padding-right: rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Adjustments for mobile and tablet screens */
+@media (max-width: 768px) {
+    .nav-bar {
+        flex-direction: column;
+        padding-left: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 1rem;
+        gap: 0.8rem; /* Reduce gap on small screens */
+    }
+
+    .nav-bar > * {
+        width: 100%;
+        text-align: center;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;  /* Make buttons stack vertically */
+    }
+
+    .spotify-btn {
+        width: 100%; /* Ensure the Spotify button takes full width */
+    }
+}
+
+/* Adjustments for even smaller screens */
+@media (max-width: 480px) {
+    .nav-bar {
+        padding-left: 0.5rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .nav-bar > * {
+        font-size: 1.2rem;  /* Adjust font size */
+    }
+
+    .auth-buttons {
+        gap: 0.5rem;
+    }
 }

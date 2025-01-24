@@ -13,16 +13,16 @@ export default function NavBar(props) {
       <Logo />
       <SearchBar />
       {props.isAuth === false ? (
-        <>
+        <div className="auth-buttons">
           <LoginBtn />
           <SignUpBtn />
-          <SpotifyConnectBtn />
-        </>
+          <SpotifyConnectBtn className="spotify-btn" />
+        </div>
       ) : (
-        <>
-          <SpotifyConnectBtn />
+        <div className="auth-buttons">
+          <SpotifyConnectBtn className="spotify-btn" />
           <Logout />
-        </>
+        </div>
       )}
     </nav>
   );
