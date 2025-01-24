@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.16.1",
     "@mui/material": "^5.16.1",
+    "@vercel/speed-insights": "^1.1.0",
     "axios": "^1.7.9",
     "indian-number-format": "^1.0.5",
     "js-cookie": "^3.0.5",
