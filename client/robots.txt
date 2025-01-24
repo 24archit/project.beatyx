@@ -1,0 +1,19 @@
+# Allow all search engines to index all content
+User-agent: *
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /assets/media/
+Disallow: /assets/styles/
+
+# Allow indexing of specific pages or sections if needed
+Allow: /index.html
+Allow: /src/pages/HomePage.jsx
+Allow: /src/pages/PlaylistPage.jsx
+Allow: /src/pages/SearchPage.jsx
+Allow: /src/components/
+
+# If you are using a specific API, you might want to block indexing of it
+Disallow: /src/apis/
+
+# Sitemap location (optional, add if you have a sitemap)
+Sitemap: https://stream24archit.vercel.app/sitemap.xml
