@@ -17,27 +17,27 @@ import Footer from "./components/Footer";
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [playerMeta, setPlayerMeta] = useState("");
   const [playerImg, setPlayeImg] = useState(harmonixAnimation);
 
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
-    setTimeout(() => {
+    // setTimeout(() => {
     if (authToken) {
       setIsAuth(true);
     }
-    setIsLoading(false);
-    }, 5000);
+    // setIsLoading(false);
+    // }, 5000);
   }, []);
 
-  if (isLoading) {
-    return (
-      <>
-        <LoadingScreen />
-      </>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <>
+  //       <LoadingScreen />
+  //     </>
+  //   );
+  // }
 
   return (
     <>
