@@ -3,9 +3,6 @@ import "../assets/styles/Card.css";
 import TrackLogo from "../assets/media/Track-Logo.webp";
 import { Skeleton } from "@mui/material";
 import { format } from "indian-number-format";
-
-import { useState } from "react";
-import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import spotifyLogo from "../assets/media/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
 export function SectionCard({
@@ -21,7 +18,6 @@ export function SectionCard({
   setPlayerMeta,
   spotifyUrl = "",
 }) {
-  const [alertVisibility, setAlertVisibility] = useState(false);
   
 
   return (
@@ -66,28 +62,6 @@ export function SectionCard({
               <p className="card-stat">{cardStat}</p>
             </div>
           </div>
-
-          {/* <button
-          className="play-btn india-track-play-btn"
-          onClick={handelOnClick}
-          name={iconId === "link-btn" ? "Go To Page" : "Play Track"}
-        >
-          <i className={iconClass} id={iconId}></i>
-        </button> */}
-          {/* {alertVisibility && (
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }} // Adjusted anchorOrigin to top center
-          autoHideDuration={6000}
-          open={alertVisibility}
-          onClose={() => setAlertVisibility(false)}
-          //disableBackdropClick={true}
-        >
-          <Alert variant="filled" severity="error">
-            <AlertTitle>Track Unavailable</AlertTitle>
-            Sorry, this track is currently unavailable.
-          </Alert>
-        </Snackbar>
-      )} */}
         </div>
         <CardBtn
           iconId={iconId}

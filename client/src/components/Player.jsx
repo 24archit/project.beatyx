@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, Suspense } from "react";
 import prettyMilliseconds from "pretty-ms";
 import ReactPlayer from "react-player/youtube";
-import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import TrackLogo from "../assets/media/Animated-Track-Logo.webm";
 import musicWave from "../assets/media/wave.webm";
 import "../assets/styles/Player.css";
@@ -13,7 +12,6 @@ const Player = ({ url, setPlayerMeta }) => {
   const [duration, setDuration] = useState(0);
   const [volumeIcon, setVolumeIcon] = useState("fa-volume-high");
   const playerRef = useRef(null);
-  const [alertVisibility, setAlertVisibility] = useState(false);
   const intervalRef = useRef(null);
   const volumeSliderRef = useRef(null); // Reference for volume slider
 
@@ -144,9 +142,10 @@ const Player = ({ url, setPlayerMeta }) => {
 
   const handlePlayerError = (error) => {
     console.error("Error playing video:", error);
-    setAlertVisibility(true);
+    setPlaying(false);
     setPlayerMeta("");
     setProgress(0);
+    alert("This audio is not available right now 55");
   };
 
   const updateVolumeIcon = (volume) => {
@@ -247,21 +246,7 @@ const Player = ({ url, setPlayerMeta }) => {
           />
         )}
       </Suspense>
-      {alertVisibility && (
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          autoHideDuration={6000}
-          open={alertVisibility}
-          onClose={() => setAlertVisibility(false)}
-          disableEscapeKeyDown={true}
-          disableBackdropClick={true}
-        >
-          <Alert variant="filled" severity="error">
-            <AlertTitle>Track Unavailable</AlertTitle>
-            Sorry, this track is currently unavailable.
-          </Alert>
-        </Snackbar>
-      )}
+      
     </>
   );
 };

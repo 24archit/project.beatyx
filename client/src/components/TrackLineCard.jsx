@@ -2,8 +2,6 @@ import "../assets/styles/TrackLineCard.css";
 import profilePic from "../assets/media/profile-pic.webp";
 import { Skeleton } from "@mui/material";
 import prettyMilliseconds from "pretty-ms";
-import { useState } from "react";
-import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import spotifyLogo from "../assets/media/Spotify_logo.webp";
 import { getAudioLink } from "../apis/apiFunctions";
 export function TrackLineCard({
@@ -63,21 +61,6 @@ export function TrackLineCard({
         <div className="track-play" onClick={handelOnClick}>
           <i className="fa-solid fa-play" id="play-btn"></i>
         </div>
-        {/* {alertVisibility && (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }} // Adjusted anchorOrigin to top center
-            autoHideDuration={6000}
-            open={alertVisibility}
-            onClose={() => setAlertVisibility(false)}
-            bleEscapeKeyDown={true}
-            disableBackdropClick={true}disa
-          >
-            <Alert variant="filled" severity="error">
-              <AlertTitle>Track Unavailable</AlertTitle>
-              Sorry, this track is currently unavailable.
-            </Alert>
-          </Snackbar>
-        )} */}
       </div>
     </>
   );

@@ -12,7 +12,6 @@ export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerM
       } catch (error) {
         console.error("Error:", error.message || "Cannot SetUrl To Player");
         alert("This audio is not available right now");
-        setAlertVisibility(true);
       }
     } else {
       navigate(`/${cardType}/${cardId}`);

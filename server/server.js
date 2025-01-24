@@ -112,8 +112,8 @@ app.get("/gemini", async (req, res) => {
 //       return []; // Return an empty array if there's an error
 //   }
 // };
-// app.listen(2424, () => {
-//   console.log("Server is running on http://localhost:2424");
-// });
+app.listen(2424, () => {
+  console.log("Server is running on http://localhost:2424");
+});
 
 module.exports = app;
