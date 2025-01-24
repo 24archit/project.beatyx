@@ -32,7 +32,9 @@ export function TrackLineCard({
         <div className="track-rank">
           <p>#{trackRank}</p>
         </div>
-        <img src={imgSrc} alt="1"></img>
+        <div className="img-container">
+          <img src={imgSrc} alt="track-image"></img>
+        </div>
         <div className="Track-name">
           <p>{trackName}</p>
         </div>

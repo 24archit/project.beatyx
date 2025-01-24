@@ -9,7 +9,7 @@
 .track-line-card:hover{
     background-color: rgba(164, 197, 223, 0.199);
 }
-.track-line-card img{
+.img-container img {
     width: 3rem;
     height: 3rem;
     border-radius: 0.4rem;
