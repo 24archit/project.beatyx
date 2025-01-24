@@ -1,0 +1,105 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Container */
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #01172d, #000000);
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Glass UI Effect */
+.not-found-content {
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Heading */
+.not-found-heading {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #00bcd4;
+  animation: slideIn 1s ease-out;
+}
+
+/* Description */
+.not-found-description {
+  font-size: 1.5rem;
+  margin: 20px 0;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Subheading */
+.not-found-subheading {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 30px;
+  animation: fadeIn 1.4s ease-in-out;
+}
+
+/* Button Styles */
+.back-home-btn {
+  background-color: #00bcd4;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.back-home-btn:hover {
+  background-color: #008c99;
+  transform: scale(1.05);
+}
+
+/* Button Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
