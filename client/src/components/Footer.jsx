@@ -6,9 +6,9 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-section">
-          <h2 className="footer-logo">Harmonix</h2>
+          <h2 className="footer-logo">Beatyx</h2>
           <p>
-            Harmonix is more than just a music platform—it’s a journey to
+            Beatyx is more than just a music platform—it’s a journey to
             transform the way playlists are managed, ensuring seamless user
             experiences and innovative features.
           </p>
@@ -53,8 +53,7 @@ const Footer = () => {
 
         <div className="footer-section">
           <h3>Contact Us</h3>
-          <p>Email: <a href="mailto:contact@harmonix.com">contact@harmonix.com</a></p>
-          <p>Phone: +1 (234) 567-890</p>
+          <p>Email: <a href="mailto:contact@beatyx.com">contact@beatyx.com</a></p>
           <div className="social-media">
             <a href="#linkedin"><i className="fab fa-linkedin-in"></i></a>
             <a href="#github"><i className="fab fa-github"></i></a>
@@ -64,7 +63,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2025 Harmonix. Built with passion and love for music</p>
+        <p>© 2025 Beatyx. Built with passion and love for music</p>
       </div>
     </footer>
   );
