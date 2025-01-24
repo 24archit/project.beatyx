@@ -16,4 +16,4 @@ Allow: /src/components/
 Disallow: /src/apis/
 
 # Sitemap location (optional, add if you have a sitemap)
-Sitemap: https://stream24archit.vercel.app/sitemap.xml
+Sitemap: https://beatyx.vercel.app/sitemap.xml
