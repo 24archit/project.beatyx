@@ -30,35 +30,35 @@ function App() {
     // setIsLoading(false);
     // }, 5000);
   }, []);
-  useEffect(() => {
-    // Disable right-click
-    const handleContextMenu = (event) => {
-      event.preventDefault();
-    };
+  // useEffect(() => {
+  //   // Disable right-click
+  //   const handleContextMenu = (event) => {
+  //     event.preventDefault();
+  //   };
 
-    // Disable specific keyboard shortcuts
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && (event.key === 'u' || event.key === 'U')) {
-        event.preventDefault();
-      }
-      if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'C')) {
-        event.preventDefault();
-      }
-      if (event.key === 'F12') {
-        event.preventDefault();
-      }
-    };
+  //   // Disable specific keyboard shortcuts
+  //   const handleKeyDown = (event) => {
+  //     if (event.ctrlKey && (event.key === 'u' || event.key === 'U')) {
+  //       event.preventDefault();
+  //     }
+  //     if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'C')) {
+  //       event.preventDefault();
+  //     }
+  //     if (event.key === 'F12') {
+  //       event.preventDefault();
+  //     }
+  //   };
 
-    // Add event listeners
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown);
+  //   // Add event listeners
+  //   document.addEventListener('contextmenu', handleContextMenu);
+  //   document.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup event listeners when component is unmounted
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  //   // Cleanup event listeners when component is unmounted
+  //   return () => {
+  //     document.removeEventListener('contextmenu', handleContextMenu);
+  //     document.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, []);
 
   // if (isLoading) {
   //   return (
