@@ -44,8 +44,9 @@
 
 <h3>Database:</h3>
 <ul>
-  <li><strong>SQL</strong> - For handling relational data management.</li>
+  <li><strong>MongoDB</strong> - For handling non-relational, document-based data management.</li>
 </ul>
+
 
 <h3>APIs:</h3>
 <ul>
