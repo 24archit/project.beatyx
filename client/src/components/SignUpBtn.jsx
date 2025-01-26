@@ -163,7 +163,7 @@ export default function SignUpDialog() {
 )}
 
         <StyledDialogTitle id="signup-dialog-title">
-          Welcome to Harmonix
+          Welcome to Beatyx..
         </StyledDialogTitle>
         <DialogContent>
           <StyledTextField

@@ -158,7 +158,7 @@ export default function AlertDialog() {
           </Alert>
         )}
         <StyledDialogTitle id="login-dialog-title">
-          Welcome to Harmonix
+          Welcome to Beatyx..
         </StyledDialogTitle>
         <DialogContent>
           <StyledTextField
@@ -185,7 +185,7 @@ export default function AlertDialog() {
           <CancelButton onClick={handleClose} color="primary">
             Cancel
           </CancelButton>
-          <JoinButton onClick={handleLogin}>Login To Harmonix</JoinButton>
+          <JoinButton onClick={handleLogin}>Login To Beatyx</JoinButton>
         </DialogActions>
       </StyledDialog>
     </React.Fragment>
