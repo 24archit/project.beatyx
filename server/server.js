@@ -49,8 +49,8 @@ app.use("/playlist", playlistRoutes);
 // });
 
 if (process.env.VERCEL !== "true") {
-  app.listen(3000, () => {
-    console.log("Server is running on http://localhost:3000");
+  app.listen(2424, () => {
+    console.log("Server is running on http://localhost:2424");
   });
 }
 
