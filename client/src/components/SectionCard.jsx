@@ -33,7 +33,7 @@ export function SectionCard({
                 aria-label={"Explore the content on Spotify"}
                 title={"Explore the content on Spotify"}
               >
-                <img src={spotifyLogo} alt="Spotify Logo" />
+                <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
               </a>
             </div>
             <div className="card-img">
@@ -41,6 +41,7 @@ export function SectionCard({
                 className="card-photo"
                 src={imgSrc}
                 alt="img1"
+                loading="lazy"
                 draggable="true"
                 style={cardType === "artist" ? { borderRadius: "50%" } : {}}
               />

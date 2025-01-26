@@ -6,7 +6,7 @@ export function TrackImg() {
   return (
     <>
       <div id="track-img">
-        <img src={TrackLogo} alt="Track Logo" />
+        <img src={TrackLogo} alt="Track Logo" loading="lazy" />
       </div>
     </>
   );

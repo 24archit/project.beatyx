@@ -4,7 +4,7 @@ import defaultProfilePic from '../assets/media/profile-pic.webp';
 
 export function ArtistProfilePic({ imgSrc = defaultProfilePic }) {
     return (
-        <img src={imgSrc} alt="artist-profile-pic" id='artist-pic' />
+        <img src={imgSrc} alt="artist-profile-pic" id='artist-pic' loading="lazy" />
     );
 }
 

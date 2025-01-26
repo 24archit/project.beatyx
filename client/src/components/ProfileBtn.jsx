@@ -26,7 +26,7 @@ export default function ProfileBtn() {
         userInfo ? (
             <div className="nav-left-btns">
                 <button className="profile-btn">
-                    <img src={userInfo.images.length > 0 ? userInfo.images[0].url : profilePic} alt="DP" id="profile-img" />
+                    <img src={userInfo.images.length > 0 ? userInfo.images[0].url : profilePic} alt="DP" id="profile-img" loading="lazy"/>
                     <p id="username">{userInfo.display_name}</p>
                 </button>
             </div>

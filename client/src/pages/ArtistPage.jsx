@@ -104,7 +104,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
                 aria-label="Explore the content on Spotify"
                 title="Explore the content on Spotify"
               >
-                <img src={spotifyLogo} alt="Spotify Logo" />
+                <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
               </a>
             </div>
           </div>

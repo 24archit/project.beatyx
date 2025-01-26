@@ -31,7 +31,7 @@ export function TrackLineCard({
           <p>#{trackRank}</p>
         </div>
         <div className="img-container">
-          <img src={imgSrc} alt="track-image"></img>
+          <img src={imgSrc} alt="track-image" loading="lazy"></img>
         </div>
         <div className="Track-name">
           <p>{trackName}</p>
@@ -47,7 +47,7 @@ export function TrackLineCard({
             aria-label={"Explore the content on Spotify"}
             title={"Explore the content on Spotify"}
           >
-            <img src={spotifyLogo} alt="Spotify Logo" />
+            <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
           </a>
         </div>
         <div className="Duration">
