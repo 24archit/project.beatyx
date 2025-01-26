@@ -26,7 +26,6 @@ async function getAccessToken() {
     return updatedToken.accessToken;
   }
 
-  console.log("Token is valid. Proceeding with the current token.");
   return Token.accessToken;
 }
 

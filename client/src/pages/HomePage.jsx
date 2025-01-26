@@ -13,27 +13,49 @@ export default function HomePage({ setPlayerMeta }) {
   const [userTopArtists, setUserTopArtists] = useState([]);
 
   const fetchTracks = async (fetchFunction, setTracks) => {
-    try {
-      const data = await fetchFunction();
-      const newArr = data.tracks.items;
-      setTracks(newArr);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    let retryCount = 0; // Track the number of retries
+    const maxRetries = 3; // Set a limit for retries
+  
+    while (retryCount < maxRetries) {
+      try {
+        const data = await fetchFunction();
+        const newArr = data.tracks.items;
+        setTracks(newArr);
+        return; // Exit the function if successful
+      } catch (error) {
+        console.error(`Attempt ${retryCount + 1} - Error fetching tracks:`, error);
+  
+        retryCount += 1;
+  
+        // If retries are exhausted, reload the page
+        if (retryCount === maxRetries) {
+          console.log("Reloading the page to resolve the error...");
+          window.location.reload();
+          return;
+        }
+  
+        // Optionally add a short delay between retries
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
   };
-
+  
   useEffect(() => {
-    const fetchData = async () => {await fetchTracks(getTopTracksIndia, setTopIndiaTracks);};
-    fetchData();
-    window.scrollTo(0, 0);
-    
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {fetchTracks(getTopTracksGlobal, setTopGlobalTracks);};
+    const fetchData = async () => {
+      await fetchTracks(getTopTracksIndia, setTopIndiaTracks);
+    };
     fetchData();
     window.scrollTo(0, 0);
   }, []);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTracks(getTopTracksGlobal, setTopGlobalTracks);
+    };
+    fetchData();
+    window.scrollTo(0, 0);
+  }, []);
+  
 
   // useEffect(() => {
   //   const fetchUserTopArtists = async () => {

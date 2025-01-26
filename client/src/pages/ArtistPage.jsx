@@ -24,20 +24,35 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
   const [artistTopTracks, setArtistTopTracks] = useState(null);
   const [artistAlbums, setArtistAlbums] = useState(null);
 
- 
-
-  // Fetch artist data from API
   const fetchArtistData = async () => {
-    try {
-      const data = await getArtistInfo(id);
-      setArtistData(data.ArtistData);
-      setArtistTopTracks(data.ArtistTopTracks);
-      setArtistAlbums(data.ArtistTopAlbums);
-    } catch (error) {
-      console.error("Error fetching artist data:", error);
+    let retryCount = 0; // Track the number of retries
+    const maxRetries = 3; // Set a limit for retries
+  
+    while (retryCount < maxRetries) {
+      try {
+        const data = await getArtistInfo(id);
+        setArtistData(data.ArtistData);
+        setArtistTopTracks(data.ArtistTopTracks);
+        setArtistAlbums(data.ArtistTopAlbums);
+        return; // Exit the function if successful
+      } catch (error) {
+        console.error(`Attempt ${retryCount + 1} - Error fetching artist data:`, error);
+  
+        // If max retries are reached, reload the page
+        if (retryCount + 1 === maxRetries) {
+          console.log("Reloading the page to resolve the error...");
+          window.location.reload();
+          return;
+        }
+  
+        retryCount += 1;
+        // Optionally, add a short delay between retries
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
   };
-
+  
+  
   useEffect(() => {
     // Async function for data fetching
     const fetchData = async () => {
@@ -97,7 +112,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
         </>
       ) : (
         <>
-          <ArtistMainInfoLoad/>
+          <ArtistMainInfoLoad />
           <div className="buttons-container">
             <Skeleton
               variant="rectangular"
@@ -126,7 +141,10 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
       )}
       {selectedBtn === "topTracks" ? (
         artistTopTracks ? (
-          <ArtistTopTrackPart data={artistTopTracks} setPlayerMeta={setPlayerMeta} />
+          <ArtistTopTrackPart
+            data={artistTopTracks}
+            setPlayerMeta={setPlayerMeta}
+          />
         ) : (
           <ArtistTopTrackPartLoad />
         )

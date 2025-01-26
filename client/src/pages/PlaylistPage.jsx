@@ -15,23 +15,40 @@ export default function PlaylistPage({ setPlayerMeta }) {
   useEffect(() => {
     // Async function for data fetching
     const fetchData = async () => {
-      // Fetch playlist data from API
-      try {
-        const data = await getPlaylistInfo(id);
-        setPlaylistData(data);
-      } catch (error) {
-        console.error("Error fetching playlist data:", error);
-      }
+        let retryCount = 0; // Track the number of retries
+        const maxRetries = 3; // Set a limit for retries
+
+        while (retryCount < maxRetries) {
+            try {
+                // Fetch playlist data from API
+                const data = await getPlaylistInfo(id);
+                setPlaylistData(data);
+                return; // Exit the loop if successful
+            } catch (error) {
+                console.error(`Attempt ${retryCount + 1} - Error fetching playlist data:`, error);
+                retryCount += 1;
+
+                if (retryCount === maxRetries) {
+                    console.log("Max retries reached. Reloading the page...");
+                    window.location.reload(); // Reload the page after exhausting retries
+                    return;
+                } else {
+                    // Add a small delay before retrying
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+            }
+        }
     };
 
     fetchData();
     window.scrollTo(0, 0);
 
-    //Cleanup on component unmount or dependency change
+    // Cleanup on component unmount or dependency change
     return () => {
-      setPlaylistData(null);
+        setPlaylistData(null);
     };
-  }, [id]);
+}, [id]);
+
 
   return (
     <>
