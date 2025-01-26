@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { inject } = require('@vercel/analytics');
 const express = require("express");
 const app = express();
 const compression = require("compression");
