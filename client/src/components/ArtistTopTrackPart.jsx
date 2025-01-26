@@ -1,6 +1,7 @@
 import "../assets/styles/ArtistTopTrackPart.css"
 import {TrackLineCard, TrackLineCardLoad} from "./TrackLineCard";
 import { Link } from 'react-router-dom';
+import TrackLogo from "../assets/media/Track-Logo.webp";
 import React from 'react';  
 export  function ArtistTopTrackPart(props) {
     return (
@@ -8,7 +9,7 @@ export  function ArtistTopTrackPart(props) {
             {props.data.tracks.map((item, index)=>(
                 <TrackLineCard
                 key={index}
-                imgSrc={item.album.images[0].url}
+                imgSrc={item.album.images.length >0 ? item.album.images[0].url : TrackLogo}
                 trackName={item.name}
                 trackRank={index+1}
                 duration={item.duration_ms}

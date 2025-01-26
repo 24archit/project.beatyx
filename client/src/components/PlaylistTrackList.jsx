@@ -1,6 +1,7 @@
 import "../assets/styles/PlaylistTrackList.css"
 import {TrackLineCard, TrackLineCardLoad} from "./TrackLineCard";
 import { Link } from 'react-router-dom';
+import TrackLogo from "../assets/media/Track-Logo.webp";
 import React, { useEffect } from 'react';  
 export  function PlaylistTrackList(props) {
     return (
@@ -8,7 +9,7 @@ export  function PlaylistTrackList(props) {
             {props.data.map((item, index)=>(
                 <TrackLineCard
                 key={index}
-                imgSrc={item.track.album.images[0].url}
+                imgSrc={item.track.album.images.length>0?item.track.album.images[0].url:TrackLogo}
                 trackName={item.track.name}
                 trackRank={index+1}
                 duration={item.track.duration_ms}
