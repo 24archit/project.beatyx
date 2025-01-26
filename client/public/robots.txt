@@ -11,6 +11,7 @@ Allow: /src/pages/HomePage.jsx
 Allow: /src/pages/PlaylistPage.jsx
 Allow: /src/pages/SearchPage.jsx
 Allow: /src/components/
+Allow: /public
 
 # If you are using a specific API, you might want to block indexing of it
 Disallow: /src/apis/
