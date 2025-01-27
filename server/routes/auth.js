@@ -5,7 +5,7 @@ const JWT = require("jsonwebtoken");
 const User = require("../models/user");
 
 // Load the secret from environment variables
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Signup route
 router.post("/signup", async (req, res) => {
