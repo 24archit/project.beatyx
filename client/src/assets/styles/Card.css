@@ -102,7 +102,7 @@
     width: 1.5rem; /* Reduced size */
     border-radius: 50%;
     opacity: 0.6;
-    margin-top: 0.5rem; /* Adds spacing between the logo and content */
+    margin-top: 1rem; /* Adds spacing between the logo and content */
     display: flex;
     align-items: center;
     justify-content: center;

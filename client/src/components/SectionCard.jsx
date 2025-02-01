@@ -36,7 +36,7 @@ export function SectionCard({
                 <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
               </a>
             </div>
-            <div className="card-img">
+            <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
               <img
                 className="card-photo"
                 src={imgSrc}
