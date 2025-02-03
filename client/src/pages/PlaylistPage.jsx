@@ -55,7 +55,7 @@ export default function PlaylistPage({ setPlayerMeta }) {
   return (
     <>
       <Helmet>
-        <title>Not Found - 404</title>
+        <title>Playlist | Beatyx</title>
       </Helmet>
       {playlistData ? (
         <div className="artist-page-bg" draggable="true">
