@@ -2,6 +2,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 import "./assets/styles/App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Player from "./components/Player";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
@@ -69,160 +70,162 @@ function App() {
   // }
 
   return (
-    <>
-      <Router>
-        <Routes>
-          {/* Routes with NavBar, Side, etc. */}
-          {isAuth ? (
-            <>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <HomePage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/artist/:id"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <ArtistPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/playlist/:id"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <PlaylistPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/search"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <SearchPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-            </>
-          ) : (
-            <>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <HomePage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/artist/:id"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <ArtistPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/playlist/:id"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <PlaylistPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-              <Route
-                path="/search"
-                element={
-                  <>
-                    <NavBar isAuth={isAuth} />
-                    <Side />
-                    <div className="content">
-                      <main>
-                        <SearchPage setPlayerMeta={setPlayerMeta} />
-                      </main>
-                    </div>
-                    <Footer />
-                    <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
-                  </>
-                }
-              />
-            </>
-          )}
-
-          {/* NotFoundPage Route */}
-          <Route
-            path="*"
-            element={
+    <HelmetProvider>
+      <>
+        <Router>
+          <Routes>
+            {/* Routes with NavBar, Side, etc. */}
+            {isAuth ? (
               <>
-                <NotFoundPage />
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <HomePage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/artist/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <ArtistPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/playlist/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <PlaylistPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/search"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <SearchPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
               </>
-            }
-          />
-        </Routes>
-      </Router>
-      <Analytics />
-      <SpeedInsights /> 
-    </>
+            ) : (
+              <>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <HomePage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/artist/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <ArtistPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/playlist/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <PlaylistPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                <Route
+                  path="/search"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <SearchPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+              </>
+            )}
+
+            {/* NotFoundPage Route */}
+            <Route
+              path="*"
+              element={
+                <>
+                  <NotFoundPage />
+                </>
+              }
+            />
+          </Routes>
+        </Router>
+        <Analytics />
+        <SpeedInsights />
+      </>
+    </HelmetProvider>
   );
 }
 

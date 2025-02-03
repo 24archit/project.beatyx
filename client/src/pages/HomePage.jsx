@@ -6,7 +6,7 @@ import {
   getTopTracksGlobal,
   getUserTopArtists,
 } from "../apis/apiFunctions.js";
-
+import { Helmet } from "react-helmet-async";
 export default function HomePage({ setPlayerMeta }) {
   const [topIndiaTracks, setTopIndiaTracks] = useState([]);
   const [topGlobalTracks, setTopGlobalTracks] = useState([]);
@@ -15,7 +15,7 @@ export default function HomePage({ setPlayerMeta }) {
   const fetchTracks = async (fetchFunction, setTracks) => {
     let retryCount = 0; // Track the number of retries
     const maxRetries = 3; // Set a limit for retries
-  
+
     while (retryCount < maxRetries) {
       try {
         const data = await fetchFunction();
@@ -23,23 +23,26 @@ export default function HomePage({ setPlayerMeta }) {
         setTracks(newArr);
         return; // Exit the function if successful
       } catch (error) {
-        console.error(`Attempt ${retryCount + 1} - Error fetching tracks:`, error);
-  
+        console.error(
+          `Attempt ${retryCount + 1} - Error fetching tracks:`,
+          error
+        );
+
         retryCount += 1;
-  
+
         // If retries are exhausted, reload the page
         if (retryCount === maxRetries) {
           console.log("Reloading the page to resolve the error...");
           window.location.reload();
           return;
         }
-  
+
         // Optionally add a short delay between retries
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchTracks(getTopTracksIndia, setTopIndiaTracks);
@@ -47,7 +50,7 @@ export default function HomePage({ setPlayerMeta }) {
     fetchData();
     window.scrollTo(0, 0);
   }, []);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchTracks(getTopTracksGlobal, setTopGlobalTracks);
@@ -55,7 +58,6 @@ export default function HomePage({ setPlayerMeta }) {
     fetchData();
     window.scrollTo(0, 0);
   }, []);
-  
 
   // useEffect(() => {
   //   const fetchUserTopArtists = async () => {
@@ -75,6 +77,9 @@ export default function HomePage({ setPlayerMeta }) {
 
   return (
     <>
+      <Helmet>
+        <title>Beatyx - Play Music </title>
+      </Helmet>
       {topIndiaTracks.length ? (
         <HomePagePlaylistTrackSection
           iconClass="fa-solid fa-arrow-trend-up"

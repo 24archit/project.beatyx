@@ -8,36 +8,39 @@ import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
 import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import React from "react";
-
+import { Helmet } from "react-helmet-async";
 export default function PlaylistPage({ setPlayerMeta }) {
   const [playlistData, setPlaylistData] = useState(null);
   const { id } = useParams();
   useEffect(() => {
     // Async function for data fetching
     const fetchData = async () => {
-        let retryCount = 0; // Track the number of retries
-        const maxRetries = 3; // Set a limit for retries
+      let retryCount = 0; // Track the number of retries
+      const maxRetries = 3; // Set a limit for retries
 
-        while (retryCount < maxRetries) {
-            try {
-                // Fetch playlist data from API
-                const data = await getPlaylistInfo(id);
-                setPlaylistData(data);
-                return; // Exit the loop if successful
-            } catch (error) {
-                console.error(`Attempt ${retryCount + 1} - Error fetching playlist data:`, error);
-                retryCount += 1;
+      while (retryCount < maxRetries) {
+        try {
+          // Fetch playlist data from API
+          const data = await getPlaylistInfo(id);
+          setPlaylistData(data);
+          return; // Exit the loop if successful
+        } catch (error) {
+          console.error(
+            `Attempt ${retryCount + 1} - Error fetching playlist data:`,
+            error
+          );
+          retryCount += 1;
 
-                if (retryCount === maxRetries) {
-                    console.log("Max retries reached. Reloading the page...");
-                    window.location.reload(); // Reload the page after exhausting retries
-                    return;
-                } else {
-                    // Add a small delay before retrying
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                }
-            }
+          if (retryCount === maxRetries) {
+            console.log("Max retries reached. Reloading the page...");
+            window.location.reload(); // Reload the page after exhausting retries
+            return;
+          } else {
+            // Add a small delay before retrying
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
         }
+      }
     };
 
     fetchData();
@@ -45,13 +48,15 @@ export default function PlaylistPage({ setPlayerMeta }) {
 
     // Cleanup on component unmount or dependency change
     return () => {
-        setPlaylistData(null);
+      setPlaylistData(null);
     };
-}, [id]);
-
+  }, [id]);
 
   return (
     <>
+      <Helmet>
+        <title>Not Found - 404</title>
+      </Helmet>
       {playlistData ? (
         <div className="artist-page-bg" draggable="true">
           <PlaylistMainInfo
