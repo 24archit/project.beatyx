@@ -9,6 +9,10 @@ const trackSchema = new mongoose.Schema({
   youtubeLink: {
     type: String,
   },
+isError:{
+    type: Boolean,
+    default: false,
+  }
 });
 
 const TrackDb = mongoose.model("Track", trackSchema);
