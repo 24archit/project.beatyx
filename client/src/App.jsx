@@ -9,27 +9,25 @@ import HomePage from "./pages/HomePage";
 import ArtistPage from "./pages/ArtistPage";
 import React, { useEffect, useState } from "react";
 import SearchPage from "./pages/SearchPage";
-import LoadingScreen from "./components/LoadingScreen";
 import NotFoundPage from "./pages/NotFoundPage";
 import Side from "./components/Side";
 import harmonixAnimation from "../src/assets/media/Animated-Track-Logo.webm";
 import PlaylistPage from "./pages/PlaylistPage";
 import Footer from "./components/Footer";
+import AlbumPage from "./pages/AlbumPage";
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
+
   const [playerMeta, setPlayerMeta] = useState("");
   const [playerImg, setPlayeImg] = useState(harmonixAnimation);
 
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
-    // setTimeout(() => {
+
     if (authToken) {
       setIsAuth(true);
     }
-    // setIsLoading(false);
-    // }, 5000);
   }, []);
   // useEffect(() => {
   //   // Disable right-click
@@ -125,6 +123,22 @@ function App() {
                     </>
                   }
                 />
+                 <Route
+                  path="/album/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <AlbumPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
                 <Route
                   path="/search"
                   element={
@@ -185,6 +199,22 @@ function App() {
                       <div className="content">
                         <main>
                           <PlaylistPage setPlayerMeta={setPlayerMeta} />
+                        </main>
+                      </div>
+                      <Footer />
+                      <Player url={playerMeta} setPlayerMeta={setPlayerMeta} />
+                    </>
+                  }
+                />
+                 <Route
+                  path="/album/:id"
+                  element={
+                    <>
+                      <NavBar isAuth={isAuth} />
+                      <Side />
+                      <div className="content">
+                        <main>
+                          <AlbumPage setPlayerMeta={setPlayerMeta} />
                         </main>
                       </div>
                       <Footer />

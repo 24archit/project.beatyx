@@ -85,7 +85,7 @@
                 }
                 iconClass={"fa-solid fa-play"}
                 iconId={"play-btn"}
-                cardName={item.track.album.name}
+                cardName={item.track.name}
                 cardId={item.track.id}
                 cardType="track"
                 setPlayerMeta={props.setPlayerMeta}

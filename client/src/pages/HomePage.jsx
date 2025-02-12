@@ -21,6 +21,7 @@ export default function HomePage({ setPlayerMeta }) {
         const data = await fetchFunction();
         const newArr = data.tracks.items;
         setTracks(newArr);
+        console.log(newArr);
         return; // Exit the function if successful
       } catch (error) {
         console.error(

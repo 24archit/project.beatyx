@@ -113,6 +113,20 @@ export async function getPlaylistInfo(id) {
   }
 }
 
+export async function getAlbumInfo(id) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/album/api/getAlbumInfo/${id}`,
+      method: "GET",
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Error fetching album data for id ${id}: ${error.message}`
+    );
+  }
+}
+
 
 
 

@@ -164,6 +164,22 @@ async function getPlaylist(id, retries = 4, delay = 800) {
     delay
   );
 }
+// Function to get album details
+async function getAlbum(id, retries = 4, delay = 800) {
+  const accessToken = await getAccessToken();
+  const url = `https://api.spotify.com/v1/albums/${id}`;
+
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
+}
 
 // Export all functions
 module.exports = {
@@ -172,4 +188,5 @@ module.exports = {
   getArtistInfo,
   getSearchResult,
   getPlaylist,
+  getAlbum,
 };
