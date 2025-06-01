@@ -2,7 +2,7 @@ import "../assets/styles/ArtistTopTrackPart.css"
 import {TrackLineCard, TrackLineCardLoad} from "./TrackLineCard";
 import { Link } from 'react-router-dom';
 import TrackLogo from "../assets/media/Track-Logo.webp";
-import React from 'react';  
+import React from 'react';
 export  function ArtistTopTrackPart(props) {
     return (
         <div className="artist-top-track-container">
@@ -24,6 +24,7 @@ export  function ArtistTopTrackPart(props) {
                 spotifyUrl={item.external_urls.spotify}
                 cardId ={item.id}
                 setPlayerMeta={props.setPlayerMeta}
+                setTrackInfo={props.setTrackInfo}
                 />
                 
             ))}

@@ -15,9 +15,7 @@ export default function SearchPageArtistSection(props) {
                         imgSrc={item.images && item.images.length > 0 ? item.images[0].url : ProfilePic}
                         cardName={item.name}
                         cardStat={
-                            <span>
-                                <p className="card-stat-2">{`Trend-Score: ${item.popularity}/100`}</p>
-                            </span>
+                            <span className="card-stat-2">{`Trend-Score: ${item.popularity}/100`}</span>
                         }
                         followers={item.followers ? item.followers.total : 0}  
                         cardType ="artist"

@@ -47,9 +47,6 @@
     font-weight: bold;
     transition: background-color 0.08s ease-out;
 }
-.album-name{
-    width: 15rem;
-}
 .track-rank{
     width: 2rem;
 }

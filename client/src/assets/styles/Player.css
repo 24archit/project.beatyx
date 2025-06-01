@@ -1,226 +1,340 @@
 /* Player Container */
 .player {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #000000;
-    height: 4.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    gap: 10px;
-    z-index: 10;
-   
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000000;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  gap: 10px;
+  z-index: 10;
 }
 
 /* Thumbnail Container */
 .thumbnail {
-    position: relative;
-    width: 3.5rem; 
-    height: 3.5rem;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-right: 1rem; /* Positioned beside the play-pause button */
-    border: 2px solid #00ccff;
-    box-shadow: 
-    0 0 5px #044656, 
-    0 0 10px #00ccff, 
-    0 0 15px #023e4e, 
-    0 0 20px #032028;
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-right: 1rem;
+  border: 2px solid #00ccff;
 }
 
-.thumbnail video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.music-wave{
-    position: relative;
-    width: 3.5rem; 
-    height: 3.5rem;
-    overflow: hidden;
-    margin-left: 1rem;
+.track-heading {
+  color: #ffffff70;
+  font-size: 1rem;
+  margin-left: 1rem;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+  overflow: hidden;
 }
+
+/* Underline animation */
+.track-heading::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #00bfff;
+  bottom: 0;
+  left: -100%;
+  transition: left 0.3s ease-in-out;
+}
+
+.track-heading:hover::after {
+  left: 0;
+}
+
+/* Glow effect */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff;
+  }
+  50% {
+    text-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff;
+  }
+  100% {
+    text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff;
+  }
+}
+
+.track-heading.playing {
+  animation: glow 1.5s infinite alternate;
+}
+
+/* Music Wave Container */
+.music-wave {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  overflow: hidden;
+  margin-left: 1rem;
+}
+
 .music-wave video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
+
 /* Play/Pause Button */
 .play-pause-btn {
-    height: 3rem;
-    width: 3rem;
-    border-radius: 50%;
-    background-color: rgba(31, 227, 249, 0.681);
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    margin: 0 1rem;
-    color: rgb(4, 4, 55);
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  background-color: rgba(31, 227, 249, 0.681);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: rgb(4, 4, 55);
 }
 
 .play-pause-btn:hover {
-    box-shadow: 0.255rem 0.255rem 0.9rem rgba(71, 179, 219, 0.6);
+  box-shadow: 0.255rem 0.255rem 0.9rem rgba(71, 179, 219, 0.6);
+  cursor: pointer;
 }
 
-/* Seek Bar (Player Slider) */
+/* Backward and Other Buttons */
+.backward-btn,
+.other-btn {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  background-color: transparent;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: rgba(31, 227, 249, 0.681);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.backward-btn:hover,
+.other-btn:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Seek Bar */
 input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    background: #001f3f;
-    border-radius: 5px;
-    outline: none;
-    opacity: 0.8;
-    width: 10%; /* Default width for larger screens */
-    transition: opacity 0.2s, background 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #001f3f;
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.8;
+  width: 10%;
+  transition: opacity 0.2s, background 0.2s;
+  cursor: pointer;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: #7fdbff;
-    cursor: pointer;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #7fdbff;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #7fdbff;
+  cursor: pointer;
 }
 
 /* Duration Board */
 .duration-board {
-    color: rgb(134, 185, 229);
-    font-family: Arial, Helvetica, sans-serif;
+  color: rgb(134, 185, 229);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Volume Slider */
 .volumeSlider {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px; /* Smaller than the player slider */
-    background: #123456;
-    border-radius: 5px;
-    outline: none;
-    opacity: 0.8;
-    width: 10%; /* Smaller width than the player slider */
-    transition: opacity 0.2s, background 0.2s;
-    margin-left: 1rem;
-    padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #123456;
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.8;
+  width: 10%;
+  transition: opacity 0.2s, background 0.2s;
+  margin-left: 1rem;
+  padding: 0;
 }
 
 .volumeSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 10px; /* Smaller than player slider thumb */
-    height: 10px;
-    border-radius: 50%;
-    background: #29abe2;
-    cursor: pointer;
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #29abe2;
+  cursor: pointer;
 }
 
 /* Volume Icon */
 .volume-icon {
-    color: rgba(11, 129, 164, 0.681);
-    margin-left: 1rem;
+  color: rgba(11, 129, 164, 0.681);
+  margin-left: 1rem;
+}
+/* Container for both thumbnail and track name */
+.track-info {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  width: 250px; /* Fixed width to prevent resizing */
+  overflow: hidden;
+}
+
+
+
+.track-name {
+  margin-left: 0.5rem;
+  max-width: 150px; /* Adjust as needed */
+  font-size: 1rem;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: text-decoration 0.2s ease-in-out;
+}
+
+.track-info:hover .track-name {
+  text-decoration: underline;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid rgba(103, 10, 126, 0.699);
+  border-top: 5px solid #3b081d;
+  border-right: 5px solid #17022d;
+  border-radius: 50%;
+  animation: spin 0.3s cubic-bezier(0.65, 0.05, 0.36, 1) infinite, glow 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00ff9d;
+  }
+  50% {
+    box-shadow: 0 0 15px #00eaff, 0 0 30px #00ff9d;
+  }
+  100% {
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00ff9d;
+  }
+}
+
+/* Error Message */
+.error-message {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e74c3c;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 210;
+  font-size: 0.9em;
 }
 
 /* Media Queries for Responsiveness */
 @media (max-width: 1024px) {
-    /* For laptops */
-    .thumbnail {
-        position: absolute;
-        top: -10rem; /* Place above the player */
-        left: 2rem;
-        width: 8rem; /* Increased size for smaller screens */
-        height: 8rem;
-    }
-
-    .player {
-        flex-direction: column; /* Stack player elements */
-        padding-top: 2rem;
-    }
-
-    .play-pause-btn {
-        height: 2.5rem;
-        width: 2.5rem;
-        font-size: 1.3rem;
-    }
-
-    input[type="range"] {
-        width: 60%; /* Adjust progress bar width */
-    }
-
-    .volumeSlider {
-        width: 12%; /* Reduce volume slider width */
-    }
+  .thumbnail {
+    position: absolute;
+    top: -10rem;
+    left: 2rem;
+    width: 8rem;
+    height: 8rem;
+  }
+  .player {
+    flex-direction: column;
+    padding-top: 2rem;
+  }
+  .play-pause-btn {
+    height: 2.5rem;
+    width: 2.5rem;
+    font-size: 1.3rem;
+  }
+  input[type="range"] {
+    width: 60%;
+  }
+  .volumeSlider {
+    width: 12%;
+  }
 }
 
 @media (max-width: 768px) {
-    /* For tablets */
-    .thumbnail {
-        position: relative;
-        top: -2rem;
-        width: 12rem; /* Increased size */
-        height: 12rem;
-        margin: 0 auto;
-        padding-right: 3rem;
-    }
-
-    .player {
-        flex-direction: column;
-        height: auto;
-        padding-top: 3rem;
-    }
-
-    .volume-icon {
-        display: none; /* Hide volume icon */
-    }
-
-    .volumeSlider {
-        display: none; /* Hide volume slider */
-    }
-
-    input[type="range"] {
-        width: 80%;
-    }
+  .thumbnail {
+    position: relative;
+    top: -2rem;
+    width: 12rem;
+    height: 12rem;
+    margin: 0 auto;
+    padding-right: 3rem;
+  }
+  .player {
+    flex-direction: column;
+    height: auto;
+    padding-top: 3rem;
+  }
+  .volume-icon, .volumeSlider {
+    display: none;
+  }
+  input[type="range"] {
+    width: 80%;
+  }
 }
 
 @media (max-width: 480px) {
-    /* For phones */
-    .thumbnail {
-        width: 12rem; /* Larger size for mobile */
-        height: 12rem;
-        top: -1rem; /* Place above the play-pause button */
-    }
-
-    .player {
-        flex-direction: column;
-        height: auto;
-        padding-bottom: 1.6rem;
-    }
-
-    .play-pause-btn {
-        height: 2rem;
-        width: 2rem;
-        font-size: 1.2rem;
-    }
-
-    .volume-icon {
-        display: none;
-    }
-
-    .volumeSlider {
-        display: none; /* Completely removed on mobile */
-    }
-    #volumeSlider{
-        display: none;
-    }
-
-    input[type="range"] {
-        width: 50%;
-
-        
-    }
-    
+  .thumbnail {
+    width: 12rem;
+    height: 12rem;
+    top: -1rem;
+  }
+  .player {
+    flex-direction: column;
+    height: auto;
+    padding-bottom: 1.6rem;
+  }
+  .play-pause-btn {
+    height: 2rem;
+    width: 2rem;
+    font-size: 1.2rem;
+  }
+  .volume-icon, .volumeSlider, #volumeSlider {
+    display: none;
+  }
+  input[type="range"] {
+    width: 50%;
+  }
 }

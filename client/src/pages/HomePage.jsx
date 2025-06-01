@@ -4,10 +4,9 @@ import SectionLoading from "../components/SectionLoading.jsx";
 import {
   getTopTracksIndia,
   getTopTracksGlobal,
-  getUserTopArtists,
 } from "../apis/apiFunctions.js";
 import { Helmet } from "react-helmet-async";
-export default function HomePage({ setPlayerMeta }) {
+export default function HomePage({ setPlayerMeta, setTrackInfo }) {
   const [topIndiaTracks, setTopIndiaTracks] = useState([]);
   const [topGlobalTracks, setTopGlobalTracks] = useState([]);
   const [userTopArtists, setUserTopArtists] = useState([]);
@@ -87,6 +86,7 @@ export default function HomePage({ setPlayerMeta }) {
           name=" Top Tracks: Live from India"
           data={topIndiaTracks.slice(0, 45)}
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
           showMore={topIndiaTracks.length > 45}
           onMoreClick={() =>
             handleMoreClick(setTopIndiaTracks, topIndiaTracks, 45)
@@ -99,6 +99,7 @@ export default function HomePage({ setPlayerMeta }) {
           iconId="trend-icon"
           name=" Top Tracks: Live from India"
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
         />
       )}
 
@@ -109,6 +110,7 @@ export default function HomePage({ setPlayerMeta }) {
           name=" Sync: Global Top Tracks"
           data={topGlobalTracks.slice(0, 45)}
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
           showMore={topGlobalTracks.length > 45}
           onMoreClick={() =>
             handleMoreClick(setTopGlobalTracks, topGlobalTracks, 45)
@@ -121,6 +123,7 @@ export default function HomePage({ setPlayerMeta }) {
           iconId="trend-icon"
           name=" Sync: Global Top Tracks"
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
         />
       )}
     </>

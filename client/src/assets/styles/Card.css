@@ -1,3 +1,4 @@
+
 .card-container{
     height: 20rem; /* Reduced height */
     width: 14rem; /* Reduced width */
@@ -12,6 +13,17 @@
     margin-left: 0.8rem;
     margin-right: 0.8rem;
 }
+#kebab-menu-icon{
+    color: white;
+    font-size: 1.2rem; /* Reduced size */
+    cursor: pointer;
+}
+.card-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+  }
 .card {
     flex: 1;
     background: linear-gradient(#010d2bcb, #0000009b, #010d2dbc, rgba(255, 255, 255, 0.145));
@@ -28,6 +40,7 @@
     border-top-right-radius: 1.5rem; /* Slightly smaller rounding */
     border-top-left-radius: 1.5rem; /* Slightly smaller rounding */
     transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+    position: relative;
 }
 .card-img{
     height: 10rem; /* Reduced height */

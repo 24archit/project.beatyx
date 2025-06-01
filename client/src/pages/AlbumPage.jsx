@@ -9,7 +9,7 @@ import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { AlbumTrackList } from "../components/AlbumTrackList.jsx";
-export default function AlbumPage({ setPlayerMeta }) {
+export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
   const [AlbumData, setAlbumData] = useState(null);
   const { id } = useParams();
   useEffect(() => {
@@ -69,6 +69,7 @@ export default function AlbumPage({ setPlayerMeta }) {
             data={AlbumData.tracks.items}
             trackImg={AlbumData.images[0]?.url || defaultProfilePic}
             setPlayerMeta={setPlayerMeta}
+            setTrackInfo={setTrackInfo}
           />
         </div>
       ) : (

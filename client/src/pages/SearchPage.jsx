@@ -9,8 +9,7 @@ import SearchPagePlaylistSection from "../components/SearchPagePlaylistSection";
 import { SectionNameLoad } from "../components/SectionName";
 import { SectionCardLoad } from "../components/SectionCard";
 import { Helmet } from "react-helmet-async";
-
-export default function SearchPage({ setPlayerMeta }) {
+export default function SearchPage({ setPlayerMeta,setTrackInfo }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("");
   const [searchResult, setSearchResult] = useState(null);
@@ -135,6 +134,7 @@ export default function SearchPage({ setPlayerMeta }) {
           name=" Top Search Result"
           data={data.topResult}
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
         />
       )}
       {data.otherResult.length > 0 && (
@@ -144,6 +144,7 @@ export default function SearchPage({ setPlayerMeta }) {
           name=" Other Related Results"
           data={data.otherResult}
           setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
         />
       )}
     </>
@@ -189,6 +190,7 @@ export default function SearchPage({ setPlayerMeta }) {
                 name=" Top Search Result"
                 data={searchResult.topResult}
                 setPlayerMeta={setPlayerMeta}
+                setTrackInfo={setTrackInfo}
               />
             )}
           {searchResult &&
@@ -200,6 +202,7 @@ export default function SearchPage({ setPlayerMeta }) {
                 name=" Other Related Results"
                 data={searchResult.otherResult}
                 setPlayerMeta={setPlayerMeta}
+                setTrackInfo={setTrackInfo}
               />
             )}
           {searchResult &&

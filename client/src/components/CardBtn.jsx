@@ -1,14 +1,19 @@
 import "../assets/styles/CardBtn.css";
 import { getAudioLink } from "../apis/apiFunctions";
 import { useNavigate } from "react-router-dom";
-export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerMeta}) {
+export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerMeta,setTrackInfo, cardName, imgSrc}) {
   const navigate = useNavigate();
   const handelOnClick = async () => {
     if (cardType === "track") {
       try {
         const data = await getAudioLink(cardId);
         const url = data != null ? data.url : "";
+        const trackInfo = {
+          trackName: cardName,
+          imgSrc: imgSrc,
+        };
         setPlayerMeta(url);
+        setTrackInfo(trackInfo);
       } catch (error) {
         console.error("Error:", error.message || "Cannot SetUrl To Player");
         alert("This audio is not available right now");

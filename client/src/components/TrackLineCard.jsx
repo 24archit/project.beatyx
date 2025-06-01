@@ -1,23 +1,32 @@
 import "../assets/styles/TrackLineCard.css";
-import profilePic from "../assets/media/profile-pic.webp";
+import trackLogo from "../assets/media/Track-Logo.webp";
 import { Skeleton } from "@mui/material";
 import prettyMilliseconds from "pretty-ms";
 import spotifyLogo from "../assets/media/Spotify_logo.webp";
 import { getAudioLink } from "../apis/apiFunctions";
 export function TrackLineCard({
-  imgSrc = profilePic,
+  imgSrc = trackLogo,
   trackName,
   duration,
   trackRank,
   trackArtists,
   cardId,
   setPlayerMeta,
+  setTrackInfo,
   spotifyUrl,
+  isPlaylist = false,
 }) {
   const handelOnClick = async () => {
     try {
-      const data = await getAudioLink(cardId);
+      const currPlaylistId = window.sessionStorage.getItem("currPlaylistId");
+      const queueId = window.sessionStorage.getItem("queueId");
+      const data = await getAudioLink(cardId, isPlaylist, trackRank - 1, currPlaylistId, queueId);
       const url = data != null ? data.url : "";
+      const trackInfo = {
+        trackName: trackName,
+        imgSrc: imgSrc, 
+      };
+      setTrackInfo(trackInfo);
       setPlayerMeta(url);
     } catch (error) {
       console.error("Error:", error.message || "Cannot SetUrl To Player");
@@ -47,7 +56,7 @@ export function TrackLineCard({
             aria-label={"Explore the content on Spotify"}
             title={"Explore the content on Spotify"}
           >
-            <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
+            <img src={spotifyLogo} alt="Spotify Logo" loading="lazy" />
           </a>
         </div>
         <div className="Duration">

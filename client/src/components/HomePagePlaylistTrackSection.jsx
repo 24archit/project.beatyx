@@ -89,6 +89,7 @@
                 cardId={item.track.id}
                 cardType="track"
                 setPlayerMeta={props.setPlayerMeta}
+                setTrackInfo={props.setTrackInfo}
                 cardStat={
                   <>
                     {item.track.artists.map((artist, idx) => (

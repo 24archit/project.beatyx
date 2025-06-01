@@ -71,8 +71,11 @@ export async function getArtistInfo(id) {
   }
 }
 
-export async function getAudioLink(id){
+export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueId) {
   try{
+    if(isPlaylist){
+      await updatePlayerQueue(index, currPlaylistId, queueId);
+    }
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getAudioLink/${id}`,
       method: "GET",
@@ -105,6 +108,7 @@ export async function getPlaylistInfo(id) {
       url: `${import.meta.env.VITE_SERVER_LINK}/playlist/api/getPlaylistInfo/${id}`,
       method: "GET",
     });
+    window.sessionStorage.setItem("currPlaylistId", response.data.currPlaylistId);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -127,10 +131,53 @@ export async function getAlbumInfo(id) {
   }
 }
 
+export async function updatePlayerQueue(index, currPlaylistId, queueId) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/player/api/updatePlayerQueue`,
+      method: "PUT",
+      data: {
+        index: index,
+        currPlaylistId: currPlaylistId,
+        queueId: queueId,
+      },
+    });
+    window.sessionStorage.setItem("queueId", response.data.queueId);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Error updating player queue: ${error.message}`
+    );
+  }
+}
 
+export async function getNextAudioLink(queueId) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getNextAudioLink/${queueId}`,
+      method: "GET",
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Error fetching next audio link: ${error.message}`
+    );
+  }
+}
 
-
-
+export async function getPreviousAudioLink(queueId) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getPreviousAudioLink/${queueId}`,
+      method: "GET",
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Error fetching previous audio link: ${error.message}`
+    );
+  }
+}
 
 
 

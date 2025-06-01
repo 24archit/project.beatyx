@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "../assets/styles/Card.css";
 import TrackLogo from "../assets/media/Track-Logo.webp";
-import { Skeleton } from "@mui/material";
+import { Skeleton, Menu, MenuItem, IconButton } from "@mui/material";
 import { format } from "indian-number-format";
 import spotifyLogo from "../assets/media/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
+
 export function SectionCard({
   imgSrc = TrackLogo,
   cardName = "Loading..",
@@ -16,64 +17,102 @@ export function SectionCard({
   cardType = "",
   cardId = "",
   setPlayerMeta,
+  setTrackInfo,
   spotifyUrl = "",
 }) {
-  
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <>
-      <div className="card-container">
-        <div className="card">
-          <div className="card-details">
-            <div className="spotify-logo">
-              <a
-                href={spotifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={"Explore the content on Spotify"}
-                title={"Explore the content on Spotify"}
-              >
-                <img src={spotifyLogo} alt="Spotify Logo" loading="lazy"/>
-              </a>
-            </div>
-            <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
-              <img
-                className="card-photo"
-                src={imgSrc}
-                alt="img1"
-                loading="lazy"
-                draggable="true"
-                style={cardType === "artist" ? { borderRadius: "50%" } : {}}
-              />
-            </div>
-            <div className="card-name-container">
-              <p className="card-name">{cardName}</p>
-            </div>
-            {albumType && (
-              <span className="card-stat-3">
-                <p>{albumType === "album" ? "Album" : "Single"}</p>
-              </span>
-            )}
-            {followers && (
-              <span className="card-stat-3">
-                <p>{`${format(followers)} Followers`}</p>
-              </span>
-            )}
-            <div className="card-stat-container">
-              <p className="card-stat">{cardStat}</p>
-            </div>
+    <div className="card-container">
+      <div className="card">
+        {/* Kebab Menu */}
+        <div className="card-menu">
+          <IconButton 
+            onClick={handleMenuClick} 
+            aria-label="more options"
+          >
+            <i className="fa-solid fa-ellipsis-v" id="kebab-menu-icon"></i>
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Share</MenuItem>
+          </Menu>
+        </div>
+        {/* End Kebab Menu */}
+
+        <div className="card-details">
+          <div className="spotify-logo">
+            <a
+              href={spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={"Explore the content on Spotify"}
+              title={"Explore the content on Spotify"}
+            >
+              <img src={spotifyLogo} alt="Spotify Logo" loading="lazy" />
+            </a>
+          </div>
+          <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
+            <img
+              className="card-photo"
+              src={imgSrc}
+              alt="img1"
+              loading="lazy"
+              draggable="true"
+              style={cardType === "artist" ? { borderRadius: "50%" } : {}}
+            />
+          </div>
+          <div className="card-name-container">
+            <p className="card-name">{cardName}</p>
+          </div>
+          {albumType && (
+            <span className="card-stat-3">
+              <p>{albumType === "album" ? "Album" : "Single"}</p>
+            </span>
+          )}
+          {followers && (
+            <span className="card-stat-3">
+              <p>{`${format(followers)} Followers`}</p>
+            </span>
+          )}
+          <div className="card-stat-container">
+            <p className="card-stat">{cardStat}</p>
           </div>
         </div>
-        <CardBtn
-          iconId={iconId}
-          logoClass={iconClass}
-          logoId={iconId}
-          cardId={cardId}
-          cardType={cardType}
-          setPlayerMeta={setPlayerMeta}
-        />
       </div>
-    </>
+      <CardBtn
+        iconId={iconId}
+        logoClass={iconClass}
+        logoId={iconId}
+        cardId={cardId}
+        cardType={cardType}
+        setPlayerMeta={setPlayerMeta}
+        setTrackInfo={setTrackInfo}
+        cardName={cardName}
+        imgSrc={imgSrc}
+      />
+    </div>
   );
 }
 

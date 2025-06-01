@@ -3,11 +3,13 @@ import {
   ArtistMainInfo,
   ArtistMainInfoLoad,
 } from "../components/ArtistMainInfo.jsx";
+
 import "../assets/styles/ArtistPage.css";
 import {
   ArtistTopTrackPart,
   ArtistTopTrackPartLoad,
 } from "../components/ArtistTopTrackPart.jsx";
+
 import { getArtistInfo } from "../apis/apiFunctions.js";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@mui/material";
@@ -18,7 +20,7 @@ import { Link } from "react-router-dom";
 import spotifyLogo from "../assets/media/Spotify_logo.webp";
 import { Helmet } from "react-helmet-async";
 
-export default function ArtistPage({ setPlayerMeta, isAuth }) {
+export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
   const { id } = useParams();
   const [artistData, setArtistData] = useState(null);
   const [selectedBtn, setSelectedBtn] = useState("topTracks");
@@ -152,6 +154,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
             <ArtistTopTrackPart
               data={artistTopTracks}
               setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
             />
           ) : (
             <ArtistTopTrackPartLoad />
@@ -182,6 +185,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth }) {
                   albumType={item.album_type}
                   cardId={item.id}
                   setPlayerMeta={setPlayerMeta}
+                  setTrackInfo={setTrackInfo}
                   cardType="album"
                 />
               ))

@@ -1,8 +1,7 @@
 import "../assets/styles/PlaylistTrackList.css"
 import {TrackLineCard, TrackLineCardLoad} from "./TrackLineCard";
 import { Link } from 'react-router-dom';
-import TrackLogo from "../assets/media/Track-Logo.webp";
-import React, { useEffect } from 'react';  
+import React from 'react'; 
 export  function AlbumTrackList(props) {
     return (
         <div className="playlist-track-container">
@@ -24,6 +23,7 @@ export  function AlbumTrackList(props) {
                 spotifyUrl={item.external_urls.spotify}
                 cardId ={item.id}
                 setPlayerMeta={props.setPlayerMeta}
+                setTrackInfo={props.setTrackInfo}
                 />
                 
             ))}

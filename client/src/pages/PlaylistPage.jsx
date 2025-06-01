@@ -9,7 +9,7 @@ import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import React from "react";
 import { Helmet } from "react-helmet-async";
-export default function PlaylistPage({ setPlayerMeta }) {
+export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
   const [playlistData, setPlaylistData] = useState(null);
   const { id } = useParams();
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function PlaylistPage({ setPlayerMeta }) {
         try {
           // Fetch playlist data from API
           const data = await getPlaylistInfo(id);
-          setPlaylistData(data);
+          setPlaylistData(data.playlist);
           return; // Exit the loop if successful
         } catch (error) {
           console.error(
@@ -66,7 +66,9 @@ export default function PlaylistPage({ setPlayerMeta }) {
           />
           <PlaylistTrackList
             data={playlistData.tracks.items}
+            isPlaylist={true}
             setPlayerMeta={setPlayerMeta}
+            setTrackInfo={setTrackInfo}
           />
         </div>
       ) : (

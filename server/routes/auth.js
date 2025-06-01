@@ -1,12 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const User = require("../models/user");
-
 // Load the secret from environment variables
 const JWT_SECRET = process.env.JWT_SECRET;
-
 // Signup route
 router.post("/signup", async (req, res) => {
     const { username, name, email, password } = req.body;
