@@ -3,11 +3,11 @@ import '../assets/styles/SectionLoading.css';
 import {SectionNameLoad} from './SectionName.jsx';
 import {SectionCardLoad} from './SectionCard.jsx';
 
-export default function Section(props) {
+export default function Section() {
     return (
-        <section className="section">
+        <section className="section-loading">
             <SectionNameLoad/>
-            <div className="material" draggable="true">
+            <div className="material-loading" draggable="true">
                     <SectionCardLoad/>
                     <SectionCardLoad/>
                     <SectionCardLoad/>

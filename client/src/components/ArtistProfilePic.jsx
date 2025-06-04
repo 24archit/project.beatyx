@@ -17,7 +17,7 @@ export function ArtistProfilePicLoad() {
             sx={{
                 marginLeft: '1rem',
                 marginRight: '1rem',
-                marginTop: '1.3rem',
+                marginTop: '4rem',
                 bgcolor: 'rgba(71, 164, 211, 0.261)',
                 borderRadius: '1rem'
             }}

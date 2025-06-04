@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import { getLoggedIn } from "../apis/apiFunctions";
+import "../assets/styles/LoginBtn.css"; 
 // Define custom styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
@@ -130,7 +131,7 @@ export default function AlertDialog() {
   };
 
   return (
-    <React.Fragment>
+    <div className="login-btn-container">
       <button
         id="logout-btn"
         className="log-in-out-btns"
@@ -188,6 +189,6 @@ export default function AlertDialog() {
           <JoinButton onClick={handleLogin}>Login To Beatyx</JoinButton>
         </DialogActions>
       </StyledDialog>
-    </React.Fragment>
+    </div>
   );
 }

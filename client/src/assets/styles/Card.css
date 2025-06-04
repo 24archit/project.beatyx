@@ -47,7 +47,7 @@
     width: 11rem; /* Reduced width */
     border-radius: 0.8rem; /* Smaller rounding */
     border: 0.1rem solid rgb(0, 242, 255);
-    margin-top: 1rem;
+    margin-top: 0.6rem;
     
 }
 .card-photo {
@@ -115,7 +115,7 @@
     width: 1.5rem; /* Reduced size */
     border-radius: 50%;
     opacity: 0.6;
-    margin-top: 1rem; /* Adds spacing between the logo and content */
+    /* Adds spacing between the logo and content */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,4 +135,31 @@
 
 .spotify-logo:hover {
     opacity: 1;
+}
+@media(max-width: 768px) {
+    .card-container {
+        height: 19rem; /* Adjusted for smaller screens */
+        width: 11rem; /* Adjusted for smaller screens */
+    }
+    .spotify-logo{
+        height: 1.2rem;
+        width: 1.2rem; /* Adjusted size for smaller screens */
+        padding: 0.1rem; /* Adjusted padding for smaller screens */
+    }
+    .card-menu {
+        top: 5px; /* Adjusted position for smaller screens */
+        right: 5px; /* Adjusted position for smaller screens */
+    }
+    .card-img {
+        height: 8rem; /* Adjusted for smaller screens */
+        width: 8rem; /* Adjusted for smaller screens */
+    }
+    .card-name {
+        font-size: 0.9rem; /* Slightly smaller font size */
+    }
+    .card-stat,
+    .card-stat-2,
+    .card-stat-3 {
+        font-size: 0.7rem; /* Slightly smaller font size */
+    }
 }

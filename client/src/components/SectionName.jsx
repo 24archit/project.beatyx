@@ -1,6 +1,7 @@
 import "../assets/styles/SectionName.css";
 import { Skeleton } from "@mui/material";
-import { useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 
 export function SectionName({
@@ -38,17 +39,35 @@ export function SectionName({
 }
 
 export function SectionNameLoad() {
+  const theme = useTheme();
+
+  // You can use breakpoints to set responsive width values
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isMd = useMediaQuery(theme.breakpoints.between("md", "lg"));
+  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+
+  let width;
+  if (isXs) width = "90%";
+  else if (isSm) width = "80%";
+  else if (isMd) width = "70%";
+  else width = "60%";
+
   return (
     <Skeleton
       variant="rectangular"
-      width={700}
+      width={width}
       height={30}
       sx={{
+        padding: "0.5rem",
+        marginTop: "3rem",
         marginLeft: "1rem",
         marginRight: "1rem",
         bgcolor: "rgba(71, 164, 211, 0.261)",
         borderRadius: "1rem",
       }}
+      className="section-name-load"
     />
   );
 }
+

@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';  
 import Alert from '@mui/material/Alert';
 import { getSignUp } from '../apis/apiFunctions';
-
+import '../assets/styles/SignUpBtn.css';
 
 // Define custom styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -137,7 +137,7 @@ export default function SignUpDialog() {
   };
 
   return (
-    <React.Fragment>
+    <div className="signup-btn-container">
       <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
         Sign Up for Free
       </button>
@@ -225,6 +225,6 @@ export default function SignUpDialog() {
           </SubmitButton>
         </DialogActions>
       </StyledDialog>
-    </React.Fragment>
+    </div>
   );
 }

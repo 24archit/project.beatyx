@@ -1,0 +1,22 @@
+#artist-trend-score {
+  color: rgb(141, 137, 137);
+  font-size: 0.95rem;
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 5 00;
+  letter-spacing: 0.1rem;
+  margin-top: 0.7rem;
+  text-align: center;
+}
+#artist-trend-score i {
+  margin-right: 2.5rem;
+}
+@media (max-width: 768px) {
+  #artist-trend-score {
+    font-size: 0.7rem;
+  }
+  #artist-trend-score i {
+    margin-right: 1.5rem;
+  }
+}

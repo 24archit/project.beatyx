@@ -306,6 +306,7 @@ input[type="range"]::-moz-range-thumb {
     flex-direction: column;
     height: auto;
     padding-top: 3rem;
+    display: none;
   }
   .volume-icon, .volumeSlider {
     display: none;

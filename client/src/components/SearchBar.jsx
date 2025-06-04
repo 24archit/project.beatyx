@@ -28,7 +28,7 @@ export default function SearchBar() {
   };
 
   return (
-    <>
+    <div className="search-bar-container">
       <form className="nav-search-bar" id="search-form" onSubmit={handleSubmit}>
         <select
           id="nav-select-category"
@@ -72,6 +72,6 @@ export default function SearchBar() {
           <i className="fas fa-search"></i>
         </button>
       </form>
-    </>
+    </div>
   );
 }

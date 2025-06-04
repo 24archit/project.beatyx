@@ -53,3 +53,36 @@
 .track-rank p{
     margin-left: 0rem;
 }
+@media (max-width: 768px) {
+    .track-line-card {
+        justify-content: space-evenly;
+
+    }
+    .img-container img {
+        width: 2rem;
+        height: 2rem;
+    }
+   .Track-artists-name, .Duration {
+        width: auto;
+        text-align: center;
+        display: none;
+    }
+    p {
+        margin-left: 0;
+    }
+    .track-play {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+    .track-rank {
+     display: none;
+    }
+    .Track-name{
+        width: 10rem;
+        
+    }
+    .Track-name p{
+       font-size: 0.8rem;
+        
+    }
+}

@@ -9,21 +9,23 @@ import { SpotifyConnectBtn } from "./SpotifyConnectBtn";
 
 export default function NavBar(props) {
   return (
-    <nav className="nav-bar">
-      <Logo />
-      <SearchBar />
-      {props.isAuth === false ? (
-        <div className="auth-buttons">
-          <LoginBtn />
-          <SignUpBtn />
-          <SpotifyConnectBtn className="spotify-btn" />
-        </div>
-      ) : (
-        <div className="auth-buttons">
-          <SpotifyConnectBtn className="spotify-btn" />
-          <Logout />
-        </div>
-      )}
-    </nav>
+    <>
+      <nav className="nav-bar">
+        <Logo />
+        <SearchBar />
+        {props.isAuth === false ? (
+          <div className="auth-buttons">
+            <LoginBtn />
+            <SignUpBtn />
+            <SpotifyConnectBtn className="spotify-btn" />
+          </div>
+        ) : (
+          <div className="auth-buttons">
+            <SpotifyConnectBtn className="spotify-btn" />
+            <Logout />
+          </div>
+        )}
+      </nav>
+    </>
   );
 }

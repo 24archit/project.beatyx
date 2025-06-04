@@ -36,7 +36,7 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Development Journey</h3>
           <p>
-            This project was built using the <strong>MERN stack</strong>
+            This project was built using the  <strong> MERN stack</strong>
             (MongoDB, Express.js, React, Node.js) and integrated with
             <strong>Spotify’s API</strong> to fetch music data. Every feature was designed to solve real-world problems, from playlist management to intuitive UI.
           </p>

@@ -8,7 +8,16 @@
     font-weight: 5  00;
     letter-spacing: 0.1rem;
     margin-top: 0.7rem;
+    text-align: center;
 }   
 #artist-followers-count i {
     margin-right: 2.5rem;
+}
+@media (max-width: 768px) {
+    #artist-followers-count {
+        font-size: 0.7rem;
+    }
+    #artist-followers-count i {
+        margin-right: 1.5rem;
+    }
 }

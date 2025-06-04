@@ -1,0 +1,50 @@
+.spotify-connect-btn-container{
+    display: flex;
+  align-items: center;
+}
+.log-in-out-btns {
+  margin-left: 2rem;
+  height: 2.3rem;
+  background: rgba(255, 255, 255, 0.1); /* Glass effect with a lighter touch */
+  border-radius: 50px; /* Rounded, sleek corners */
+  color: #fff;
+  padding: 0.8rem 1rem; /* Adjusted padding for better balance */
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif; /* Elegant and modern font */
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Light border for separation */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  outline: none; /* Remove default outline */
+  border: 2px solid rgba(135, 203, 243, 1); /* Blue border on focus */
+  box-shadow: 0 0 8px rgba(135, 203, 243, 0.8); /* Blue glow around button */
+  font-weight: 200;
+}
+
+/* Hover effect */
+.log-in-out-btns:hover {
+  background-color: rgba(5, 101, 102, 0.5); /* Blueish tint on hover */
+  border-radius: 50px; 
+  outline: none; /* Remove default outline */
+  border: 2px solid rgb(23, 223, 103); /* Blue border on focus */
+  box-shadow: 0 0 8px rgba(135, 203, 243, 0.8); /* Blue glow around button */
+  font-weight: 200;
+}
+
+/* Active state effect */
+.log-in-out-btns:active {
+  background-color: rgba(25, 25, 83, 0.8); /* Darker blue when active */
+  color: white;
+  transform: scale(0.98); /* Slight shrinking effect */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
+@media (max-width: 768px) {
+  .log-in-out-btns{
+    display: none;
+  }
+  .spotify-connect-btn-container{
+    display: none;
+  }
+}

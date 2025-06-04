@@ -1,66 +1,142 @@
-.nav-search-bar{
+.search-bar-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+.nav-search-bar {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  height: 1.7rem;
+  border: 0.01rem solid rgb(99, 99, 227);
+  border-radius: 1rem;
+  opacity: 0.6;
+  transition: opacity 0.4s ease-out;
+  width: fit-content;
+  flex-wrap: nowrap;
+  margin-left: 3rem;
+}
+
+.nav-search-bar:hover {
+  opacity: 1;
+  box-shadow: 0.25rem 0.25rem 0.9rem rgba(71, 180, 219, 0.487);
+}
+
+.nav-search-bar:focus-within {
+  opacity: 1;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.6));
+  box-shadow: 0 0 2.2rem 0.17rem rgba(52, 176, 221, 0.417);
+}
+
+#nav-select-category {
+  border: none;
+  height: 100%;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  background-color: rgb(121, 121, 195);
+  color: white;
+  padding: 0.3rem;
+  outline: none;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#nav-input-bar {
+  border: none;
+  height: 100%;
+  text-align: left;
+  background-color: white;
+  padding: 0.3rem;
+  outline: none;
+  text-decoration: none;
+  caret-color: rgb(52, 169, 236);
+  flex: 1;
+  min-width: 8rem;
+}
+
+#nav-search-button {
+  border-bottom-right-radius: 1rem;
+  border-top-right-radius: 1rem;
+  height: 100%;
+  width: 6rem;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  outline: none;
+  font-size: 0.8rem;
+  transition: background-color 0.4s ease-out;
+  color: white;
+  background-color: rgb(171, 171, 210);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+#nav-search-button:hover {
+  opacity: 1;
+  background-color: rgb(52, 169, 236);
+  cursor: pointer;
+}
+
+#nav-search-button:active {
+  background-color: rgb(25, 25, 83);
+  color: white;
+}
+
+/* Tablet view */
+@media (max-width: 1024px) {
+  #nav-input-bar {
+    width: 20rem;
+  }
+}
+
+/* Mobile view */
+@media (max-width: 768px) {
+  .search-bar-container {
+    width: 90%;
+    padding: 0.5rem;
+    margin-left: 4rem;
+    margin-right: 2rem;
+  }
+  .nav-search-bar {
+    flex-direction: row;
+    width: 90%;
+    max-width: 90vw;
+    margin: auto;
+    margin-bottom: 0.5rem;
+    border: none;
     
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    height:1.7rem;
-    border: 0.01rem solid rgb(99, 99, 227);
-    border-radius: 1rem;
-    opacity: 0.6;
-    transition: opacity 0.4s ease-out; 
-    width: fit-content;
-}
-.nav-search-bar:hover{
-    opacity: 1;
-    box-shadow: 0.25rem 0.25rem 0.9rem  rgba(71, 180, 219, 0.487);
-}
-.nav-search-bar:focus-within{   
-    opacity: 1;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.6));
-    box-shadow: 0 0 2.2rem 0.17rem rgba(52, 176, 221, 0.417);
-}
-#nav-select-category{
-    border: none;
-    height: 100%;
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+  }
+
+  #nav-select-category {
+    display: none;
+  }
+
+  #nav-input-bar {
+    width: 100%;
+    flex: 1;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+
+  #nav-search-button {
     width: auto;
-    background-color: rgb(121, 121, 195);
-    color: white;
-    padding:0.3rem;
-    outline: none;
-    text-align: center;
+    padding: 0 0.6rem;
+    font-size: 0.75rem;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
 }
-#nav-input-bar{
-    border: none;
-    width: 32rem;
-    height: 100%;
-    text-align: left; 
-    background-color: white;  
-    padding:0.3rem;
-    outline: none;
-    text-decoration: none;
-    caret-color: rgb(52, 169, 236);
+
+/* Tiny devices (phones < 480px) */
+@media (max-width: 480px) {
+  #nav-input-bar {
+    font-size: 0.75rem;
+  }
+
+  #nav-search-button {
+    font-size: 0.7rem;
+    padding: 0 0.4rem;
+  }
 }
-#nav-search-button{
-    border-bottom-right-radius: 1rem;
-    border-top-right-radius: 1rem;
-    height: 100%;
-    border: none;
-    width:12%;
-    padding:0.3rem;
-    outline: none;
-    font-size: 0.8rem;
-    transition: background-color 0.4s ease-out;
-    color: white;
-    background-color: rgb(171, 171, 210);
-}
-#nav-search-button:hover{
-    opacity: 1;
-    background-color:rgb(52, 169, 236) ;
-    cursor: pointer;
-}
-#nav-search-button:active{
-    background-color: rgb(25, 25, 83);
-    color: white;
-} 

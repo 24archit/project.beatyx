@@ -71,7 +71,7 @@
     }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 768px) {
     .section-name {
         font-size: 1.1rem; /* Smaller font for smaller screens */
         padding-left: 0.5rem; /* Further reduced padding */

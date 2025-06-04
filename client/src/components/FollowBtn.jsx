@@ -3,7 +3,9 @@ import { Skeleton } from "@mui/material";
 export function FollowBtn(props) {
     return (
         <>
+        <div className="follow-btn-container">
             <button id="followbtn"><span>Follow</span></button>
+        </div>
         </>
     );
 }

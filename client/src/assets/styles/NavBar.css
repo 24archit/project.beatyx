@@ -29,7 +29,7 @@
         padding-left: 1rem;
         padding-top: 0.5rem;
         padding-bottom: 1rem;
-        gap: 0.8rem; /* Reduce gap on small screens */
+        gap: 0.4rem; /* Reduce gap on small screens */
     }
 
     .nav-bar > * {

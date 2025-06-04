@@ -5,13 +5,12 @@
     padding-bottom: 1.3rem;
     margin-bottom: 0.6rem;
     gap: 1rem;
-    overflow: auto;
-    background: linear-gradient(#3e017477, rgba(15, 1, 35, 0.522), #01294a1c);
+    overflow: hidden;
+        background: linear-gradient(#3e017477, rgba(15, 1, 35, 0.522), #01294a1c);
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
     padding-left: 0.7rem;
     padding-right: 0.7rem;
-    align-items: center;
 }
 .buttons-container {
     display: flex;
@@ -60,6 +59,17 @@
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+@media (max-width: 768px) {
+    .artist-page-bg {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        margin-top: 5rem;
+    }
+    .btn {
+        font-size: 1rem; /* Adjust font size for smaller screens */
+        padding: 10px 15px; /* Adjust padding for smaller screens */
+    }
 }
 
 
