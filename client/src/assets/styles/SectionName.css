@@ -73,7 +73,7 @@
 
 @media (max-width: 768px) {
     .section-name {
-        font-size: 1.1rem; /* Smaller font for smaller screens */
+        font-size: 0.3rem; /* Smaller font for smaller screens */
         padding-left: 0.5rem; /* Further reduced padding */
         padding-top: 0.2rem; /* Adjusted padding */
         padding-bottom: 0.2rem; /* Adjusted padding */
@@ -92,11 +92,15 @@
         font-size: 1rem; /* Base font size for mobile */
         padding-left: 0.3rem; /* Minimal padding */
     }
+    .section-name li {
+        font-size: 0.8rem; /* Base font size for mobile */
+        padding-left: 0.3rem; /* Minimal padding */
+    }
 
     .more-btn-home {
-        font-size: 0.7rem; /* Smallest font size for buttons */
-        height: 1.2rem; /* Minimal height */
-        width: 3rem; /* Minimal width */
+        font-size: 0.5rem; /* Smallest font size for buttons */
+        height: 1rem; /* Minimal height */
+        width: 2rem; /* Minimal width */
         margin-left: 0.1rem; /* Minimal margin */
     }
 }
