@@ -14,7 +14,6 @@ import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import TempPage from "./pages/TempPage";
 
 function Layout({ isAuth, playerMeta, setPlayerMeta, trackInfo, setTrackInfo }) {
   return (
@@ -60,7 +59,6 @@ function App() {
             <Route path="/album/:id" element={<AlbumPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />} />
             <Route path="/search" element={<SearchPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />} />
             <Route path="/track/:id" element={<div></div>} />
-            <Route path="/temp" element={<TempPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

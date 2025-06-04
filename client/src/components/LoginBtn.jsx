@@ -97,15 +97,17 @@ export default function AlertDialog() {
   const [password, setPassword] = React.useState("");
   const [alertMessage, setAlertMessage] = React.useState(null);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (e) => {
     setOpen(true);
+    e.target.blur();
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
     setOpen(false);
+    e.target.blur();
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
     try {
       if (!email || !password) {
         setAlertMessage("Please fill up all the details to login");
@@ -125,6 +127,7 @@ export default function AlertDialog() {
         return;
       }
       window.location.href = `${import.meta.env.VITE_CLIENT_LINK}`;
+      e.target.blur();
     } catch (error) {
       console.error("Login failed", error);
     }

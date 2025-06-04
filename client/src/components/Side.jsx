@@ -13,7 +13,6 @@ import { Link } from "react-router-dom"; // Import Link
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
-import SearchIcon from "@mui/icons-material/Search";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
@@ -21,7 +20,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
-import {makeSearchBarFocused} from "./SearchBar"
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -93,20 +91,58 @@ export default function Sidebar() {
     };
   }, []);
 
-  const handleProfileClick = () => console.log("Profile");
-  const handleHomeClick = () => console.log("Home");
-  const handleSearchClick = () => {makeSearchBarFocused()};
-  const handlePlaylistsClick = () => console.log("Your Playlists");
-  const handleSpotifyClick = () => console.log("Connect to Spotify");
-  const handleCreateAIContentClick = () => console.log("Create using AI");
-  const handleAboutUsClick = () => console.log("About Us");
-  const handleContactUsClick = () => console.log("Contact Us");
-  const handleLogoutClick = () => console.log("Logout");
+  const handleProfileClick = () => {
+    console.log("Profile");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleHomeClick = () => {
+    console.log("Home");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handlePlaylistsClick = () => {
+    console.log("Your Playlists");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleSpotifyClick = () => {
+    console.log("Connect to Spotify");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleCreateAIContentClick = () => {
+    console.log("Create using AI");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleAboutUsClick = () => {
+    console.log("About Us");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleContactUsClick = () => {
+    console.log("Contact Us");
+    if(open){
+      setOpen(false);
+    }
+  };
+  const handleLogoutClick = () => {
+    console.log("Logout");
+    if(open){
+      setOpen(false);
+    }
+  };
 
   const menuItems = [
     { text: "Profile", icon: <PersonIcon />, onClick: handleProfileClick, link: "/profile" },
     { text: "Home", icon: <HomeIcon />, onClick: handleHomeClick, link: "/" },
-    { text: "Search Content", icon: <SearchIcon />, onClick: handleSearchClick },
     { text: "Your Playlists", icon: <LibraryMusicIcon />, onClick: handlePlaylistsClick, link: "/playlists" },
     { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: handleSpotifyClick },
     { text: "Create using AI", icon: <LightbulbIcon />, onClick: handleCreateAIContentClick, link: "/ai" },

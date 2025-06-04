@@ -1,31 +1,67 @@
-#artist-name{
+#artist-name {
     color: rgb(207, 237, 242);
-    font-size: 5rem;
+    font-size: clamp(2rem, 5vw, 5rem); /* Responsive text size */
     overflow-wrap: break-word;
     overflow: auto;
-}   
-.mainInfo{
-    display: flex;
+    text-align: center;
+    margin: 0.5rem 0;
 }
-.name-stat{
+
+.mainInfo {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 20rem;
-    overflow: hidden;
+    width: 100%;
+    min-height: 15rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    box-sizing: border-box;
 }
-@media (max-width: 768px) {
-    .mainInfo{
+
+.name-stat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+    text-align: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+/* Tablets (portrait and landscape) */
+@media (max-width: 1024px) {
+    .mainInfo {
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        padding: 1.5rem;
     }
-    #artist-name{
-        font-size: 2rem;
-        text-align: center;
+
+    #artist-name {
+        font-size: clamp(1.8rem, 4vw, 3.5rem);
     }
-    .name-stat{
-        width: 30rem;
+
+    .name-stat {
+        width: 90%;
+    }
+}
+
+/* Mobile (small phones) */
+@media (max-width: 600px) {
+    #artist-name {
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .name-stat {
+        width: 100%;
+    }
+
+    .mainInfo {
+        padding: 1rem;
+        gap: 1rem;
     }
 }

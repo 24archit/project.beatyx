@@ -6,7 +6,6 @@ import { Skeleton } from "@mui/material";
 import defaultProfilePic from "../assets/media/profile-pic.webp";
 import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
 import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
-import React from "react";
 import { Helmet } from "react-helmet-async";
 import { AlbumTrackList } from "../components/AlbumTrackList.jsx";
 export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {

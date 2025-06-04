@@ -16,18 +16,25 @@ export function TrackLineCard({
   spotifyUrl,
   isPlaylist = false,
 }) {
-  const handelOnClick = async () => {
+  const handelOnClick = async (e) => {
     try {
       const currPlaylistId = window.sessionStorage.getItem("currPlaylistId");
       const queueId = window.sessionStorage.getItem("queueId");
-      const data = await getAudioLink(cardId, isPlaylist, trackRank - 1, currPlaylistId, queueId);
+      const data = await getAudioLink(
+        cardId,
+        isPlaylist,
+        trackRank - 1,
+        currPlaylistId,
+        queueId
+      );
       const url = data != null ? data.url : "";
       const trackInfo = {
         trackName: trackName,
-        imgSrc: imgSrc, 
+        imgSrc: imgSrc,
       };
       setTrackInfo(trackInfo);
       setPlayerMeta(url);
+      e.target.blur();
     } catch (error) {
       console.error("Error:", error.message || "Cannot SetUrl To Player");
       alert("This audio is not available right now");

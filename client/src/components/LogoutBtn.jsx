@@ -54,18 +54,21 @@ const StyledDialogContentText = styled(DialogContentText)(({ theme }) => ({
 export default function AlertDialog() {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (e) => {
     setOpen(true);
+    e.target.blur();
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
     setOpen(false);
+    e.target.blur();
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (e) => {
     try {
       window.localStorage.clear();
       window.location.href = "/";
+      e.target.blur();
     } catch (error) {
       console.error(error);
     }

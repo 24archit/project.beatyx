@@ -3,7 +3,7 @@ import { getAudioLink } from "../apis/apiFunctions";
 import { useNavigate } from "react-router-dom";
 export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerMeta,setTrackInfo, cardName, imgSrc}) {
   const navigate = useNavigate();
-  const handelOnClick = async () => {
+  const handelOnClick = async (e) => {
     if (cardType === "track") {
       try {
         const data = await getAudioLink(cardId);
@@ -14,6 +14,7 @@ export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerM
         };
         setPlayerMeta(url);
         setTrackInfo(trackInfo);
+         e.target.blur();
       } catch (error) {
         console.error("Error:", error.message || "Cannot SetUrl To Player");
         alert("This audio is not available right now");

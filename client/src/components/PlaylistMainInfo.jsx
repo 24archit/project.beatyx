@@ -1,10 +1,8 @@
 import "../assets/styles/ArtistMainInfo.css"
 import "../assets/styles/PlaylistMainInfo.css"
-import { ArtistFollowersCount, ArtistFollowersCountLoad } from "./ArtistFollowersCount";
-import { ArtistProfilePic, ArtistProfilePicLoad } from "../components/ArtistProfilePic.jsx"
-import { FollowBtn, FollowBtnLoad } from '../components/FollowBtn.jsx'
+import {ArtistFollowersCountLoad } from "./ArtistFollowersCount";
+import {FollowBtnLoad } from '../components/FollowBtn.jsx'
 import { Skeleton } from "@mui/material";
-import spotifyLogo from "../assets/media/Spotify_logo.webp";    
 import {PlaylistProfilePic} from "./PlaylistProfilePic.jsx";
 
 export function PlaylistMainInfo({
@@ -15,11 +13,12 @@ export function PlaylistMainInfo({
 }) {
     return (
         <div className="mainInfo">
+             <PlaylistProfilePic imgSrc={img} />
             <div className="name-stat">
             <p id="artist-name">{PlaylistName}</p>
             <p id="playlist-description">{description}</p>
             </div>
-            <PlaylistProfilePic imgSrc={img} />
+           
         </div>
     );
 }

@@ -258,22 +258,34 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
   }, [getQueueId, isTransitioning, loadTrack]);
 
   // Handler for the Next Track button
-  const handleNextTrackButton = useCallback(async () => {
-    await playNextTrack();
-  }, [playNextTrack]);
+  const handleNextTrackButton = useCallback(
+    async (e) => {
+      await playNextTrack();
+      e.target.blur();
+    },
+    [playNextTrack]
+  );
 
   // Handler for the Previous Track button
-  const handlePreviousTrackButton = useCallback(async () => {
-    // If a significant part of the track has been played, restart the current track instead.
-    if (progress > 0.025 || duration < 5) {
-      setProgress(0);
-      if (playerRef.current && typeof playerRef.current.seekTo === "function") {
-        playerRef.current.seekTo(0, "seconds");
+  const handlePreviousTrackButton = useCallback(
+    async (e) => {
+      // If a significant part of the track has been played, restart the current track instead.
+      if (progress > 0.025 || duration < 5) {
+        setProgress(0);
+        if (
+          playerRef.current &&
+          typeof playerRef.current.seekTo === "function"
+        ) {
+          playerRef.current.seekTo(0, "seconds");
+        }
+
+        return;
       }
-      return;
-    }
-    await playPreviousTrack();
-  }, [progress, duration, playPreviousTrack]);
+      await playPreviousTrack();
+      e.target.blur();
+    },
+    [progress, duration, playPreviousTrack]
+  );
 
   // Toggle play/pause functionality
   const togglePlayPause = useCallback(() => {
@@ -287,6 +299,7 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
         internalPlayer.playVideo();
       }
     }
+    e.target.blur();
   }, [playing, url, getInternalPlayer]);
 
   // Volume and seek handlers
@@ -295,6 +308,7 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
     if (!isNaN(newVolume)) {
       setVolume(newVolume);
     }
+    e.target.blur();
   }, []);
 
   const handleSeekChange = useCallback(
@@ -309,7 +323,9 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
           playerRef.current.seekTo(newProgress * duration, "seconds");
         }
       }
+      e.target.blur();
     },
+
     [duration]
   );
 

@@ -25,6 +25,7 @@ export default function SearchBar() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     navigate(`/search?q=${searchParams.query}&type=${searchParams.type}`);
+    event.target.blur();
   };
 
   return (
