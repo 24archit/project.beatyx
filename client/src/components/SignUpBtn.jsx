@@ -9,7 +9,13 @@ import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { getSignUp } from '../apis/apiFunctions';
 import '../assets/styles/SignUpBtn.css';
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
+// Load site key from environment
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 // Define custom styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: 'blur(8px)',
@@ -92,7 +98,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export default function SignUpDialog() {
+function  AlertDialogContent() {
   const [open, setOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [formData, setFormData] = React.useState({
@@ -101,8 +107,9 @@ export default function SignUpDialog() {
     email: '',
     password: '',
     confirmPassword: '',
+    reCaptchaToken: '',
   });
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -116,7 +123,8 @@ export default function SignUpDialog() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e) => {
+    e.preventDefault();
     if(!formData.confirmPassword || !formData.password || !formData.email || !formData.name || !formData.username){
       setAlertMessage('Please fill up all the details to register');
       return;
@@ -125,7 +133,14 @@ export default function SignUpDialog() {
       setAlertMessage('The passwords you entered do not match. Please check and try again.');
       return;
     }
+    if (!executeRecaptcha) {
+      setAlertMessage("Recaptcha not yet available, please try again later.");
+      return;
+    }
+
     try {
+      const reCaptchaToken = await executeRecaptcha('signup');
+      setFormData((prev) => ({ ...prev, reCaptchaToken }));
       const response = await getSignUp(formData);
       if(!response){
         setAlertMessage('You have already registered using this email. Please login..');
@@ -226,5 +241,13 @@ export default function SignUpDialog() {
         </DialogActions>
       </StyledDialog>
     </div>
+  );
+}
+// Exported component wrapping with provider
+export default function AlertDialog() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={SITE_KEY}>
+      <AlertDialogContent />
+    </GoogleReCaptchaProvider>
   );
 }

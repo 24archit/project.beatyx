@@ -8,16 +8,23 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import { getLoggedIn } from "../apis/apiFunctions";
-import "../assets/styles/LoginBtn.css"; 
-// Define custom styled components
+import "../assets/styles/LoginBtn.css";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
+
+// Load site key from environment
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+// Styled components definitions
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
-  backgroundColor: "rgba(0, 0, 0, 0.6)", // Dark overlay
+  backgroundColor: "rgba(0, 0, 0, 0.6)",
   "& .MuiPaper-root": {
-    background:
-      "linear-gradient(45deg, rgba(0, 0, 0, 0.9), rgba(33, 150, 243, 0.7))", // Blue and black gradient
+    background: "linear-gradient(45deg, rgba(0, 0, 0, 0.9), rgba(33,150,243,0.7))",
     borderRadius: 12,
-    width: "380px", // Smaller width
+    width: "380px",
     padding: theme.spacing(2),
     boxShadow: theme.shadows[10],
   },
@@ -26,12 +33,12 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   color: "#ffffff",
   fontFamily: "sans-serif",
-  fontSize: "1.5rem", // Smaller title size
+  fontSize: "1.5rem",
   fontWeight: "bold",
   textAlign: "center",
   marginBottom: theme.spacing(2),
   textTransform: "uppercase",
-  textShadow: "2px 2px 5px rgba(0, 0, 0, 0.6)", // Text shadow for better contrast
+  textShadow: "2px 2px 5px rgba(0, 0, 0, 0.6)",
 }));
 
 const JoinButton = styled(Button)(({ theme }) => ({
@@ -39,10 +46,10 @@ const JoinButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#2196F3",
   borderRadius: "8px",
   padding: theme.spacing(1, 2),
-  fontSize: "0.875rem", // Smaller button text size
-  minWidth: "100px", // Consistent button width
+  fontSize: "0.875rem",
+  minWidth: "100px",
   "&:hover": {
-    backgroundColor: "#1976D2", // Darker blue on hover
+    backgroundColor: "#1976D2",
   },
   transition: "background-color 0.3s ease",
 }));
@@ -52,35 +59,35 @@ const CancelButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#A4A3C2",
   borderRadius: "8px",
   padding: theme.spacing(1, 2),
-  fontSize: "0.875rem", // Smaller button text size
-  minWidth: "100px", // Consistent button width
+  fontSize: "0.875rem",
+  minWidth: "100px",
   "&:hover": {
-    backgroundColor: "#828197", // Darker shade for cancel button
+    backgroundColor: "#828197",
   },
   transition: "background-color 0.3s ease",
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-root": {
-    color: "#ffffff", // White text inside the input
-    backgroundColor: "rgba(255, 255, 255, 0.2)", // Transparent input background
+    color: "#ffffff",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: theme.shape.borderRadius,
   },
   "& .MuiInputLabel-root.Mui-focused": {
-    color: "#ffffff", // Bright white label when focused
+    color: "#ffffff",
   },
   "& .MuiInputLabel-root": {
-    color: "#ffffff", // White label
+    color: "#ffffff",
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#ffffff", // White border for inputs
+      borderColor: "#ffffff",
     },
     "&:hover fieldset": {
-      borderColor: "#2196F3", // Blue border on hover
+      borderColor: "#2196F3",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#2196F3", // Blue border when focused
+      borderColor: "#2196F3",
     },
   },
   "& input:-webkit-autofill": {
@@ -91,11 +98,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export default function AlertDialog() {
+// Inner component handling dialog and login logic
+function AlertDialogContent() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [alertMessage, setAlertMessage] = React.useState(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleClickOpen = (e) => {
     setOpen(true);
@@ -108,90 +117,87 @@ export default function AlertDialog() {
   };
 
   const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      setAlertMessage("Please fill up all the details to login");
+      return;
+    }
+
+    if (!executeRecaptcha) {
+      setAlertMessage("Recaptcha not yet available, please try again later.");
+      return;
+    }
+
     try {
-      if (!email || !password) {
-        setAlertMessage("Please fill up all the details to login");
-        return;
-      }
-      const formData = {
-        email: email,
-        password: password,
-      };
+      // Run reCAPTCHA v3
+      const token = await executeRecaptcha('login');
+
+      // Include token in login request
+      const formData = { email, password, recaptchaToken: token };
       const response = await getLoggedIn(formData);
-      if (response.status == 401) {
+
+      if (response.status === 401 || response.status === 402) {
         setAlertMessage(response.data.error);
         return;
       }
-      if (response.status == 402) {
-        setAlertMessage(response.data.error);
-        return;
-      }
-      window.location.href = `${import.meta.env.VITE_CLIENT_LINK}`;
-      e.target.blur();
+
+      // On success, redirect
+      window.location.href = import.meta.env.VITE_CLIENT_LINK;
+
     } catch (error) {
       console.error("Login failed", error);
+      setAlertMessage("Login error, please try again.");
     }
   };
 
   return (
     <div className="login-btn-container">
-      <button
-        id="logout-btn"
-        className="log-in-out-btns"
-        onClick={handleClickOpen}
-      >
+      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
         Login
       </button>
-      <StyledDialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="login-dialog-title"
-        aria-describedby="login-dialog-description"
-      >
+
+      <StyledDialog open={open} onClose={handleClose}>
         {alertMessage && (
-          <Alert
-            variant="filled"
-            severity="warning"
-            style={{
-              color: "Orange", // Text color to black
-              width: "fit-content", // Fit content width
-              height: "5.6rem",
-            }}
-          >
+          <Alert variant="filled" severity="warning" style={{ width: '100%', marginBottom: 16 }}>
             {alertMessage}
           </Alert>
         )}
-        <StyledDialogTitle id="login-dialog-title">
-          Welcome to Beatyx..
-        </StyledDialogTitle>
+
+        <StyledDialogTitle>Welcome to Beatyx</StyledDialogTitle>
+
         <DialogContent>
           <StyledTextField
             label="Email"
             type="email"
             fullWidth
-            margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            variant="outlined"
-            autoFocus
           />
+
           <StyledTextField
             label="Password"
             type="password"
             fullWidth
-            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            variant="outlined"
           />
         </DialogContent>
+
         <DialogActions>
-          <CancelButton onClick={handleClose} color="primary">
-            Cancel
-          </CancelButton>
+          <CancelButton onClick={handleClose}>Cancel</CancelButton>
           <JoinButton onClick={handleLogin}>Login To Beatyx</JoinButton>
         </DialogActions>
       </StyledDialog>
     </div>
+  );
+}
+
+// Exported component wrapping with provider
+export default function AlertDialog() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={SITE_KEY}>
+      <AlertDialogContent />
+    </GoogleReCaptchaProvider>
   );
 }
