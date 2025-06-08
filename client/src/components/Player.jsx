@@ -288,7 +288,7 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
   );
 
   // Toggle play/pause functionality
-  const togglePlayPause = useCallback(() => {
+  const togglePlayPause = useCallback((e) => {
     if (!url) return;
     setPlaying((prev) => !prev);
     const internalPlayer = getInternalPlayer();
@@ -377,10 +377,12 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
   const handlePlayerError = useCallback(
     async (error) => {
       console.error("Error playing video:", error);
-      setErrorMessage("Error playing this track. Skipping to next...");
+      setErrorMessage("Error playing this track. Try Playing another one.");
+      setPlaying(false);
       setProgress(0);
       setDuration(0);
       setSkipNextEnded(true);
+      alert("Error playing this track due to copyright issues.");
       if (!isTransitioning) {
         await playNextTrack();
       }

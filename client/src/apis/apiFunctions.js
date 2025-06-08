@@ -178,8 +178,18 @@ export async function getPreviousAudioLink(queueId) {
     );
   }
 }
-
-
+export async function connectSpotify() {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`,
+      method: "GET",
+    });
+    console.log("Spotify connection response:", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error connecting to Spotify: ${error.message}`);
+  }
+}
 
 
 

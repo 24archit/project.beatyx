@@ -14,10 +14,11 @@ const albumRoutes = require("./routes/album");
 const cors = require("cors");
 const { connectToDb } = require("./utils/connectToDb");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const session = require("express-session");
 
 // CORS options
 const corsOptions = {
-  origin: process.env.CLIENT_LINK || "http://localhost:5173",
+  origin: process.env.CLIENT_LINK,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 // Enable compression
@@ -25,7 +26,25 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
-
+if (process.env.VERCEL !== "true") {
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: false, httpOnly: true },
+    })
+  );
+} else {
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: true, httpOnly: true },
+    })
+  );
+}
 connectToDb();
 
 app.use("/home", homeRoutes);

@@ -5,6 +5,9 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const User = require("../models/user");
 const axios = require("axios");
+const crypto = require('crypto');
+const querystring = require("querystring");
+
 // Load the secret from environment variables
 const JWT_SECRET = process.env.JWT_SECRET;
 // Signup route
@@ -99,13 +102,11 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          error:
-            "Oops! You have not registered with this email. Please register.",
-        });
+      return res.status(401).json({
+        success: false,
+        error:
+          "Oops! You have not registered with this email. Please register.",
+      });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -130,6 +131,73 @@ router.post("/login", async (req, res) => {
     return res
       .status(500)
       .json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+router.get('/api/connectSpotify', (req, res) => {
+  const state = crypto.randomBytes(16).toString('hex');
+  req.session.oauthState = state;
+
+  const scope = [
+    'user-read-private',
+    'user-read-email',
+    'user-top-read',
+    'playlist-modify-public',
+    'playlist-modify-private',
+  ].join(' ');
+
+  const redirect_uri = process.env.REDIRECT_URI;
+  const client_id = process.env.CLIENT_ID;
+
+  if (!redirect_uri || !client_id) {
+    return res.status(500).send('Missing environment variables');
+  }
+
+  const authURL =
+    'https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state,
+    });
+
+  res.redirect(authURL);
+});
+
+router.get("/callback", async (req, res) => {
+  const { code, state } = req.query;
+
+  if (state !== req.session.oauthState) {
+    return res.status(403).send("State mismatch. Possible CSRF attack.");
+  }
+
+  try {
+    const response = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: process.env.REDIRECT_URI,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    const { access_token, refresh_token } = response.data;
+
+    // Store tokens in session or database as needed
+
+    res.redirect(process.env.CLIENT_LINK);
+  } catch (error) {
+    console.error("Error during Spotify callback:", error);
+    res.status(500).send("Error during Spotify authentication.");
   }
 });
 

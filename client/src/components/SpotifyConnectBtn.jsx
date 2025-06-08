@@ -1,8 +1,12 @@
 import React from "react";
 import "../assets/styles/SpotifyConnectBtn.css";
+import { connectSpotify } from "../apis/apiFunctions.js";
 export function SpotifyConnectBtn() {
   const handleClickOpen = () => {
-    console.log("Button Clicked");
+    window.open(
+      `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`,
+      "_self"
+    );
   };
   return (
     <div className="spotify-connect-btn-container">
@@ -11,8 +15,8 @@ export function SpotifyConnectBtn() {
         className="log-in-out-btns"
         onClick={handleClickOpen}
       >
-        <i className="fa-solid fa-link" style={{marginRight: "5px"}}></i>
-            Connect With Spotify
+        <i className="fa-solid fa-link" style={{ marginRight: "5px" }}></i>
+        Connect With Spotify
       </button>
     </div>
   );
