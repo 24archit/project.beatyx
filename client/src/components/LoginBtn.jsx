@@ -138,7 +138,7 @@ export default function LoginBtn() {
       if (response.status === 401 || response.status === 402) {
         setAlertMessage(response.data.error);
         return;
-      }
+      } 
 
       // On success, redirect
       window.location.href = import.meta.env.VITE_CLIENT_LINK;

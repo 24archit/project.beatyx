@@ -107,7 +107,7 @@ export default function SignUpBtn() {
     email: "",
     password: "",
     confirmPassword: "",
-    reCaptchaToken: "",
+    recaptchaToken: "",
   });
   const { executeRecaptcha } = useGoogleReCaptcha();
   const handleClickOpen = () => {

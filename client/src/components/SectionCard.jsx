@@ -34,34 +34,29 @@ export function SectionCard({
     <div className="card-container">
       <div className="card">
         {/* Kebab Menu */}
-        <div className="card-menu">
-          <IconButton 
-            onClick={handleMenuClick} 
-            aria-label="more options"
-          >
-            <i className="fa-solid fa-ellipsis-v" id="kebab-menu-icon"></i>
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Share</MenuItem>
-          </Menu>
-        </div>
-        {/* End Kebab Menu */}
-
-        <div className="card-details">
+        <div className="card-header">
+          <div className="card-menu">
+            <IconButton onClick={handleMenuClick} aria-label="more options">
+              <i className="fa-solid fa-ellipsis-v" id="kebab-menu-icon"></i>
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Share</MenuItem>
+            </Menu>
+          </div>
           <div className="spotify-logo">
             <a
               href={spotifyUrl}
@@ -73,7 +68,14 @@ export function SectionCard({
               <img src={spotifyLogo} alt="Spotify Logo" loading="lazy" />
             </a>
           </div>
-          <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
+        </div>
+        {/* End Kebab Menu */}
+
+        <div className="card-details">
+          <div
+            className="card-img"
+            style={cardType === "artist" ? { borderRadius: "50%" } : {}}
+          >
             <img
               className="card-photo"
               src={imgSrc}

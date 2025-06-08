@@ -1,6 +1,6 @@
 
 .card-container{
-    height: 20rem; /* Reduced height */
+    height: 22rem; /* Reduced height */
     width: 14rem; /* Reduced width */
     display: flex;
     flex-direction: column;
@@ -81,7 +81,12 @@
     word-wrap: break-word;
 }
 
-
+.card-header {
+    display: flex;
+   
+    width: 100%;
+    height: 100%;
+}
 
 .card-stat,
 .card-stat-2,
@@ -115,10 +120,9 @@
     width: 1.5rem; /* Reduced size */
     border-radius: 50%;
     opacity: 0.6;
-    /* Adds spacing between the logo and content */
+    margin-top: 0.5rem;    /* Adds spacing between the logo and content */
     display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 
 .spotify-logo a {
@@ -144,8 +148,7 @@
     .spotify-logo{
         height: 1.2rem;
         width: 1.2rem; /* Adjusted size for smaller screens */
-        padding: 0.1rem; /* Adjusted padding for smaller screens */
-    }
+        margin-top: 0.3rem;     }
     .card-menu {
         top: 5px; /* Adjusted position for smaller screens */
         right: 5px; /* Adjusted position for smaller screens */
