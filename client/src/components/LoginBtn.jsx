@@ -10,12 +10,10 @@ import Alert from "@mui/material/Alert";
 import { getLoggedIn } from "../apis/apiFunctions";
 import "../assets/styles/LoginBtn.css";
 import {
-  GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 
-// Load site key from environment
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
 
 // Styled components definitions
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -99,7 +97,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 // Inner component handling dialog and login logic
-function AlertDialogContent() {
+export default function LoginBtn() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -193,11 +191,3 @@ function AlertDialogContent() {
   );
 }
 
-// Exported component wrapping with provider
-export default function AlertDialog() {
-  return (
-    <GoogleReCaptchaProvider reCaptchaKey={SITE_KEY}>
-      <AlertDialogContent />
-    </GoogleReCaptchaProvider>
-  );
-}
