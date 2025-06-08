@@ -59,6 +59,7 @@ export function SectionNameLoad() {
       width={width}
       height={30}
       sx={{
+        marginTop: "2.7rem",
         marginLeft: "1rem",
         marginRight: "1rem",
         bgcolor: "rgba(71, 164, 211, 0.261)",
