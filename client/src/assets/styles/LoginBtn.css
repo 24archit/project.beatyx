@@ -51,14 +51,15 @@
     
   }
    .login-btn-container button{
-    height: 1.2rem;
+    height: 1.6rem;
+    padding: 0.2rem;
    }
   .login-btn-container{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 1rem;
-    width: 50%;
+    width: 80%;
     padding: 0.2rem;
     height: 2rem;
     padding: 0%;

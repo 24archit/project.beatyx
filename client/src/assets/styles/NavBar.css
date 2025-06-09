@@ -44,6 +44,7 @@
         padding-left: 2rem;
         padding-right: 2rem;
         justify-self: space-evenly;
+        gap:0.2rem;
     }
 
     .spotify-btn {
