@@ -654,6 +654,7 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
             muted={false}
             width="0px"
             height="0px"
+            pip={true}
             config={{
               youtube: {
                 playerVars: {
