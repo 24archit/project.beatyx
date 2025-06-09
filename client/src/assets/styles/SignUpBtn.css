@@ -1,6 +1,7 @@
 .signup-btn-container{
     display: flex;
   align-items: center;
+  width: 30%;
 }
 .log-in-out-btns {
   margin-left: 2rem;
@@ -42,9 +43,18 @@
 }
 @media (max-width: 768px) {
   .log-in-out-btns{
-    display: none;
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+   .signup-btn-container button{
+    height: 1.2rem;
   }
   .signup-btn-container{
-    display: none;
+     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 2rem;
   }
 }

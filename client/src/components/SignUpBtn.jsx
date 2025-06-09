@@ -169,7 +169,7 @@ export default function SignUpBtn() {
         className="log-in-out-btns"
         onClick={handleClickOpen}
       >
-        Sign Up for Free
+        Sign Up
       </button>
 
       <StyledDialog

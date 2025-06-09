@@ -1,6 +1,7 @@
 .spotify-connect-btn-container{
     display: flex;
   align-items: center;
+  width: 60%;
 }
 .log-in-out-btns {
   margin-left: 2rem;
@@ -42,9 +43,22 @@
 }
 @media (max-width: 768px) {
   .log-in-out-btns{
-    display: none;
+    margin-left: 0;
+    width:70%;
+    text-align: center;
+    font-size: 0.6rem;
+  }
+  .spotify-connect-btn-container button{
+    height: 1.2rem;
   }
   .spotify-connect-btn-container{
-    display: none;
+     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 110%;
+    height: 2rem;
+    
+    
+    
   }
 }

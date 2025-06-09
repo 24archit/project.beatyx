@@ -93,61 +93,96 @@ export default function Sidebar() {
 
   const handleProfileClick = () => {
     console.log("Profile");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handleHomeClick = () => {
     console.log("Home");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handlePlaylistsClick = () => {
     console.log("Your Playlists");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handleSpotifyClick = () => {
     console.log("Connect to Spotify");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handleCreateAIContentClick = () => {
     console.log("Create using AI");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handleAboutUsClick = () => {
     console.log("About Us");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
   const handleContactUsClick = () => {
     console.log("Contact Us");
-    if(open){
+    if (open) {
       setOpen(false);
     }
   };
-  const handleLogoutClick = () => {
-    console.log("Logout");
-    if(open){
-      setOpen(false);
+  const handleLogoutClick = async (e) => {
+    const logoutConfirmed = window.confirm("Are you sure you want to logout?");
+    if (!logoutConfirmed) return;
+    e.preventDefault();
+    try {
+      window.localStorage.clear();
+      window.location.href = "/";
+      e.target.blur();
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const menuItems = [
-    { text: "Profile", icon: <PersonIcon />, onClick: handleProfileClick, link: "/profile" },
+    {
+      text: "Profile",
+      icon: <PersonIcon />,
+      onClick: handleProfileClick,
+      link: "/profile",
+    },
     { text: "Home", icon: <HomeIcon />, onClick: handleHomeClick, link: "/" },
-    { text: "Your Playlists", icon: <LibraryMusicIcon />, onClick: handlePlaylistsClick, link: "/playlists" },
-    { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: handleSpotifyClick },
-    { text: "Create using AI", icon: <LightbulbIcon />, onClick: handleCreateAIContentClick, link: "/ai" },
-    { text: "About Us", icon: <InfoIcon />, onClick: handleAboutUsClick, link: "/about" },
-    { text: "Contact Us", icon: <ContactMailIcon />, onClick: handleContactUsClick, link: "/contact" },
+    {
+      text: "Your Playlists",
+      icon: <LibraryMusicIcon />,
+      onClick: handlePlaylistsClick,
+      link: "/playlists",
+    },
+    {
+      text: "Connect to Spotify",
+      icon: <MusicNoteIcon />,
+      onClick: handleSpotifyClick,
+    },
+    {
+      text: "Create using AI",
+      icon: <LightbulbIcon />,
+      onClick: handleCreateAIContentClick,
+      link: "/ai",
+    },
+    {
+      text: "About Us",
+      icon: <InfoIcon />,
+      onClick: handleAboutUsClick,
+      link: "/about",
+    },
+    {
+      text: "Contact Us",
+      icon: <ContactMailIcon />,
+      onClick: handleContactUsClick,
+      link: "/contact",
+    },
     { text: "Logout", icon: <ExitToAppIcon />, onClick: handleLogoutClick },
   ];
 
@@ -157,11 +192,24 @@ export default function Sidebar() {
         ref={drawerRef}
         variant="permanent"
         open={open}
-        sx={{ "& .MuiPaper-root": { backgroundColor: "rgba(4, 3, 40, 0.79)", color: "white" } }}
+        sx={{
+          "& .MuiPaper-root": {
+            backgroundColor: "rgba(4, 3, 40, 0.79)",
+            color: "white",
+          },
+        }}
       >
         <DrawerHeader>
-          <IconButton onClick={toggleDrawer} sx={{ color: "white" }} name="sidebar">
-            {open ? <CloseIcon sx={{ color: "white" }} /> : <MenuIcon sx={{ color: "white" }} />}
+          <IconButton
+            onClick={toggleDrawer}
+            sx={{ color: "white" }}
+            name="sidebar"
+          >
+            {open ? (
+              <CloseIcon sx={{ color: "white" }} />
+            ) : (
+              <MenuIcon sx={{ color: "white" }} />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider sx={{ backgroundColor: "white" }} />
@@ -169,7 +217,10 @@ export default function Sidebar() {
           {menuItems.map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
               {item.link ? (
-                <Link to={item.link} style={{ textDecoration: "none", color: "inherit" }}>
+                <Link
+                  to={item.link}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
                   <ListItemButton
                     onClick={item.onClick}
                     sx={{
@@ -189,7 +240,10 @@ export default function Sidebar() {
                     >
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, color: "white" }} />
+                    <ListItemText
+                      primary={item.text}
+                      sx={{ opacity: open ? 1 : 0, color: "white" }}
+                    />
                   </ListItemButton>
                 </Link>
               ) : (
@@ -212,7 +266,10 @@ export default function Sidebar() {
                   >
                     {item.icon}
                   </ListItemIcon>
-                  <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, color: "white" }} />
+                  <ListItemText
+                    primary={item.text}
+                    sx={{ opacity: open ? 1 : 0, color: "white" }}
+                  />
                 </ListItemButton>
               )}
             </ListItem>

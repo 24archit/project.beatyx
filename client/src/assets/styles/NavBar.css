@@ -29,7 +29,8 @@
         padding-left: 1rem;
         padding-top: 0.5rem;
         padding-bottom: 1rem;
-        gap: 0.4rem; /* Reduce gap on small screens */
+        gap: 0.0001rem; /* Reduce gap on small screens */
+        margin-bottom: 1rem;
     }
 
     .nav-bar > * {
@@ -38,9 +39,11 @@
     }
 
     .auth-buttons {
-        flex-direction: column;
-        width: 100%;
-        gap: 0.5rem;  /* Make buttons stack vertically */
+        margin-top: 0.6rem;
+        margin-left: 3rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        justify-self: space-evenly;
     }
 
     .spotify-btn {
@@ -54,6 +57,7 @@
         padding-left: 0.5rem;
         padding-top: 1rem;
         padding-bottom: 1rem;
+        background: linear-gradient(to bottom, #080044, #00151ff6 80%);
     }
 
     .nav-bar > * {

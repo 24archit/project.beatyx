@@ -111,7 +111,7 @@ main {
     width: calc(100vw - 3rem); /* Adjust width to leave space for hamburger button */
     padding: 0.5rem 1rem; /* Optional: Add some padding for better mobile layout */
     margin-left: 3rem; /* Leave space for the hamburger button */
-    margin-top: 5rem;
+    margin-top: 7rem;
   }
 }
 
