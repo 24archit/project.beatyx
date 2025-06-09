@@ -30,6 +30,23 @@ function useThrottle(callback, delay) {
 }
 
 const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Core states
   const [volume, setVolume] = useState(0.9);
   const [playing, setPlaying] = useState(false);
@@ -51,6 +68,68 @@ const Player = ({ url, trackInfo, setPlayerMeta, setTrackInfo }) => {
 
   const playerRef = useRef(null);
   const volumeSliderRef = useRef(null);
+
+
+const isMobileDevice = () => {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  };
+
+  const continueMusicPlayOnPhoneOnMinimize = () => {
+    if (playing) {
+      const internalPlayer = playerRef.current?.getInternalPlayer?.();
+      if (internalPlayer && typeof internalPlayer.playVideo === "function") {
+        internalPlayer.playVideo();
+      } else {
+        console.warn("Internal player is not available to continue playback.");
+      }
+    } else {
+      const internalPlayer = playerRef.current?.getInternalPlayer?.();
+      if (internalPlayer && typeof internalPlayer.pauseVideo === "function") {
+        internalPlayer.pauseVideo();
+      } else {
+        console.warn("Internal player is not available to pause playback.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && isMobileDevice()) {
+        continueMusicPlayOnPhoneOnMinimize();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Helper: Extract video ID from a YouTube URL
   const extractVideoId = useCallback((videoUrl) => {
