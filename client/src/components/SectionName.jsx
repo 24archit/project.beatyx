@@ -38,10 +38,11 @@ export function SectionName({
   );
 }
 
+
 export function SectionNameLoad() {
   const theme = useTheme();
 
-  // You can use breakpoints to set responsive width values
+  // Responsive width
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const isMd = useMediaQuery(theme.breakpoints.between("md", "lg"));
@@ -59,9 +60,12 @@ export function SectionNameLoad() {
       width={width}
       height={30}
       sx={{
-        marginTop: "2.7rem",
-        marginLeft: "1rem",
-        marginRight: "1rem",
+        marginTop: {
+          xs: "2.7rem", // On small devices
+          sm: "2rem",   // Slightly less on tablets
+          md: "0rem",   // Reduced on small laptops
+          lg: "0rem",   // No margin on large screens
+        },
         bgcolor: "rgba(71, 164, 211, 0.261)",
         borderRadius: "1rem",
       }}
@@ -69,4 +73,5 @@ export function SectionNameLoad() {
     />
   );
 }
+
 
