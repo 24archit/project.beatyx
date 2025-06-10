@@ -54,8 +54,7 @@
     margin-left: 0rem;
 }
 @media (max-width: 768px) {
-    .track-line-card {
-        justify-content: space-evenly;
+    .track-line-card{ 
 
     }
     .img-container img {
@@ -73,16 +72,17 @@
     .track-play {
         width: 1.5rem;
         height: 1.5rem;
+        padding: 1rem;
     }
     .track-rank {
      display: none;
     }
     .Track-name{
-        width: 10rem;
+        width: 7rem;
         
     }
     .Track-name p{
        font-size: 0.8rem;
-        
+       margin: 0;
     }
 }
