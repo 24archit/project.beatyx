@@ -66,6 +66,8 @@ export function SectionNameLoad() {
           md: "0rem",   // Reduced on small laptops
           lg: "0rem",   // No margin on large screens
         },
+        marginLeft: "1rem",
+        marginRight: "1rem",
         bgcolor: "rgba(71, 164, 211, 0.261)",
         borderRadius: "1rem",
       }}
