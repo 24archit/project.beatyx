@@ -161,6 +161,7 @@
     width: 40px;
     height: 40px;
     font-size: 1rem;
+    display: none;
   }
   
   .carousel-arrow-left {
