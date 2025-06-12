@@ -98,7 +98,7 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
 
   const artistDataUrl = `https://api.spotify.com/v1/artists/${id}`;
   const topTracksUrl = `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`;
-  const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=10&offset=0`;
+  const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=8&offset=0`;
 
   const artistData = await makeApiRequest(
     artistDataUrl,

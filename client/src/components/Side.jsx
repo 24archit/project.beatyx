@@ -15,12 +15,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import InfoIcon from "@mui/icons-material/Info";
-import ContactMailIcon from "@mui/icons-material/ContactMail";
+// import LightbulbIcon from "@mui/icons-material/Lightbulb";
+// import InfoIcon from "@mui/icons-material/Info";
+// import ContactMailIcon from "@mui/icons-material/ContactMail";
+import HeartIcon from "@mui/icons-material/Favorite";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
-
+import AlbumIcon from "@mui/icons-material/Album";
+import HistoryIcon from "@mui/icons-material/History";
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -104,13 +106,53 @@ export default function Sidebar() {
   };
 
   const menuItems = [
-    { text: "Profile", icon: <PersonIcon />, onClick: () => setOpen(false), link: "/profile" },
-    { text: "Home", icon: <HomeIcon />, onClick: () => setOpen(false), link: "/" },
-    { text: "Your Playlists", icon: <LibraryMusicIcon />, onClick: () => setOpen(false), link: "/playlists" },
-    { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: () => setOpen(false) },
-    { text: "Create using AI", icon: <LightbulbIcon />, onClick: () => setOpen(false), link: "/ai" },
-    { text: "About Us", icon: <InfoIcon />, onClick: () => setOpen(false), link: "/about" },
-    { text: "Contact Us", icon: <ContactMailIcon />, onClick: () => setOpen(false), link: "/contact" },
+    {
+      text: "Profile",
+      icon: <PersonIcon />,
+      onClick: () => setOpen(false),
+      link: "/profile",
+    },
+    {
+      text: "Home",
+      icon: <HomeIcon />,
+      onClick: () => setOpen(false),
+      link: "/",
+    },
+    {
+      text: "Currently Playing",
+      icon: <MusicNoteIcon />,
+      onClick: () => setOpen(false),
+      link: "/currently-playing",
+    },
+    {
+      text: "Playlists",
+      icon: <LibraryMusicIcon />,
+      onClick: () => setOpen(false),
+      link: "/playlists",
+    },
+    {
+      text: "Albums",
+      icon: <AlbumIcon />,
+      onClick: () => setOpen(false),
+      link: "/albums",
+    },
+    // { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: () => setOpen(false) },
+    // { text: "Create using AI", icon: <LightbulbIcon />, onClick: () => setOpen(false), link: "/ai" },
+    // { text: "About Us", icon: <InfoIcon />, onClick: () => setOpen(false), link: "/about" },
+    // { text: "Contact Us", icon: <ContactMailIcon />, onClick: () => setOpen(false), link: "/contact" },
+    {
+      text: "Liked Songs",
+      icon: <HeartIcon />,
+      onClick: () => setOpen(false),
+      link: "/liked-songs",
+    },
+
+    {
+      text: "Listening History",
+      icon: <HistoryIcon />,
+      onClick: () => setOpen(false),
+      link: "/listening-history",
+    },
     { text: "Logout", icon: <ExitToAppIcon />, onClick: handleLogoutClick },
   ];
 

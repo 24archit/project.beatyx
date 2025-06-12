@@ -10,7 +10,7 @@ import prettyMilliseconds from "pretty-ms";
 import { Link } from "react-router-dom";
 import { Suspense } from "react";
 import TrackLogo from "/Track-Logo.webp";
-import musicWave from "/wave.webm";
+import musicWave from "../assets/media/wave.webm";
 import "../assets/styles/Player.css";
 import { getNextAudioLink, getPreviousAudioLink } from "../apis/apiFunctions";
 
