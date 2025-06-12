@@ -122,7 +122,7 @@ export default function Sidebar() {
       text: "Currently Playing",
       icon: <MusicNoteIcon />,
       onClick: () => setOpen(false),
-      link: "/currently-playing",
+      link: "/currentTrack",
     },
     {
       text: "Playlists",

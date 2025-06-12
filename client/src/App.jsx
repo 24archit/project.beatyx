@@ -29,10 +29,8 @@ function Layout({ isAuth, playerMeta, setPlayerMeta, trackInfo, setTrackInfo }) 
       </div>
       <Footer />
       <Player
-        url={playerMeta}
-        trackInfo={trackInfo}
-        setPlayerMeta={setPlayerMeta}
-        setTrackInfo={setTrackInfo}
+      initialUrl={playerMeta}
+      initialTrackInfo={trackInfo}
       />
     </>
   );
