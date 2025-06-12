@@ -1,7 +1,7 @@
 import "../assets/styles/PlaylistTrackList.css"
 import {TrackLineCard, TrackLineCardLoad} from "./TrackLineCard";
 import { Link } from 'react-router-dom';
-import TrackLogo from "../assets/media/Track-Logo.webp";
+import TrackLogo from "/Track-Logo.webp";
 import React from "react";
 export  function PlaylistTrackList(props) {
     return (

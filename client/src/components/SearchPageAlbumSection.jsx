@@ -3,13 +3,28 @@ import '../assets/styles/Section.css';
 import { SectionName, SectionNameLoad } from './SectionName.jsx';
 import { SectionCard, SectionCardLoad } from './SectionCard.jsx';
 import { Link } from 'react-router-dom';
-import PlaylistIcon from "../assets/media/playlist-icon.webp"
+import PlaylistIcon from "/playlist-icon.webp"
+import Carousel from './Carousel.jsx';
 
 export default function SearchPageAlbumSection(props) {
     return (
         <section className="section">
             <SectionName iconClass={props.iconClass} iconId={props.iconId} name={props.name} button={false}/>
             <div className="material" draggable="true">
+                <Carousel
+                          showArrows={true}
+                          showDots={true}
+                          autoScroll={false}
+                          responsive={{
+                            mobile: 2,
+                            tablet: 3,
+                            medium: 4,
+                            large: 5,
+                            desktop: 6
+                          }}
+                          gap="1rem"
+                          className="track-carousel"
+                        >
                 {props.data.map((item, idx) => (
                     <SectionCard
                         key={item.id}
@@ -33,6 +48,7 @@ export default function SearchPageAlbumSection(props) {
                         spotifyUrl={item.external_urls.spotify}
                     />
                 ))}
+                </Carousel>
             </div>
         </section>
     );

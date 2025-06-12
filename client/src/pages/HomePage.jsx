@@ -84,7 +84,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
           iconClass="fa-solid fa-arrow-trend-up"
           iconId="trend-icon"
           name=" Top Tracks: Live from India"
-          data={topIndiaTracks.slice(0, 45)}
+          data={topIndiaTracks.slice(0, 7)}
           setPlayerMeta={setPlayerMeta}
           setTrackInfo={setTrackInfo}
           showMore={topIndiaTracks.length > 45}
@@ -92,6 +92,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
             handleMoreClick(setTopIndiaTracks, topIndiaTracks, 45)
           }
           sectionName="top-tracks-india"
+          routeTo="/playlist/37i9dQZEVXbLZ52XmnySJg"
         />
       ) : (
         <SectionLoading
@@ -108,7 +109,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
           iconClass="fa-solid fa-arrow-trend-up"
           iconId="trend-icon"
           name=" Sync: Global Top Tracks"
-          data={topGlobalTracks.slice(0, 45)}
+          data={topGlobalTracks.slice(0, 7)}
           setPlayerMeta={setPlayerMeta}
           setTrackInfo={setTrackInfo}
           showMore={topGlobalTracks.length > 45}
@@ -116,6 +117,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
             handleMoreClick(setTopGlobalTracks, topGlobalTracks, 45)
           }
           sectionName="top-tracks-global"
+          routeTo="/playlist/37i9dQZEVXbMDoHDwVN2tF"
         />
       ) : (
         <SectionLoading

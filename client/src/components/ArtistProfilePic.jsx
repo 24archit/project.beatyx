@@ -1,6 +1,6 @@
 import '../assets/styles/ArtistProfilePic.css';
 import { Skeleton } from '@mui/material';
-import defaultProfilePic from '../assets/media/profile-pic.webp';
+import defaultProfilePic from '/profile-pic.webp';
 
 export function ArtistProfilePic({ imgSrc = defaultProfilePic }) {
     return (

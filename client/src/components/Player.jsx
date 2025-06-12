@@ -9,8 +9,8 @@ import ReactPlayer from "react-player/youtube";
 import prettyMilliseconds from "pretty-ms";
 import { Link } from "react-router-dom";
 import { Suspense } from "react";
-import TrackLogo from "../assets/media/Track-Logo.webp";
-import musicWave from "../assets/media/wave.webm";
+import TrackLogo from "/Track-Logo.webp";
+import musicWave from "/wave.webm";
 import "../assets/styles/Player.css";
 import { getNextAudioLink, getPreviousAudioLink } from "../apis/apiFunctions";
 

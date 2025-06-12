@@ -33,6 +33,19 @@
     padding: 0.5rem;
     box-sizing: border-box;
 }
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.mainInfo{
+    animation: slideIn 0.3s ease-out;
+}
 
 /* Tablets (portrait and landscape) */
 @media (max-width: 1024px) {

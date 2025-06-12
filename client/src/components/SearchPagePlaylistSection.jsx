@@ -3,7 +3,8 @@ import '../assets/styles/Section.css';
 import { SectionName, SectionNameLoad } from './SectionName.jsx';
 import { SectionCard, SectionCardLoad } from './SectionCard.jsx';
 import { Link } from 'react-router-dom';
-import PlaylistIcon from "../assets/media/playlist-icon.webp";
+import PlaylistIcon from "/playlist-icon.webp";
+import Carousel from './Carousel.jsx';
 
 export default function SearchPagePlaylistSection({
     iconClass,
@@ -15,11 +16,25 @@ export default function SearchPagePlaylistSection({
         <section className="section">
             <SectionName iconClass={iconClass} iconId={iconId} name={name} button={false}  />
             <div className="material" draggable="true">
-                {data.map((item) => (
-                    <SectionCard
-                        key={item.id}
-                        imgSrc={item.images && item.images.length > 0 ? item.images[0].url : PlaylistIcon}
-                        iconClass="fa-solid fa-link"
+                <Carousel
+                    showArrows={true}
+                    showDots={true}
+                    autoScroll={false}
+                    responsive={{
+                        mobile: 2,
+                        tablet: 3,
+                        medium: 4,
+                        large: 5,
+                        desktop: 6
+                    }}
+                    gap="1rem"
+                    className="track-carousel"
+                >
+                    {data.map((item) => (
+                        <SectionCard
+                            key={item.id}
+                            imgSrc={item.images && item.images.length > 0 ? item.images[0].url : PlaylistIcon}
+                            iconClass="fa-solid fa-link"
                         iconId="link-icon"
                         cardName={item.name}
                         cardStat={
@@ -42,6 +57,7 @@ export default function SearchPagePlaylistSection({
                         spotifyUrl={item.external_urls.spotify}
                     />
                 ))}
+                </Carousel>
             </div>
         </section>
     );

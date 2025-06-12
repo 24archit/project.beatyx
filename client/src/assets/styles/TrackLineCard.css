@@ -53,6 +53,19 @@
 .track-rank p{
     margin-left: 0rem;
 }
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.track-line-card {
+    animation: slideIn 0.3s ease-out;
+}
 @media (max-width: 768px) {
     .img-container img {
         width: 2rem;

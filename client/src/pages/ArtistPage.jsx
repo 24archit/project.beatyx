@@ -13,12 +13,14 @@ import {
 import { getArtistInfo } from "../apis/apiFunctions.js";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@mui/material";
-import defaultProfilePic from "../assets/media/profile-pic.webp";
+import defaultProfilePic from "/profile-pic.webp";
 import { SectionCard, SectionCardLoad } from "../components/SectionCard.jsx";
 import React from "react";
 import { Link } from "react-router-dom";
-import spotifyLogo from "../assets/media/Spotify_logo.webp";
+import spotifyLogo from "/Spotify_logo.webp";
 import { Helmet } from "react-helmet-async";
+import UpcomingConcerts from "../components/UpcomingConcerts.jsx";
+import Carousel from "../components/Carousel.jsx";
 
 export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
   const { id } = useParams();
@@ -161,47 +163,63 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
           )
         ) : (
           <div className="material">
-            {artistAlbums ? (
-              artistAlbums.items.map((item, index) => (
-                <SectionCard
-                  key={index}
-                  imgSrc={item.images[0]?.url || defaultProfilePic}
-                  cardName={item.name}
-                  cardStat={
-                    <React.Fragment>
-                      {item.artists.map((artist, idx) => (
-                        <span key={artist.id}>
-                          <Link
-                            to={`/artist/${artist.id}`}
-                            className="card-stat-links"
-                          >
-                            {artist.name}
-                          </Link>
-                          {idx < item.artists.length - 1 ? ", " : ""}
-                        </span>
-                      ))}
-                    </React.Fragment>
-                  }
-                  albumType={item.album_type}
-                  cardId={item.id}
-                  setPlayerMeta={setPlayerMeta}
-                  setTrackInfo={setTrackInfo}
-                  cardType="album"
-                />
-              ))
-            ) : (
-              <>
-                <SectionCardLoad />
-                <SectionCardLoad />
-                <SectionCardLoad />
-                <SectionCardLoad />
-                <SectionCardLoad />
-                <SectionCardLoad />
-              </>
-            )}
+            <Carousel
+              showArrows={true}
+              showDots={true}
+              autoScroll={false}
+              responsive={{
+                mobile: 2,
+                tablet: 3,
+                medium: 4,
+                large: 5,
+                desktop: 6,
+              }}
+              gap="1rem"
+              className="track-carousel"
+            >
+              {artistAlbums ? (
+                artistAlbums.items.map((item, index) => (
+                  <SectionCard
+                    key={index}
+                    imgSrc={item.images[0]?.url || defaultProfilePic}
+                    cardName={item.name}
+                    cardStat={
+                      <React.Fragment>
+                        {item.artists.map((artist, idx) => (
+                          <span key={artist.id}>
+                            <Link
+                              to={`/artist/${artist.id}`}
+                              className="card-stat-links"
+                            >
+                              {artist.name}
+                            </Link>
+                            {idx < item.artists.length - 1 ? ", " : ""}
+                          </span>
+                        ))}
+                      </React.Fragment>
+                    }
+                    albumType={item.album_type}
+                    cardId={item.id}
+                    setPlayerMeta={setPlayerMeta}
+                    setTrackInfo={setTrackInfo}
+                    cardType="album"
+                  />
+                ))
+              ) : (
+                <>
+                  <SectionCardLoad />
+                  <SectionCardLoad />
+                  <SectionCardLoad />
+                  <SectionCardLoad />
+                  <SectionCardLoad />
+                  <SectionCardLoad />
+                </>
+              )}
+            </Carousel>
           </div>
         )}
       </div>
+      <UpcomingConcerts />
     </>
   );
 }

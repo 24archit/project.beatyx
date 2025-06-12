@@ -3,7 +3,8 @@ import "../assets/styles/Section.css";
 import { SectionName, SectionNameLoad } from "./SectionName.jsx";
 import { SectionCard, SectionCardLoad } from "./SectionCard.jsx";
 import { Link } from "react-router-dom";
-import TrackLogo from "../assets/media/Track-Logo.webp";
+import TrackLogo from "/Track-Logo.webp";
+import Carousel from "./Carousel.jsx";
 
 export default function SearchPageTrackSection(props) {
   return (
@@ -15,11 +16,25 @@ export default function SearchPageTrackSection(props) {
         button={false}
       />
       <div className="material" draggable="true">
-        {props.data.map((item) => (
-          <SectionCard
-            key={item.id}
-            imgSrc={
-              item.album && item.album.images && item.album.images.length > 0
+        <Carousel
+          showArrows={true}
+          showDots={true}
+          autoScroll={false}
+          responsive={{
+            mobile: 2,
+            tablet: 3,
+            medium: 4,
+            large: 5,
+            desktop: 6
+          }}
+          gap="1rem"
+          className="track-carousel"
+        >
+          {props.data.map((item) => (
+            <SectionCard
+              key={item.id}
+              imgSrc={
+                item.album && item.album.images && item.album.images.length > 0
                 ? item.album.images[0].url
                 : TrackLogo
             }
@@ -50,6 +65,7 @@ export default function SearchPageTrackSection(props) {
             spotifyUrl={item.external_urls.spotify}
           />
         ))}
+        </Carousel>
       </div>
     </section>
   );

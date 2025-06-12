@@ -9,7 +9,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
@@ -20,6 +20,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -83,56 +84,12 @@ export default function Sidebar() {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const handleProfileClick = () => {
-    console.log("Profile");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handleHomeClick = () => {
-    console.log("Home");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handlePlaylistsClick = () => {
-    console.log("Your Playlists");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handleSpotifyClick = () => {
-    console.log("Connect to Spotify");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handleCreateAIContentClick = () => {
-    console.log("Create using AI");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handleAboutUsClick = () => {
-    console.log("About Us");
-    if (open) {
-      setOpen(false);
-    }
-  };
-  const handleContactUsClick = () => {
-    console.log("Contact Us");
-    if (open) {
-      setOpen(false);
-    }
-  };
   const handleLogoutClick = async (e) => {
     const logoutConfirmed = window.confirm("Are you sure you want to logout?");
     if (!logoutConfirmed) return;
@@ -147,42 +104,13 @@ export default function Sidebar() {
   };
 
   const menuItems = [
-    {
-      text: "Profile",
-      icon: <PersonIcon />,
-      onClick: handleProfileClick,
-      link: "/profile",
-    },
-    { text: "Home", icon: <HomeIcon />, onClick: handleHomeClick, link: "/" },
-    {
-      text: "Your Playlists",
-      icon: <LibraryMusicIcon />,
-      onClick: handlePlaylistsClick,
-      link: "/playlists",
-    },
-    {
-      text: "Connect to Spotify",
-      icon: <MusicNoteIcon />,
-      onClick: handleSpotifyClick,
-    },
-    {
-      text: "Create using AI",
-      icon: <LightbulbIcon />,
-      onClick: handleCreateAIContentClick,
-      link: "/ai",
-    },
-    {
-      text: "About Us",
-      icon: <InfoIcon />,
-      onClick: handleAboutUsClick,
-      link: "/about",
-    },
-    {
-      text: "Contact Us",
-      icon: <ContactMailIcon />,
-      onClick: handleContactUsClick,
-      link: "/contact",
-    },
+    { text: "Profile", icon: <PersonIcon />, onClick: () => setOpen(false), link: "/profile" },
+    { text: "Home", icon: <HomeIcon />, onClick: () => setOpen(false), link: "/" },
+    { text: "Your Playlists", icon: <LibraryMusicIcon />, onClick: () => setOpen(false), link: "/playlists" },
+    { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: () => setOpen(false) },
+    { text: "Create using AI", icon: <LightbulbIcon />, onClick: () => setOpen(false), link: "/ai" },
+    { text: "About Us", icon: <InfoIcon />, onClick: () => setOpen(false), link: "/about" },
+    { text: "Contact Us", icon: <ContactMailIcon />, onClick: () => setOpen(false), link: "/contact" },
     { text: "Logout", icon: <ExitToAppIcon />, onClick: handleLogoutClick },
   ];
 
@@ -202,14 +130,15 @@ export default function Sidebar() {
         <DrawerHeader>
           <IconButton
             onClick={toggleDrawer}
-            sx={{ color: "white" }}
-            name="sidebar"
+            sx={{
+              color: "white",
+              "&:focus, &:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
           >
-            {open ? (
-              <CloseIcon sx={{ color: "white" }} />
-            ) : (
-              <MenuIcon sx={{ color: "white" }} />
-            )}
+            {open ? <CloseIcon /> : <MenuIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider sx={{ backgroundColor: "white" }} />
@@ -228,6 +157,10 @@ export default function Sidebar() {
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
                       color: "white",
+                      "&:focus, &:focus-visible": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
                     }}
                   >
                     <ListItemIcon
@@ -254,6 +187,10 @@ export default function Sidebar() {
                     justifyContent: open ? "initial" : "center",
                     px: 2.5,
                     color: "white",
+                    "&:focus, &:focus-visible": {
+                      outline: "none",
+                      boxShadow: "none",
+                    },
                   }}
                 >
                   <ListItemIcon

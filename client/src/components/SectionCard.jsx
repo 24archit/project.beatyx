@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "../assets/styles/Card.css";
-import TrackLogo from "../assets/media/Track-Logo.webp";
+import TrackLogo from "/Track-Logo.webp";
 import { Skeleton, Menu, MenuItem, IconButton } from "@mui/material";
 import { format } from "indian-number-format";
-import spotifyLogo from "../assets/media/Spotify_logo.webp";
+import spotifyLogo from "/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
 
 export function SectionCard({

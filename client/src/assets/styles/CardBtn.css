@@ -19,3 +19,8 @@
     font-weight: bold;
     cursor: pointer;
 }
+.play-btn:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0;
+}

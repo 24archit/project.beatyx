@@ -1,8 +1,8 @@
 import "../assets/styles/TrackLineCard.css";
-import trackLogo from "../assets/media/Track-Logo.webp";
+import trackLogo from "/Track-Logo.webp";
 import { Skeleton } from "@mui/material";
 import prettyMilliseconds from "pretty-ms";
-import spotifyLogo from "../assets/media/Spotify_logo.webp";
+import spotifyLogo from "/Spotify_logo.webp";
 import { getAudioLink } from "../apis/apiFunctions";
 export function TrackLineCard({
   imgSrc = trackLogo,

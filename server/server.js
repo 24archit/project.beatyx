@@ -67,8 +67,88 @@ app.use("/album", albumRoutes);
 //   console.log(result.response.text());
 //   console.log(result.res);
 //   res.json(result.response.text());
-// });
+// });	
+const TM_API_KEY="S5fyAfNhEgA1mcpMkALvzpZiXCQirzCe";
+const axios = require("axios");
 
+app.get('/getShows', async (req, res) => {
+  const artist = req.query.artist;
+  if (!artist) {
+    return res.status(400).json({ error: 'Missing required query parameter: artist' });
+  }
+
+  try {
+    // 1. Lookup the artist’s attractionId
+    const attrResp = await axios.get('https://app.ticketmaster.com/discovery/v2/attractions.json', {
+      params: { apikey: TM_API_KEY, keyword: artist }
+    });
+    const attractions = attrResp.data._embedded?.attractions;
+    if (!attractions || attractions.length === 0) {
+      return res.status(404).json({ error: `No artist found for "${artist}"` });
+    }
+    const attractionId = attractions[0].id;
+
+    // 2. Fetch upcoming music events for that attractionId
+    const eventsResp = await axios.get('https://app.ticketmaster.com/discovery/v2/events.json', {
+      params: {
+        apikey: TM_API_KEY,
+        attractionId,
+        classificationName: 'music',
+        size: 20,
+        sort: 'date,asc'
+      }
+    });
+    const events = eventsResp.data._embedded?.events || [];
+
+    // 3. For each event, fetch full details in parallel
+    const detailedShows = await Promise.all(events.map(async evt => {
+      // Basic fields
+      const basic = {
+        name: evt.name,
+        id: evt.id,
+        date: evt.dates.start?.dateTime,
+        venue: evt._embedded?.venues?.[0]?.name,
+        city: evt._embedded?.venues?.[0]?.city?.name,
+        country: evt._embedded?.venues?.[0]?.country?.name,
+        url: evt.url,
+        purchaseUrl: evt.sales?.public?.url
+      };
+
+      // Fetch full event details
+      try {
+        const detailResp = await axios.get(
+          `https://app.ticketmaster.com/discovery/v2/events/${evt.id}.json`,
+          { params: { apikey: TM_API_KEY } }
+        );
+        const detail = detailResp.data;
+
+        return {
+          ...basic,
+          info: detail.info || detail.pleaseNote || null,          // any textual notes
+          description: detail.description || null,
+          seatmap: detail.seatmap?.staticUrl || null,
+          priceRanges: detail.priceRanges || [],                   // array of {type,min,max,currency}
+          images: (detail.images || []).map(img => ({
+            url: img.url,
+            ratio: img.ratio,
+            width: img.width,
+            height: img.height
+          }))
+        };
+      } catch (detailErr) {
+        console.warn(`Could not fetch details for event ${evt.id}:`, detailErr.message);
+        // Fallback to basic if detail fetch fails
+        return { ...basic, images: [], info: null, description: null, seatmap: null, priceRanges: [] };
+      }
+    }));
+
+    // 4. Send combined response
+    res.json({ artist, attractionId, totalShows: detailedShows.length, shows: detailedShows });
+  } catch (err) {
+    console.error('Error fetching shows:', err.message);
+    res.status(500).json({ error: 'Failed to fetch shows. See server logs for details.' });
+  }
+});
 if (process.env.VERCEL !== "true") {
   app.listen(2424, () => {
     console.log("Server is running on http://localhost:2424");

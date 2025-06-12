@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPlaylistInfo } from "../apis/apiFunctions.js";
 import { Skeleton } from "@mui/material";
-import defaultProfilePic from "../assets/media/profile-pic.webp";
+import defaultProfilePic from "/profile-pic.webp";
 import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
 import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";

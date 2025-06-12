@@ -105,6 +105,11 @@
   box-shadow: 0.255rem 0.255rem 0.9rem rgba(71, 179, 219, 0.6);
   cursor: pointer;
 }
+.play-pause-btn:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
 
 /* Backward and Other Buttons */
 .backward-btn,
@@ -127,6 +132,12 @@
 .other-btn:hover {
   opacity: 1;
   cursor: pointer;
+}
+.backward-btn:focus,
+.other-btn:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 /* Seek Bar */

@@ -1,62 +1,57 @@
-/* Section styles */
-.section {
-  padding-top: 0.6rem; 
-  background: transparent;
-  position: relative;
-}
-
-/* Material container for the carousel */
-.material {
-  margin-top: 0.4rem;
-  margin-bottom: 0.6rem;
-  padding-top: 0.9rem;
-  padding-bottom: 1.3rem;
-  padding-left: 0.7rem;
-  padding-right: 0.7rem;
-  background: linear-gradient(#0389f777, rgba(15, 1, 35, 0.522), #01294a1c);
-  border-top-left-radius: 2rem;
-  border-top-right-radius: 2rem;
-  position: relative;
-}
-
-/* Carousel wrapper inside material */
-.material .carousel-wrapper {
+/* General Carousel Styles */
+.carousel-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Carousel container */
-.material .carousel-container {
+/* Cards Container */
+.carousel-container {
   display: flex;
-  gap: 1rem;
   overflow-x: auto;
   overflow-y: hidden;
-  align-items: center;
   scroll-behavior: smooth;
-  /* scrollbar-width: none; */
+  /* scrollbar-width: none;  Removed for better browser compatibility */
   -ms-overflow-style: none;
-  scroll-snap-type: x mandatory;
+  align-items: center;
+  padding: 0.5rem 0;
+  min-width: 100%;
 }
 
 /* Hide scrollbar completely */
-.material .carousel-container::-webkit-scrollbar {
+.carousel-container::-webkit-scrollbar {
   display: none;
 }
 
-.material .carousel-container {
+.carousel-container {
   -ms-overflow-style: none;  /* IE and Edge */
+  /* scrollbar-width: none;  Firefox only, removed for compatibility */
 }
 
 /* Individual carousel cards */
-.material .carousel-card {
+.carousel-card {
   flex: 0 0 auto;
   scroll-snap-align: start;
   transition: transform 0.3s ease;
+  min-width: 0; /* Prevent flex item from growing beyond content */
 }
 
-.material .carousel-card:hover {
+.carousel-card:hover {
   transform: scale(1.05);
   z-index: 2;
+}
+
+/* Ensure cards are properly sized for small datasets */
+.carousel-container:has(.carousel-card:nth-child(-n+12)) .carousel-card {
+  flex-shrink: 0;
+}
+
+/* For very small datasets (8 or fewer cards), ensure they're evenly distributed */
+.carousel-container:has(.carousel-card:nth-child(-n+8):last-child) {
+  justify-content: flex-start;
+}
+
+.carousel-container:has(.carousel-card:nth-child(-n+8):last-child) .carousel-card {
+  margin-right: auto;
 }
 
 /* Carousel arrows */
@@ -64,7 +59,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(27, 34, 229, 0.7);
   color: white;
   border: none;
   border-radius: 50%;
@@ -82,8 +77,12 @@
 }
 
 .carousel-arrow:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(195, 67, 215, 0.626);
   transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-arrow:focus {
+  outline: none;
 }
 
 .carousel-arrow-left {
@@ -94,7 +93,7 @@
   right: -25px;
 }
 
-/* Carousel dots - always visible */
+/* Carousel dots */
 .carousel-dots {
   display: flex;
   justify-content: center;
@@ -119,6 +118,11 @@
 
 .carousel-dot:hover {
   background: rgba(255, 255, 255, 0.7);
+}
+
+.carousel-dot:focus {
+  outline: 2px solid #0389f7;
+  outline-offset: 2px;
 }
 
 /* Responsive design */
@@ -149,17 +153,6 @@
 }
 
 @media (max-width: 768px) {
-  .section {
-    margin-top: 6rem;
-    margin-left: 8px;
-  }
-  
-  .material.carousel-container {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    gap: 0.5rem;
-  }
-  
   .carousel-card {
     flex: 0 0 calc(33.333% - 0.33rem); /* 3 cards per view */
   }
@@ -202,9 +195,12 @@
   .carousel-arrow-right {
     right: -17px;
   }
-  
-  .material.carousel-container {
-    gap: 0.3rem;
+}
+
+/* Hide arrows on very small screens to save space */
+@media (max-width: 380px) {
+  .carousel-arrow {
+    display: none;
   }
 }
 
@@ -220,27 +216,6 @@
   }
 }
 
-.material .carousel-card {
+.carousel-card {
   animation: slideIn 0.3s ease-out;
-}
-
-/* Focus styles for accessibility */
-.carousel-arrow:focus {
-  outline: none;
-}
-
-.carousel-dot:focus {
-  outline: 2px solid #0389f7;
-  outline-offset: 2px;
-}
-
-/* Hide arrows on very small screens to save space */
-@media (max-width: 380px) {
-  .carousel-arrow {
-    display: none;
-  }
-  
-  .carousel-dots {
-    margin-top: 0.5rem;
-  }
 }

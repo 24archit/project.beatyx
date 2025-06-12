@@ -1,6 +1,6 @@
 import '../assets/styles/Logo.css';
 import { Link } from 'react-router-dom';
-import LogoImg from "../assets/media/logo.png"
+import LogoImg from "/logo.png"
 export default function Logo() {
   return (
     <Link to="/" className="logo">
