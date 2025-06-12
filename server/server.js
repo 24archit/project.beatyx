@@ -68,7 +68,7 @@ app.use("/album", albumRoutes);
 //   console.log(result.res);
 //   res.json(result.response.text());
 // });	
-const TM_API_KEY="S5fyAfNhEgA1mcpMkALvzpZiXCQirzCe";
+const TM_API_KEY= process.env.TM_API_KEY;
 const axios = require("axios");
 
 app.get('/getShows', async (req, res) => {
