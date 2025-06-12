@@ -89,6 +89,7 @@
     }
     .Track-name{
         width: 7rem;
+        text-align: left;
         
     }
     .Track-name p{

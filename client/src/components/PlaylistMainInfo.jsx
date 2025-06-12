@@ -12,10 +12,10 @@ export function PlaylistMainInfo({
     img,
 }) {
     return (
-        <div className="mainInfo">
+        <div className="mainInfo-1">
              <PlaylistProfilePic imgSrc={img} />
-            <div className="name-stat">
-            <p id="artist-name">{PlaylistName}</p>
+            <div className="name-stat-1">
+            <p id="playlist-name">{PlaylistName}</p>
             <p id="playlist-description">{description}</p>
             </div>
            

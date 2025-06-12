@@ -1,6 +1,6 @@
 #artist-name {
     color: rgb(207, 237, 242);
-    font-size: clamp(2rem, 5vw, 5rem); /* Responsive text size */
+    font-size: clamp(1rem, 5vw, 3rem); /* Responsive text size */
     overflow-wrap: break-word;
     overflow: auto;
     text-align: center;
