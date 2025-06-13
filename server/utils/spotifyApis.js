@@ -1,33 +1,9 @@
-const mongoose = require("mongoose");
+
 const axios = require("axios");
-const UniToken = require("../models/uniToken");
 const { getFreshTokens } = require("./getFreshTokens");
+const { getArtistShows } = require("./getArtistShows");
+const {getAccessToken} = require("./getAccessToken");
 
-const TOKEN_EXPIRY_TIME = 50 * 60 * 1000; // 50 minutes in milliseconds
-
-// Utility function to validate or refresh tokens
-async function getAccessToken() {
-  const Token = await UniToken.findOne(); // Assuming there's only one token document.
-  if (!Token) {
-    throw new Error("Token not found. Please initialize the token collection.");
-  }
-
-  const currentTime = new Date();
-  const tokenAge = currentTime - new Date(Token.updationTime);
-
-  // Check if token is expired
-  if (tokenAge >= TOKEN_EXPIRY_TIME) {
-    console.log("Token expired. Generating a fresh token...");
-    await getFreshTokens(); // Refresh tokens and update the database
-    const updatedToken = await UniToken.findOne(); // Re-fetch the updated token
-    if (!updatedToken || !updatedToken.accessToken) {
-      throw new Error("Failed to refresh the token. Please check the refresh logic.");
-    }
-    return updatedToken.accessToken;
-  }
-
-  return Token.accessToken;
-}
 
 // Generic function to handle retries and API requests
 async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, delay = 800) {
@@ -99,7 +75,8 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
   const artistDataUrl = `https://api.spotify.com/v1/artists/${id}`;
   const topTracksUrl = `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`;
   const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=8&offset=0`;
-
+  
+  
   const artistData = await makeApiRequest(
     artistDataUrl,
     "GET",
@@ -107,7 +84,7 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
     retries,
     delay
   );
-
+  const artistShows = await getArtistShows(id, artistData.name);
   const topTracks = await makeApiRequest(
     topTracksUrl,
     "GET",
@@ -128,6 +105,7 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
     ArtistData: artistData,
     ArtistTopTracks: topTracks,
     ArtistTopAlbums: albums,
+    ArtistShows: artistShows,
   };
 }
 
@@ -189,4 +167,5 @@ module.exports = {
   getSearchResult,
   getPlaylist,
   getAlbum,
+  makeApiRequest
 };

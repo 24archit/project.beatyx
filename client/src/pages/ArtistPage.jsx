@@ -28,7 +28,11 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
   const [selectedBtn, setSelectedBtn] = useState("topTracks");
   const [artistTopTracks, setArtistTopTracks] = useState(null);
   const [artistAlbums, setArtistAlbums] = useState(null);
+  const [artistShows, setArtistShows] = useState(null);
 
+  useEffect(() => {
+    console.log("ArtistData:", artistShows);
+  }, [artistShows]);
   const fetchArtistData = async () => {
     let retryCount = 0; // Track the number of retries
     const maxRetries = 3; // Set a limit for retries
@@ -39,6 +43,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
         setArtistData(data.ArtistData);
         setArtistTopTracks(data.ArtistTopTracks);
         setArtistAlbums(data.ArtistTopAlbums);
+        setArtistShows(data.ArtistShows);
         return; // Exit the function if successful
       } catch (error) {
         console.error(
@@ -73,6 +78,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
       setArtistData(null);
       setArtistTopTracks(null);
       setArtistAlbums(null);
+      setArtistShows(null);
     };
   }, [id]);
   return (
@@ -219,7 +225,7 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
           </div>
         )}
       </div>
-      <UpcomingConcerts />
+      <UpcomingConcerts artistShows={artistShows} />
     </>
   );
 }

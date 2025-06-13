@@ -1,46 +1,60 @@
-import React from "react";
-import { Calendar, MapPin, Clock, ExternalLink } from "lucide-react";
-import "../assets/styles/UpcomingConcerts.css"; // Assuming you have a CSS file for styles
+import React, { useEffect, useState } from "react";
+import { Calendar, ExternalLink } from "lucide-react";
+import "../assets/styles/UpcomingConcerts.css";
 
-const UpcomingConcerts = () => {
-  const upcomingShows = [
-    {
-      id: 1,
-      title: "Shreya Ghoshal Live in Concert",
-      artist: "Shreya Ghoshal",
-      venue: "Wembley Stadium, London, UK",
-      city: "London",
-      country: "UK",
-      date: "2025-07-15",
-      time: "8:00 PM",
-      day: "Tue",
-      image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop&crop=face"
-    },
-    {
-      id: 2,
-      title: "Bollywood Night with Shreya",
-      artist: "Shreya Ghoshal",
-      venue: "Madison Square Garden",
-      city: "New York",
-      country: "USA",
-      date: "2025-08-22",
-      time: "7:30 PM",
-      day: "Fri",
-      image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=80&h=80&fit=crop&crop=face"
-    },
-    {
-      id: 3,
-      title: "Classical Fusion Tour",
-      artist: "Shreya Ghoshal",
-      venue: "Royal Albert Hall",
-      city: "London",
-      country: "UK",
-      date: "2025-09-10",
-      time: "7:00 PM",
-      day: "Wed",
-      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=80&h=80&fit=crop&crop=face"
+const UpcomingConcerts = ({ artistShows }) => {
+  const validShows = (artistShows?.shows || [])
+    .filter(
+      (show) =>
+        show?.id &&
+        show?.city &&
+        show?.date &&
+        show?.venue &&
+        show?.url &&
+        artistShows?.artist
+    )
+    .map((show) => {
+      const dateObj = new Date(show.date);
+      const dayFormatted = dateObj.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      const timeFormatted = dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      return {
+        id: show.id,
+        city: show.city,
+        artist: artistShows.artist,
+        date: show.date,
+        day: dayFormatted,
+        time: timeFormatted,
+        venue: show.venue,
+        image: show.images?.[0]?.url || "https://via.placeholder.com/150",
+        url: show.url,
+      };
+    });
+
+  const [upcomingShows, setUpcomingShows] = useState([]);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    setUpcomingShows(validShows.slice(0, 3));
+    setShowAll(false); // reset to default when artistShows changes
+  }, [artistShows]);
+
+  const handleToggle = () => {
+    if (showAll) {
+      setUpcomingShows(validShows.slice(0, 3));
+    } else {
+      setUpcomingShows(validShows);
     }
-  ];
+    setShowAll(!showAll);
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -53,9 +67,13 @@ const UpcomingConcerts = () => {
     <section className="upcoming-concerts">
       <div className="section-header">
         <h2>Upcoming Events..</h2>
-        <button className="view-all-btn">
-          View all upcoming events ({upcomingShows.length})
-        </button>
+        {validShows.length > 3 && (
+          <button className="view-all-btn" onClick={handleToggle}>
+            {showAll
+              ? "Show less"
+              : `View all upcoming events (${validShows.length})`}
+          </button>
+        )}
       </div>
 
       <div className="concerts-list">
@@ -77,7 +95,10 @@ const UpcomingConcerts = () => {
                 </div>
 
                 <div className="concert-image">
-                  <img src={show.image} alt={show.title} />
+                  <img
+                    src={show.image ? show.image : "/Track-Logo.webp"}
+                    alt={`${show.artist} in ${show.city}`}
+                  />
                 </div>
 
                 <div className="concert-details">
@@ -91,9 +112,15 @@ const UpcomingConcerts = () => {
                 </div>
 
                 <div className="concert-actions">
-                  <button className="book-btn">
+                  <a
+                    className="book-btn"
+                    href={show.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Book Now"
+                  >
                     <ExternalLink size={14} />
-                  </button>
+                  </a>
                 </div>
               </div>
             );
