@@ -15,6 +15,7 @@ export function TrackLineCard({
   setTrackInfo,
   spotifyUrl,
   isPlaylist = false,
+  artistNames = [],
 }) {
   const handelOnClick = async (e) => {
     try {
@@ -31,6 +32,7 @@ export function TrackLineCard({
       const trackInfo = {
         trackName: trackName,
         imgSrc: imgSrc,
+        artistNames: artistNames,
       };
       setTrackInfo(trackInfo);
       setPlayerMeta(url);

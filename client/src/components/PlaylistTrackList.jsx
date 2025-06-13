@@ -27,6 +27,7 @@ export  function PlaylistTrackList(props) {
                        setPlayerMeta={props.setPlayerMeta}
                        setTrackInfo={props.setTrackInfo}
                        isPlaylist={props.isPlaylist}
+                       artistNames={item.track.artists}
                    />
                    )}
                </React.Fragment>

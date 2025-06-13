@@ -1,8 +1,8 @@
-// src/hooks/usePlayerController.js
-import { useState, useRef, useEffect, useCallback } from 'react';
+// src/context/PlayerProvider.jsx
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { getNextAudioLink, getPreviousAudioLink } from '../apis/apiFunctions';
 
-// Throttle helper: ensures callback runs at most once per `delay` ms
+// Throttle helper
 function useThrottle(callback, delay) {
   const lastCallRef = useRef(0);
   return useCallback((...args) => {
@@ -14,7 +14,9 @@ function useThrottle(callback, delay) {
   }, [callback, delay]);
 }
 
-export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
+const PlayerContext = createContext();
+
+export const PlayerProvider = ({ children, initialUrl = '', initialTrackInfo = {} }) => {
   // — Core playback state
   const [url, setUrl] = useState(initialUrl);
   const [trackInfo, setTrackInfo] = useState(initialTrackInfo);
@@ -169,7 +171,7 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
   // — Handlers
   const handleNext = useCallback(async (e) => {
     await playNextTrack();
-    e.target.blur();
+    e?.target?.blur();
   }, [playNextTrack]);
 
   const handlePrev = useCallback(async (e) => {
@@ -179,7 +181,7 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
       return;
     }
     await playPreviousTrack();
-    e.target.blur();
+    e?.target?.blur();
   }, [progress, duration, playPreviousTrack]);
 
   const togglePlayPause = useCallback((e) => {
@@ -189,13 +191,13 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
     if (ip) {
       playing ? ip.pauseVideo?.() : ip.playVideo?.();
     }
-    e.target.blur();
+    e?.target?.blur();
   }, [playing, url, getInternalPlayer]);
 
   const handleVolumeChange = useCallback((e) => {
     const v = parseFloat(e.target.value);
     if (!isNaN(v)) setVolume(v);
-    e.target.blur();
+    e?.target?.blur();
   }, []);
 
   const handleSeekChange = useCallback((e) => {
@@ -204,7 +206,7 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
       setProgress(p);
       playerRef.current?.seekTo(p * duration, 'seconds');
     }
-    e.target.blur();
+    e?.target?.blur();
   }, [duration]);
 
   const throttledSetProgress = useThrottle((p) => setProgress(p), 150);
@@ -254,7 +256,7 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
   }, [isTransitioning, playNextTrack, skipNextEnded]);
 
   // — Effects
-    // Sync when parent changes initialUrl/initialTrackInfo
+  // Sync when parent changes initialUrl/initialTrackInfo
   useEffect(() => {
     if (initialUrl) setUrl(initialUrl);
   }, [initialUrl]);
@@ -337,7 +339,7 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
       ? 'fa-volume-low'
       : 'fa-volume-high';
 
-  return {
+  const contextValue = {
     // state & refs
     url, setUrl,
     trackInfo, setTrackInfo,
@@ -356,4 +358,18 @@ export function usePlayerController(initialUrl = '', initialTrackInfo = {}) {
     handleBuffer, handleBufferEnd,
     handleError, handleEnded,
   };
-}
+
+  return (
+    <PlayerContext.Provider value={contextValue}>
+      {children}
+    </PlayerContext.Provider>
+  );
+};
+
+export const useSharedPlayer = () => {
+  const context = useContext(PlayerContext);
+  if (!context) {
+    throw new Error('useSharedPlayer must be used within a PlayerProvider');
+  }
+  return context;
+};

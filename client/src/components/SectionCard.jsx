@@ -19,6 +19,7 @@ export function SectionCard({
   setPlayerMeta,
   setTrackInfo,
   spotifyUrl = "",
+  artistNames = []
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -29,7 +30,6 @@ export function SectionCard({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   return (
     <div className="card-container">
       <div className="card">
@@ -113,6 +113,7 @@ export function SectionCard({
         setTrackInfo={setTrackInfo}
         cardName={cardName}
         imgSrc={imgSrc}
+        artistNames={artistNames}
       />
     </div>
   );

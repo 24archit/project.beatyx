@@ -63,6 +63,7 @@ export default function SearchPageTrackSection(props) {
             setPlayerMeta={props.setPlayerMeta}
             setTrackInfo={props.setTrackInfo}
             spotifyUrl={item.external_urls.spotify}
+            artistNames={item.artists}
           />
         ))}
         </Carousel>

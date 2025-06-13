@@ -6,29 +6,36 @@ import { Link } from 'react-router-dom';
 import TrackLogo from '/Track-Logo.webp';
 import musicWave from '../assets/media/wave.webm';
 import '../assets/styles/Player.css';
-import { usePlayerController } from '../hooks/usePlayerController';
+import { useSharedPlayer } from '../context/PlayerContext';
 
-const Player = ({ initialUrl, initialTrackInfo }) => {
+const Player = () => {
   const {
-    // —— state & refs
+    // State
     url,
     trackInfo,
     volume,
+    setVolume,
     playing,
     progress,
     duration,
     isBuffering,
     errorMessage,
+    
+    // Refs
     playerRef,
     volumeSliderRef,
-
-    // —— controls & icons
+    
+    // Computed
     volumeIcon,
+    
+    // Actions
+    togglePlayPause,
     handleNext,
     handlePrev,
-    togglePlayPause,
     handleSeekChange,
     handleVolumeChange,
+    
+    // ReactPlayer handlers
     handleProgress,
     handleDuration,
     handleBuffer,
@@ -36,7 +43,7 @@ const Player = ({ initialUrl, initialTrackInfo }) => {
     handleError,
     handleEnded,
     setIsPlayerReady,
-  } = usePlayerController(initialUrl, initialTrackInfo);
+  } = useSharedPlayer();
 
   return (
     <div className="player">

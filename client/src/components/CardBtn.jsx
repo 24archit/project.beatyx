@@ -1,7 +1,7 @@
 import "../assets/styles/CardBtn.css";
 import { getAudioLink } from "../apis/apiFunctions";
 import { useNavigate } from "react-router-dom";
-export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerMeta,setTrackInfo, cardName, imgSrc}) {
+export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerMeta,setTrackInfo, cardName, imgSrc, artistNames}) {
   const navigate = useNavigate();
   const handelOnClick = async (e) => {
     if (cardType === "track") {
@@ -11,7 +11,9 @@ export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerM
         const trackInfo = {
           trackName: cardName,
           imgSrc: imgSrc,
+          artistNames: artistNames.length > 0 ? artistNames : ["Unknown Artist"],
         };
+        console.log("Track Info:", trackInfo);
         setPlayerMeta(url);
         setTrackInfo(trackInfo);
          e.target.blur();

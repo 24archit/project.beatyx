@@ -24,6 +24,7 @@ export  function AlbumTrackList(props) {
                 cardId ={item.id}
                 setPlayerMeta={props.setPlayerMeta}
                 setTrackInfo={props.setTrackInfo}
+                artistNames={item.artists}
                 />
                 
             ))}

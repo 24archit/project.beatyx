@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../assets/styles/Section.css";
 import { SectionName } from "./SectionName.jsx";
 import { SectionCard } from "./SectionCard.jsx";
@@ -62,6 +62,7 @@ export default function HomePagePlaylistTrackSection(props) {
                   ))}
                 </>
               }
+              artistNames={item.track.artists}
               spotifyUrl={item.track.external_urls.spotify}
             />
           ))}

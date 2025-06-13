@@ -16,10 +16,14 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import ProfilePage from "./pages/ProfilePage";
 import TrackPage from "./pages/TrackPage";
+import CurrentTrackButton from "./components/CurrentTrack";
+import { PlayerProvider } from "../src/context/PlayerContext";
 
-function Layout({ isAuth, playerMeta, setPlayerMeta, trackInfo, setTrackInfo }) {
+function Layout({ isAuth, playerMeta, setPlayerMeta, trackInfo, setTrackInfo, isMobile}) {
   return (
     <>
+    <PlayerProvider   initialUrl={playerMeta}
+      initialTrackInfo={trackInfo}>
       <NavBar isAuth={isAuth} />
       <Side />
       <div className="content">
@@ -28,10 +32,12 @@ function Layout({ isAuth, playerMeta, setPlayerMeta, trackInfo, setTrackInfo }) 
         </main>
       </div>
       <Footer />
-      <Player
-      initialUrl={playerMeta}
-      initialTrackInfo={trackInfo}
-      />
+      {isMobile ? (
+          <CurrentTrackButton />
+        ) : (
+          <Player/>
+        )}
+      </PlayerProvider>
     </>
   );
 }
@@ -40,6 +46,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [playerMeta, setPlayerMeta] = useState("");
   const [trackInfo, setTrackInfo] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
@@ -47,12 +54,25 @@ function App() {
       setIsAuth(true);
     }
   }, []);
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <HelmetProvider>
       <Router>
         <Routes>
-          <Route element={<Layout isAuth={isAuth} playerMeta={playerMeta} setPlayerMeta={setPlayerMeta} trackInfo={trackInfo} setTrackInfo={setTrackInfo} />}>
+          <Route element={<Layout isAuth={isAuth} playerMeta={playerMeta} setPlayerMeta={setPlayerMeta} trackInfo={trackInfo} setTrackInfo={setTrackInfo} isMobile={isMobile}/>}>
             <Route path="/" element={<HomePage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />} />
             <Route path="/artist/:id" element={<ArtistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />} />
             <Route path="/playlist/:id" element={<PlaylistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />} />
