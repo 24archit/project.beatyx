@@ -134,7 +134,7 @@ export const PlayerProvider = ({ children, initialUrl = '', initialTrackInfo = {
         const nxt = await getNextAudioLink(q);
         if (nxt?.audioLink?.url) {
           nextUrl = nxt.audioLink.url;
-          details = { trackName: nxt.trackName, imgSrc: nxt.imgSrc };
+          details = { trackName: nxt.trackName, imgSrc: nxt.imgSrc, artistNames: nxt.artistNames || ['Unknown Artist'] };
         }
       } catch (e) {
         console.error('playNextTrack fetch error', e);
@@ -159,7 +159,7 @@ export const PlayerProvider = ({ children, initialUrl = '', initialTrackInfo = {
     try {
       const prev = await getPreviousAudioLink(q);
       const urlToPlay = prev?.audioLink?.url;
-      const details = { trackName: prev.trackName, imgSrc: prev.imgSrc };
+      const details = { trackName: prev.trackName, imgSrc: prev.imgSrc, artistNames: prev.artistNames || ['Unknown Artist'] };
       if (urlToPlay) {
         loadTrack(urlToPlay, details);
       }

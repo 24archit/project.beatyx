@@ -13,7 +13,6 @@ export function CardBtn({iconId, logoClass, logoId, cardType, cardId, setPlayerM
           imgSrc: imgSrc,
           artistNames: artistNames.length > 0 ? artistNames : ["Unknown Artist"],
         };
-        console.log("Track Info:", trackInfo);
         setPlayerMeta(url);
         setTrackInfo(trackInfo);
          e.target.blur();

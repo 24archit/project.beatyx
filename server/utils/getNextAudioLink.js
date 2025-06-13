@@ -41,6 +41,7 @@ async function getNextAudioLink(queueId) {
           trackName: trackName,
           imgSrc: trackImg,
           audioLink: audioLink,
+          artistNames: nextTrack.track.artists || ["Unknown Artist"]
         }
         return trackInfo;
       }
