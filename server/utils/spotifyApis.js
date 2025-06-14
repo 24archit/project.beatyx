@@ -167,5 +167,5 @@ module.exports = {
   getSearchResult,
   getPlaylist,
   getAlbum,
-  makeApiRequest
+
 };

@@ -1,9 +1,36 @@
-const {makeApiRequest} = require("./spotifyApis");
+
 const {getAccessToken} = require("./getAccessToken")
 const axios = require("axios");
 
 const TM_API_KEY = process.env.TM_API_KEY;
 
+async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, delay = 800) {
+  try {
+    const response = await axios({
+      url,
+      method,
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    const status = error.response?.status || error.message;
+    console.error(`Error with API request: ${url}. Status: ${status}`);
+
+    if (status === 401) {
+      console.log("Refreshing access tokens...");
+      await getFreshTokens();
+    }
+
+    if (retries > 0) {
+      console.log(`Retrying API request... (${4 - retries + 1}/4)`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return makeApiRequest(url, method, headers, retries - 1, delay);
+    } else {
+      console.error("Max retries reached. Could not complete the API request.");
+      throw error;
+    }
+  }
+}
 async function getAttractionId(artist) {
   const attrResp = await axios.get(
     "https://app.ticketmaster.com/discovery/v2/attractions.json",
