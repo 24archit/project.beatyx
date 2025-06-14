@@ -63,7 +63,6 @@
   align-items: center;
   gap: 1rem;
   transition: all 0.3s ease;
-  cursor: pointer;
 }
 
 .concert-card:hover {
@@ -101,22 +100,9 @@
   margin-top: 0.1rem;
 }
 
-.concert-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
 
-.concert-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
 
-.concert-card:hover .concert-image img {
+.concert-card:hover  {
   transform: scale(1.05);
 }
 
@@ -168,6 +154,7 @@
 .concert-actions {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .book-btn {

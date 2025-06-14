@@ -94,12 +94,7 @@ const UpcomingConcerts = ({ artistShows }) => {
                   <div className="day">{day}</div>
                 </div>
 
-                <div className="concert-image">
-                  <img
-                    src={show.image ? show.image : "/Track-Logo.webp"}
-                    alt={`${show.artist} in ${show.city}`}
-                  />
-                </div>
+              
 
                 <div className="concert-details">
                   <div className="concert-title">{show.city}</div>
