@@ -111,7 +111,7 @@ async function getDetailedShows(attractionId) {
   return detailedShows;
 }
 
-async function getArtistShows(artistId, artistName = "") {
+async function getArtistShows(artistId, rightAccessToken, artistName = "") {
   if (!TM_API_KEY) {
     throw new Error("Ticketmaster API key (TM_API_KEY) is not set.");
   }
@@ -120,7 +120,7 @@ async function getArtistShows(artistId, artistName = "") {
     let artist = artistName.trim();
     if (!artist) {
       const artistDataUrl = `https://api.spotify.com/v1/artists/${artistId}`;
-      const accessToken = await getAccessToken();
+      const accessToken = rightAccessToken;
       const artistData = await makeApiRequest(
         artistDataUrl,
         "GET",

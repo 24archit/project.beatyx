@@ -35,8 +35,8 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
 }
 
 // Function to fetch top tracks in India
-async function getTopTracksIndia(retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
+async function getTopTracksIndia(rightAccessToken,retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbLZ52XmnySJg";
 
   return makeApiRequest(
@@ -52,8 +52,8 @@ async function getTopTracksIndia(retries = 4, delay = 800) {
 }
 
 // Function to fetch top tracks globally
-async function getTopTracksGlobal(retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
+async function getTopTracksGlobal(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbMDoHDwVN2tF";
 
   return makeApiRequest(
@@ -69,13 +69,11 @@ async function getTopTracksGlobal(retries = 4, delay = 800) {
 }
 
 // Function to fetch artist info
-async function getArtistInfo(id, retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
-
+async function getArtistInfo(id, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const artistDataUrl = `https://api.spotify.com/v1/artists/${id}`;
   const topTracksUrl = `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`;
   const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=8&offset=0`;
-  
   
   const artistData = await makeApiRequest(
     artistDataUrl,
@@ -84,7 +82,7 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
     retries,
     delay
   );
-  const artistShows = await getArtistShows(id, artistData.name);
+  const artistShows = await getArtistShows(id,rightAccessToken, artistData.name);
   const topTracks = await makeApiRequest(
     topTracksUrl,
     "GET",
@@ -110,8 +108,8 @@ async function getArtistInfo(id, retries = 4, delay = 800) {
 }
 
 // Function to fetch search results
-async function getSearchResult(query, type, retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
+async function getSearchResult(query, type, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=9`;
 
   return makeApiRequest(
@@ -127,8 +125,8 @@ async function getSearchResult(query, type, retries = 4, delay = 800) {
 }
 
 // Function to fetch playlist details
-async function getPlaylist(id, retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
+async function getPlaylist(id, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type),images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`;
 
   return makeApiRequest(
@@ -143,8 +141,8 @@ async function getPlaylist(id, retries = 4, delay = 800) {
   );
 }
 // Function to get album details
-async function getAlbum(id, retries = 4, delay = 800) {
-  const accessToken = await getAccessToken();
+async function getAlbum(id, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/albums/${id}`;
 
   return makeApiRequest(
@@ -158,7 +156,19 @@ async function getAlbum(id, retries = 4, delay = 800) {
     delay
   );
 }
-
+async function getCurrentUserInfo(accessToken, retires=4, delay=800){
+  const url = "https://api.spotify.com/v1/me"
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retires,
+    delay
+  )
+}
 // Export all functions
 module.exports = {
   getTopTracksIndia,
@@ -167,5 +177,5 @@ module.exports = {
   getSearchResult,
   getPlaylist,
   getAlbum,
-
+  getCurrentUserInfo
 };

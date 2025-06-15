@@ -83,10 +83,12 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
   }, [id]);
   return (
     <>
-    {artistData ?( <Helmet>
-        <title>{`${artistData.name} | Beatyx`}</title>
-      </Helmet>):null}
-     
+      {artistData ? (
+        <Helmet>
+          <title>{`${artistData.name} | Beatyx`}</title>
+        </Helmet>
+      ) : null}
+
       <div className="artist-page-bg" draggable="true">
         {artistData ? (
           <>
@@ -122,7 +124,20 @@ export default function ArtistPage({ setPlayerMeta, isAuth, setTrackInfo }) {
                   aria-label="Explore the content on Spotify"
                   title="Explore the content on Spotify"
                 >
-                  <img src={spotifyLogo} alt="Spotify Logo" loading="lazy" />
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 168 168"
+                    xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-label="Spotify Logo"
+                  >
+                    <title>Explore Artist On Spotify</title>
+                    <path
+                      fill="#ffffff"
+                      d="M84 0C37.7 0 0 37.7 0 84s37.7 84 84 84 84-37.7 84-84S130.3 0 84 0zm38.2 121.2c-1.4 2.3-4.4 3-6.7 1.6-18.4-11.3-41.5-13.9-68.8-7.8-2.6.6-5.2-1-5.8-3.6-.6-2.6 1-5.2 3.6-5.8 30.5-6.8 57.3-3.7 78 9 2.2 1.4 2.9 4.4 1.7 6.6zm9.5-19.5c-1.8 2.9-5.5 3.8-8.3 2-21.1-13-53.3-16.8-78.1-9.5-3.2.9-6.5-.9-7.5-4.1-.9-3.2.9-6.5 4.1-7.5 29.7-8.5 66.4-4.2 91.6 11.1 2.8 1.8 3.6 5.5 2 8zm.9-20.6c-25.2-15.2-66.5-16.6-90.5-9.4-3.8 1.1-7.8-1-8.9-4.8-1.1-3.8 1-7.8 4.8-8.9 28.6-8.5 75.5-6.8 104.2 10.8 3.4 2 4.5 6.4 2.4 9.8-2.1 3.4-6.5 4.5-9.9 2.5z"
+                    />
+                  </svg>
                 </a>
               </div>
             </div>

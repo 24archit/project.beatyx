@@ -1,4 +1,11 @@
 import axios from "axios";
+function getAuthHeaders() {
+  const token = window.localStorage.getItem("authToken");
+  return {
+    Authorization: `Bearer ${token}`
+  };
+}
+
 
 export async function getSignUp(FormData) {
   try {
@@ -6,10 +13,11 @@ export async function getSignUp(FormData) {
       method: "post",
       url: `${import.meta.env.VITE_SERVER_LINK}/auth/signup`,
       data: FormData,
+      headers: getAuthHeaders()
     };
     const response = await axios(config);
     if (response.status == 201) {
-      window.localStorage.setItem("authToken", response.data.authtoken);
+      window.localStorage.setItem("authToken", response.data.authToken);
       return true;
     }
   } catch (error) {
@@ -22,10 +30,11 @@ export async function getLoggedIn(FormData) {
       method: "post",
       url: `${import.meta.env.VITE_SERVER_LINK}/auth/login`,
       data: FormData,
+      headers: getAuthHeaders()
     };
     const response = await axios(config);
     if (response.status == 200) {
-      window.localStorage.setItem("authToken", response.data.authtoken);
+      window.localStorage.setItem("authToken", response.data.authToken);
       return response.data;
     }
   } catch (error) {
@@ -38,6 +47,7 @@ export async function getTopTracksIndia() {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTopTracksIndia`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -50,6 +60,7 @@ export async function getTopTracksGlobal() {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTopTracksGlobal`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -62,6 +73,7 @@ export async function getArtistInfo(id) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/artist/api/getArtistInfo/${id}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -79,6 +91,7 @@ export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueI
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getAudioLink/${id}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -93,6 +106,7 @@ export async function getSearchResult(query, type) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/search/api/getSearchResult?q=${query}&type=${type}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -107,6 +121,7 @@ export async function getPlaylistInfo(id) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/playlist/api/getPlaylistInfo/${id}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     window.sessionStorage.setItem("currPlaylistId", response.data.currPlaylistId);
     return response.data;
@@ -122,6 +137,7 @@ export async function getAlbumInfo(id) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/album/api/getAlbumInfo/${id}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -141,6 +157,7 @@ export async function updatePlayerQueue(index, currPlaylistId, queueId) {
         currPlaylistId: currPlaylistId,
         queueId: queueId,
       },
+      headers: getAuthHeaders()
     });
     window.sessionStorage.setItem("queueId", response.data.queueId);
     return response.data;
@@ -156,6 +173,7 @@ export async function getNextAudioLink(queueId) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getNextAudioLink/${queueId}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -170,6 +188,7 @@ export async function getPreviousAudioLink(queueId) {
     const response = await axios({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getPreviousAudioLink/${queueId}`,
       method: "GET",
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -178,16 +197,19 @@ export async function getPreviousAudioLink(queueId) {
     );
   }
 }
-export async function connectSpotify() {
-  try {
-    const response = await axios({
-      url: `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`,
+export async function verifyAuth(){
+   try {
+     const config = {
       method: "GET",
-    });
-    console.log("Spotify connection response:", response.data);
+      url: `${import.meta.env.VITE_SERVER_LINK}/auth/verifyauth`,
+      headers: getAuthHeaders()
+    };
+    const response = await axios(config);
     return response.data;
   } catch (error) {
-    throw new Error(`Error connecting to Spotify: ${error.message}`);
+    console.error("Auth check failed:", error.response?.data || error.message);
+    localStorage.removeItem("authToken");
+    return {isVerified : false, spotifyConnect: false};
   }
 }
 

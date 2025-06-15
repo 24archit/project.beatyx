@@ -38,7 +38,9 @@ const CurrentTrackButton = () => {
     handleBufferEnd,
     handleError,
     handleEnded,
-    setIsPlayerReady,
+    handlePlay,
+    handlePause,
+    handleReady,
   } = useSharedPlayer();
 
   // Helper function to remove focus from buttons
@@ -125,7 +127,9 @@ const CurrentTrackButton = () => {
                 },
               },
             }}
-            onReady={() => setIsPlayerReady(true)}
+            onReady={handleReady}
+            onPlay={handlePlay}
+            onPause={handlePause}
             onDuration={handleDuration}
             onEnded={handleEnded}
             onError={handleError}

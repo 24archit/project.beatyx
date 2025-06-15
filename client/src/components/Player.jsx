@@ -42,6 +42,9 @@ const Player = () => {
     handleBufferEnd,
     handleError,
     handleEnded,
+    handlePlay,
+    handlePause,
+    handleReady,
     setIsPlayerReady,
   } = useSharedPlayer();
 
@@ -180,7 +183,9 @@ const Player = () => {
                 },
               },
             }}
-            onReady={() => setIsPlayerReady(true)}
+            onReady={handleReady}
+            onPlay={handlePlay}
+            onPause={handlePause}
             onDuration={handleDuration}
             onEnded={handleEnded}
             onError={handleError}

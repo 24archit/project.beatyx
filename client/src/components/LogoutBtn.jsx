@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { styled } from "@mui/material/styles";
-
+import "../assets/styles/LogoutBtn.css"
 // Define custom styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
@@ -75,7 +75,7 @@ export default function AlertDialog() {
   };
 
   return (
-    <React.Fragment>
+    <div className="logout-btn-container">
       <button
         id="logout-btn"
         className="log-in-out-btns"
@@ -107,7 +107,7 @@ export default function AlertDialog() {
             >
               Spotify Account
             </a>
-          </StyledDialogContentText>
+          </StyledDialogContentText>  
         </DialogContent>
         <DialogActions>
           <CancelButton onClick={handleClose} color="primary">
@@ -116,6 +116,6 @@ export default function AlertDialog() {
           <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </DialogActions>
       </StyledDialog>
-    </React.Fragment>
+    </div>
   );
 }

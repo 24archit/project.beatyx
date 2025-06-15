@@ -33,7 +33,7 @@ if (process.env.VERCEL !== "true") {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: false, httpOnly: true },
+      cookie: { maxAge: 15 * 60 * 1000, secure: false, httpOnly: true },
     })
   );
 } else {
@@ -42,7 +42,11 @@ if (process.env.VERCEL !== "true") {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: true, httpOnly: true },
+      cookie: {
+        secure: true,
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+      },
     })
   );
 }

@@ -102,8 +102,7 @@ export default function SignUpBtn() {
   const [open, setOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState(null);
   const [formData, setFormData] = React.useState({
-    username: "",
-    name: "",
+    displayName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -129,8 +128,7 @@ export default function SignUpBtn() {
       !formData.confirmPassword ||
       !formData.password ||
       !formData.email ||
-      !formData.name ||
-      !formData.username
+      !formData.displayName
     ) {
       setAlertMessage("Please fill up all the details to register");
       return;
@@ -154,6 +152,7 @@ export default function SignUpBtn() {
         setAlertMessage(
           "You have already registered using this email. Please login.."
         );
+        return;
       }
       window.location.href =
         import.meta.env.VITE_CLIENT_LINK || "http://localhost:5173";
@@ -196,23 +195,14 @@ export default function SignUpBtn() {
         </StyledDialogTitle>
         <DialogContent>
           <StyledTextField
-            label="Username"
-            name="username"
+            label="Display Name To Show In Your Profile"
+            name="displayName"
             fullWidth
             margin="normal"
-            value={formData.username}
+            value={formData.displayName}
             onChange={handleInputChange}
             variant="outlined"
             autoFocus
-          />
-          <StyledTextField
-            label="Name"
-            name="name"
-            fullWidth
-            margin="normal"
-            value={formData.name}
-            onChange={handleInputChange}
-            variant="outlined"
           />
           <StyledTextField
             label="Email"

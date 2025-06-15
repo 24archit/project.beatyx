@@ -1,11 +1,12 @@
 const router = require("express").Router();
 const { getPlaylist } = require("../utils/spotifyApis");
 const currPlaylist = require("../models/currPlaylist");
+const setToken = require("../middlewares/setToken");
 
-router.get("/api/getPlaylistInfo/:playlistId", async (req, res) => {
+router.get("/api/getPlaylistInfo/:playlistId", setToken, async (req, res) => {
   try {
     const playlistId = req.params.playlistId;
-    const playlist = await getPlaylist(playlistId);
+    const playlist = await getPlaylist(playlistId, req.session.accessToken);
 
     if (!playlist) {
       throw new Error("Error fetching the playlist");
