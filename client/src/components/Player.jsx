@@ -165,6 +165,7 @@ const Player = () => {
       <Suspense fallback={null}>
         {url && (
           <ReactPlayer
+            key={url}
             ref={playerRef}
             url={url}
             playing={playing}
