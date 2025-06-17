@@ -1,85 +1,35 @@
-import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
+import { getTopTracksIndia, getTopTracksGlobal } from "../apis/apiFunctions.js";
 import HomePagePlaylistTrackSection from "../components/HomePagePlaylistTrackSection.jsx";
 import SectionLoading from "../components/SectionLoading.jsx";
-import {
-  getTopTracksIndia,
-  getTopTracksGlobal,
-} from "../apis/apiFunctions.js";
-import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
+
 export default function HomePage({ setPlayerMeta, setTrackInfo }) {
-  const [topIndiaTracks, setTopIndiaTracks] = useState([]);
-  const [topGlobalTracks, setTopGlobalTracks] = useState([]);
-  const [userTopArtists, setUserTopArtists] = useState([]);
+  const { data: topIndiaTracks, isLoading: loadingIndia } = useQuery({
+    queryKey: ["topIndiaTracks"],
+    queryFn: getTopTracksIndia,
+    select: (data) => data.tracks.items,
+    staleTime: 5 * 60 * 1000, // 5 min caching
+  });
 
-  const fetchTracks = async (fetchFunction, setTracks) => {
-    let retryCount = 0; // Track the number of retries
-    const maxRetries = 3; // Set a limit for retries
-
-    while (retryCount < maxRetries) {
-      try {
-        const data = await fetchFunction();
-        const newArr = data.tracks.items;
-        setTracks(newArr);
-        return; // Exit the function if successful
-      } catch (error) {
-        console.error(
-          `Attempt ${retryCount + 1} - Error fetching tracks:`,
-          error
-        );
-
-        retryCount += 1;
-
-        // If retries are exhausted, reload the page
-        if (retryCount === maxRetries) {
-          console.log("Reloading the page to resolve the error...");
-          window.location.reload();
-          return;
-        }
-
-        // Optionally add a short delay between retries
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
-  };
-
+  const { data: topGlobalTracks, isLoading: loadingGlobal } = useQuery({
+    queryKey: ["topGlobalTracks"],
+    queryFn: getTopTracksGlobal,
+    select: (data) => data.tracks.items,
+    staleTime: 5 * 60 * 1000,
+  });
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchTracks(getTopTracksIndia, setTopIndiaTracks);
-    };
-    fetchData();
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchTracks(getTopTracksGlobal, setTopGlobalTracks);
-    };
-    fetchData();
-    window.scrollTo(0, 0);
-  }, []);
-
-  // useEffect(() => {
-  //   const fetchUserTopArtists = async () => {
-  //     try {
-  //       const data = await getUserTopArtists(12);
-  //       setUserTopArtists(data.items);
-  //     } catch (error) {
-  //       console.error('Error fetching user top artists:', error);
-  //     }
-  //   };
-  //   fetchUserTopArtists();
-  // }, []);
-
-  const handleMoreClick = (setTracks, tracks, visibleCount) => {
-    setTracks(tracks.slice(0, visibleCount + 45));
-  };
 
   return (
     <>
       <Helmet>
-        <title>Beatyx - Play Music </title>
+        <title>Beatyx - Play Music</title>
       </Helmet>
-      {topIndiaTracks.length ? (
+
+      {!loadingIndia && topIndiaTracks ? (
         <HomePagePlaylistTrackSection
           iconClass="fa-solid fa-arrow-trend-up"
           iconId="trend-icon"
@@ -88,9 +38,9 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
           setPlayerMeta={setPlayerMeta}
           setTrackInfo={setTrackInfo}
           showMore={topIndiaTracks.length > 45}
-          onMoreClick={() =>
-            handleMoreClick(setTopIndiaTracks, topIndiaTracks, 45)
-          }
+          onMoreClick={() => {
+            /* handle see more */
+          }}
           sectionName="top-tracks-india"
           routeTo="/playlist/37i9dQZEVXbLZ52XmnySJg"
         />
@@ -104,7 +54,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
         />
       )}
 
-      {topGlobalTracks.length ? (
+      {!loadingGlobal && topGlobalTracks ? (
         <HomePagePlaylistTrackSection
           iconClass="fa-solid fa-arrow-trend-up"
           iconId="trend-icon"
@@ -113,9 +63,9 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
           setPlayerMeta={setPlayerMeta}
           setTrackInfo={setTrackInfo}
           showMore={topGlobalTracks.length > 45}
-          onMoreClick={() =>
-            handleMoreClick(setTopGlobalTracks, topGlobalTracks, 45)
-          }
+          onMoreClick={() => {
+            /* handle see more */
+          }}
           sectionName="top-tracks-global"
           routeTo="/playlist/37i9dQZEVXbMDoHDwVN2tF"
         />

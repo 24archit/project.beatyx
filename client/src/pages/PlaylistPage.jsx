@@ -1,77 +1,54 @@
-import { PlaylistMainInfo } from "../components/PlaylistMainInfo";
-import { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { getPlaylistInfo } from "../apis/apiFunctions.js";
-import { Skeleton } from "@mui/material";
-import defaultProfilePic from "/profile-pic.webp";
+import { useQuery } from "@tanstack/react-query";
+import { getPlaylistInfo } from "../apis/apiFunctions";
+import { PlaylistMainInfo } from "../components/PlaylistMainInfo";
+import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
 import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
-import { PlaylistTrackList } from "../components/PlaylistTrackList";
-import React from "react";
+import defaultProfilePic from "/profile-pic.webp";
+import { Skeleton } from "@mui/material";
 import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
+
 export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
-  const [playlistData, setPlaylistData] = useState(null);
   const { id } = useParams();
   useEffect(() => {
-    // Async function for data fetching
-    const fetchData = async () => {
-      let retryCount = 0; // Track the number of retries
-      const maxRetries = 3; // Set a limit for retries
-
-      while (retryCount < maxRetries) {
-        try {
-          // Fetch playlist data from API
-          const data = await getPlaylistInfo(id);
-          setPlaylistData(data.playlist);
-          return; // Exit the loop if successful
-        } catch (error) {
-          console.error(
-            `Attempt ${retryCount + 1} - Error fetching playlist data:`,
-            error
-          );
-          retryCount += 1;
-
-          if (retryCount === maxRetries) {
-            console.log("Max retries reached. Reloading the page...");
-            window.location.reload(); // Reload the page after exhausting retries
-            return;
-          } else {
-            // Add a small delay before retrying
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          }
-        }
-      }
-    };
-
-    fetchData();
     window.scrollTo(0, 0);
+  }, []);
+  const {
+    data: playlistData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["playlist", id],
+    queryFn: () => getPlaylistInfo(id).then((res) => res.playlist),
+    retry: 2, // Retries 2 more times after first failure
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window is focused
+  });
 
-    // Cleanup on component unmount or dependency change
-    return () => {
-      setPlaylistData(null);
-    };
-  }, [id]);
+  // Retry fallback (manual reload)
+  if (isError) {
+    return (
+      <div className="artist-page-bg" draggable="true">
+        <h2 style={{ color: "white", textAlign: "center" }}>
+          Failed to load playlist.{" "}
+          <button onClick={refetch} style={{ textDecoration: "underline" }}>
+            Retry
+          </button>
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <>
       <Helmet>
         <title>Playlist | Beatyx</title>
       </Helmet>
-      {playlistData ? (
-        <div className="artist-page-bg" draggable="true">
-          <PlaylistMainInfo
-            PlaylistName={playlistData.name}
-            description={playlistData.description}
-            img={playlistData.images[0]?.url || defaultProfilePic}
-          />
-          <PlaylistTrackList
-            data={playlistData.tracks.items}
-            isPlaylist={true}
-            setPlayerMeta={setPlayerMeta}
-            setTrackInfo={setTrackInfo}
-          />
-        </div>
-      ) : (
+      {isLoading || !playlistData ? (
         <>
           <ArtistMainInfoLoad />
           <div className="buttons-container">
@@ -100,6 +77,20 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
           </div>
           <ArtistTopTrackPartLoad />
         </>
+      ) : (
+        <div className="artist-page-bg" draggable="true">
+          <PlaylistMainInfo
+            PlaylistName={playlistData.name}
+            description={playlistData.description}
+            img={playlistData.images[0]?.url || defaultProfilePic}
+          />
+          <PlaylistTrackList
+            data={playlistData.tracks.items}
+            isPlaylist={true}
+            setPlayerMeta={setPlayerMeta}
+            setTrackInfo={setTrackInfo}
+          />
+        </div>
       )}
     </>
   );

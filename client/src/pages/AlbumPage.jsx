@@ -1,5 +1,4 @@
 import { PlaylistMainInfo } from "../components/PlaylistMainInfo";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAlbumInfo } from "../apis/apiFunctions.js";
 import { Skeleton } from "@mui/material";
@@ -8,70 +7,32 @@ import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
 import { ArtistMainInfoLoad } from "../components/ArtistMainInfo";
 import { Helmet } from "react-helmet-async";
 import { AlbumTrackList } from "../components/AlbumTrackList.jsx";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
-  const [AlbumData, setAlbumData] = useState(null);
   const { id } = useParams();
   useEffect(() => {
-    // Async function for data fetching
-    const fetchData = async () => {
-      let retryCount = 0; // Track the number of retries
-      const maxRetries = 3; // Set a limit for retries
-
-      while (retryCount < maxRetries) {
-        try {
-          // Fetch playlist data from API
-          const data = await getAlbumInfo(id);
-          console.log(data);
-          setAlbumData(data);
-          return; // Exit the loop if successful
-        } catch (error) {
-          console.error(
-            `Attempt ${retryCount + 1} - Error fetching playlist data:`,
-            error
-          );
-          retryCount += 1;
-
-          if (retryCount === maxRetries) {
-            console.log("Max retries reached. Reloading the page...");
-            window.location.reload(); // Reload the page after exhausting retries
-            return;
-          } else {
-            // Add a small delay before retrying
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          }
-        }
-      }
-    };
-
-    fetchData();
     window.scrollTo(0, 0);
-
-    // Cleanup on component unmount or dependency change
-    return () => {
-      setAlbumData(null);
-    };
-  }, [id]);
+  }, []);
+  const {
+    data: albumData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["album", id],
+    queryFn: () => getAlbumInfo(id),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    retry: 3, // Retry up to 3 times automatically
+  });
 
   return (
     <>
       <Helmet>
         <title>Album | Beatyx</title>
       </Helmet>
-      {AlbumData ? (
-        <div className="artist-page-bg" draggable="true">
-          <PlaylistMainInfo
-            PlaylistName={AlbumData.name}
-            description={AlbumData.album_type==="album"?"Album":"Single"}
-            img={AlbumData.images[0]?.url || defaultProfilePic}
-          />
-          <AlbumTrackList
-            data={AlbumData.tracks.items}
-            trackImg={AlbumData.images[0]?.url || defaultProfilePic}
-            setPlayerMeta={setPlayerMeta}
-            setTrackInfo={setTrackInfo}
-          />
-        </div>
-      ) : (
+
+      {isLoading ? (
         <>
           <ArtistMainInfoLoad />
           <div className="buttons-container">
@@ -100,7 +61,25 @@ export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
           </div>
           <ArtistTopTrackPartLoad />
         </>
-      )}
+      ) : albumData ? (
+        <div className="artist-page-bg" draggable="true">
+          <PlaylistMainInfo
+            PlaylistName={albumData.name}
+            description={albumData.album_type === "album" ? "Album" : "Single"}
+            img={albumData.images[0]?.url || defaultProfilePic}
+          />
+          <AlbumTrackList
+            data={albumData.tracks.items}
+            trackImg={albumData.images[0]?.url || defaultProfilePic}
+            setPlayerMeta={setPlayerMeta}
+            setTrackInfo={setTrackInfo}
+          />
+        </div>
+      ) : isError ? (
+        <div style={{ color: "red", padding: "1rem" }}>
+          Failed to load album: {error.message}
+        </div>
+      ) : null}
     </>
   );
 }
