@@ -23,6 +23,9 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
 import AlbumIcon from "@mui/icons-material/Album";
 import HistoryIcon from "@mui/icons-material/History";
+import LeftArrowIcon from "@mui/icons-material/ArrowBack";
+import RightArrowIcon from "@mui/icons-material/ArrowForward"
+import { useNavigate } from 'react-router-dom';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -75,6 +78,7 @@ export default function Sidebar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const drawerRef = React.useRef(null);
+   const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -106,6 +110,20 @@ export default function Sidebar() {
   };
 
   const menuItems = [
+    {
+      text: "Go Back",
+      icon: <LeftArrowIcon/>,
+      onClick: ()=>navigate(-1),
+      link: "#"
+
+    },
+    {
+      text: "Go Forward",
+      icon: <RightArrowIcon/>,
+      onClick: ()=>navigate(1),
+      link: "#"
+
+    },
     {
       text: "Profile",
       icon: <PersonIcon />,
