@@ -22,7 +22,7 @@ export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
   } = useQuery({
     queryKey: ["album", id],
     queryFn: () => getAlbumInfo(id),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 15 * 60 * 1000, // Cache for 5 minutes
     retry: 3, // Retry up to 3 times automatically
   });
 

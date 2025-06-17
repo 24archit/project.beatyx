@@ -17,7 +17,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo }) {
     queryKey: ["topGlobalTracks"],
     queryFn: getTopTracksGlobal,
     select: (data) => data.tracks.items,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 15 * 60 * 1000,
   });
   useEffect(() => {
     window.scrollTo(0, 0);
