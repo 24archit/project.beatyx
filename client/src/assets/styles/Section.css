@@ -120,7 +120,18 @@
 .carousel-dot:hover {
   background: rgba(255, 255, 255, 0.7);
 }
+.card-stat-text a {
+  color: #fff; /* White to stand out against grey text */
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  z-index: 2; /* Ensures it sits above the card click layer if needed */
+}
 
+.card-stat-text a:hover {
+  text-decoration: underline;
+  color: #1db954; /* Brand Green on hover */
+}
 /* Responsive design */
 @media (max-width: 1280px) {
   .carousel-card {

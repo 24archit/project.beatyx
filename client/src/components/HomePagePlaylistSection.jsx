@@ -39,7 +39,7 @@ export default function HomePagePlaylistSection(props) {
               cardStat={
                 <span 
                   className="card-stat-text" 
-                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: '0.8rem'}}
+                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: '0.8rem', color: '#b3b3b3', textDecoration: 'none' }}
                   dangerouslySetInnerHTML={{ __html: item.description || `By ${item.owner.display_name}` }} 
                 />
               }

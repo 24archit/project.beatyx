@@ -1,4 +1,8 @@
-
+*{
+    text-decoration: none;
+    font-weight: normal;
+    
+}
 .card-container{
     height: 22rem; /* Reduced height */
     width: 14rem; /* Reduced width */
@@ -155,6 +159,15 @@
 .spotify-logo:hover {
     opacity: 1;
 }
+.card-stat-text,
+.card-stat-text a,
+.card-stat-text a:visited,
+.card-stat-text a:hover,
+.card-stat-text a:active {
+  color: #b3b3b3 !important;
+  text-decoration: none !important;
+}
+
 @media(max-width: 768px) {
     .card-container {
         height: 19rem; /* Adjusted for smaller screens */
