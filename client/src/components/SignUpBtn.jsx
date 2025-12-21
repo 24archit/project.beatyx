@@ -125,7 +125,6 @@ const handleSignUp = async (e) => {
       return;
     }
 
-    // NEW LOGIC
     if (!window.grecaptcha || !window.grecaptcha.enterprise) {
       setAlertMessage("Security check failed. Please refresh.");
       return;
@@ -136,25 +135,34 @@ const handleSignUp = async (e) => {
         window.grecaptcha.enterprise.ready(async () => {
           const t = await window.grecaptcha.enterprise.execute(
             import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: 'SIGNUP' } 
+            { action: 'SIGNUP' }
           );
           resolve(t);
         });
       });
 
-      // FIX: Use a different name like 'submissionData' to avoid conflict
       const submissionData = { ...formData, recaptchaToken: token };
       
-      const isSignedUp = await getSignUp(submissionData);
+      // Store the result object returned from the updated API function
+      const result = await getSignUp(submissionData);
 
-      if (isSignedUp) {
+      if (result.success) {
         window.location.href = import.meta.env.VITE_CLIENT_LINK;
       } else {
-        setAlertMessage("User already exists or Signup failed");
+        // Handle specific error codes here
+        if (result.status === 409) {
+          setAlertMessage("User already exists! Please Log In.");
+        } else if (result.status === 400) {
+          setAlertMessage("Invalid details provided.");
+        } else if (result.status === 500) {
+          setAlertMessage("Server error. Please try again later.");
+        } else {
+          setAlertMessage("Signup failed. Please check your connection.");
+        }
       }
     } catch (error) {
       console.error("Signup error", error);
-      setAlertMessage("An error occurred. Please try again.");
+      setAlertMessage("An unexpected error occurred.");
     }
 };
 

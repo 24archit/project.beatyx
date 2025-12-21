@@ -18,10 +18,15 @@ export async function getSignUp(FormData) {
     const response = await axios(config);
     if (response.status == 201) {
       window.localStorage.setItem("authToken", response.data.authToken);
-      return true;
+      // Return an object indicating success
+      return { success: true };
     }
   } catch (error) {
-    return false;
+    // Return an object indicating failure, with the status code
+    return { 
+      success: false, 
+      status: error.response ? error.response.status : 500 
+    };
   }
 }
 export async function getLoggedIn(FormData) {
