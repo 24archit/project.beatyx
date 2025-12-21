@@ -1,6 +1,5 @@
-// client/src/pages/CategoryPage.jsx
 import React, { useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
+import { useParams, useNavigate, useLocation } from "react-router-dom"; 
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { getCategoryPlaylists } from "../apis/apiFunctions";
@@ -11,17 +10,17 @@ import "../assets/styles/CategoryPage.css";
 export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation(); // Hook to get state passed from Link
+  const location = useLocation(); 
 
-  // 1. Determine Title
-  // Priority: State Name > Special ID Check > Raw ID formatting
+  // 1. Determine Title from State (passed by Pill) or fallback
   let displayName;
   if (location.state && location.state.categoryName) {
     displayName = location.state.categoryName;
   } else if (id === "made-for-you") {
     displayName = "Made For You";
   } else {
-    displayName = "Category"; // Fallback if direct link access
+    // Capitalize fallback (This is the line that was crashing in the wrong file)
+    displayName = id ? id.charAt(0).toUpperCase() + id.slice(1) : "Category";
   }
 
   // 2. Fetch Data
@@ -29,7 +28,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
     queryKey: ["categoryPlaylists", id],
     queryFn: () => getCategoryPlaylists(id),
     select: (data) => {
-      // Robust selection to avoid crashes
+      // Safety check: ensure we have items
       if (!data || !data.playlists || !data.playlists.items) return [];
       return data.playlists.items;
     },
@@ -42,7 +41,12 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
 
   // 3. Filter Valid Playlists
   const validPlaylists = data 
-    ? data.filter(item => item && item.id) // Ensure item exists and has ID
+    ? data.filter(item => {
+        if (!item || !item.id) return false;
+        // Check if playlist is empty (if track count is available)
+        if (item.tracks && item.tracks.total === 0) return false;
+        return true;
+      })
     : [];
 
   const isEmpty = !isLoading && validPlaylists.length === 0;
@@ -65,7 +69,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
           <p className="category-subtitle">
             {id === "made-for-you" 
               ? "Personalized playlists curated just for you based on your listening history."
-              : `The best playlists for ${displayName}, curated for your mood.`
+              : `The best curated playlists for ${displayName}. Handpicked for your mood.`
             }
           </p>
         </div>
@@ -78,7 +82,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
           {/* Loading Skeletons */}
           {isLoading && Array.from({ length: 8 }).map((_, i) => <SectionCardLoad key={i} />)}
 
-          {/* Render Playlists */}
+          {/* Render Valid Playlists */}
           {!isLoading && validPlaylists.map((item) => (
             <SectionCard
               key={item.id}
@@ -110,7 +114,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
           {isEmpty && (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", marginTop: "3rem", padding: "0 1rem" }}>
               {id === "made-for-you" ? (
-                // Made For You Empty State (Keep Exploring)
+                // Made For You - Start Exploring Message
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                   <div style={{ fontSize: "3rem", color: "#1db954" }}>
                     <i className="fa-regular fa-compass"></i>
@@ -119,9 +123,8 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                     Your mix is still cooking!
                   </h2>
                   <p style={{ color: "#b3b3b3", fontSize: "1rem", maxWidth: "500px", lineHeight: "1.6" }}>
-                    We don't have enough data to create personalized playlists for you yet. 
-                    Start exploring the <strong>Home Page</strong>, search for your favorite artists, 
-                    and listen to some music. Spotify will curate these lists once it knows your vibe!
+                    We don't have enough data to create personalized playlists for you yet, or your playlists are currently empty. 
+                    Start exploring the <strong>Home Page</strong>, listen to some music, and check back later!
                   </p>
                   <button 
                     onClick={() => navigate("/")}
@@ -141,7 +144,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                   </button>
                 </div>
               ) : (
-                // Generic Empty State
+                // Generic Category Empty State
                 <div>
                   <i className="fa-regular fa-folder-open" style={{ fontSize: "2rem", marginBottom: "1rem", color: "#2979ff" }}></i>
                   <p style={{ color: "#fff", fontSize: "1.2rem", fontWeight: "600" }}>No playlists found.</p>
