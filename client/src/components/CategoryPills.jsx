@@ -3,6 +3,7 @@ import React from "react";
 import "../assets/styles/CategoryPills.css";
 import { Link } from "react-router-dom";
 
+// Standard defaults
 const DEFAULT_CATEGORIES = [
   { id: "made-for-you", name: "Made For You" },
   { id: "toplists", name: "Top Lists" },
@@ -18,14 +19,19 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function CategoryPills({ categories }) {
-  // Check if we are using real data
   const isConnected = categories && categories.length > 0;
-  
-  // If connected, we prepend "Made For You" to the fetched list
-  // If not connected, we use DEFAULT_CATEGORIES (which already has it)
-  let dataToDisplay = isConnected 
-    ? [{ id: "made-for-you", name: "Made For You" }, ...categories] 
-    : DEFAULT_CATEGORIES;
+
+  // LOGIC FIX:
+  // 1. If connected, take fetched categories.
+  // 2. Filter out "made-for-you" if Spotify ever sends it (to avoid dupes).
+  // 3. Prepend our custom "Made For You" pill.
+  let dataToDisplay;
+  if (isConnected) {
+    const filtered = categories.filter(c => c.id !== "made-for-you");
+    dataToDisplay = [{ id: "made-for-you", name: "Made For You" }, ...filtered];
+  } else {
+    dataToDisplay = DEFAULT_CATEGORIES;
+  }
 
   const handleConnectAlert = (e) => {
     e.preventDefault();
@@ -36,17 +42,16 @@ export default function CategoryPills({ categories }) {
     <div className="category-pills-wrapper">
       <div className="category-pills-container">
         {dataToDisplay.map((cat) => {
-          // Identify if this is the "Made For You" pill
           const isMadeForYou = cat.id === "made-for-you";
           
-          // Style Object for Green Pill
+          // Green Style for Made For You
           const greenStyle = isMadeForYou ? { 
             border: "1px solid #1db954", 
             color: "#1db954",
             backgroundColor: "rgba(29, 185, 84, 0.1)"
           } : {};
 
-          // Logic for Disconnected State clicking "Made For You"
+          // CASE 1: "Made For You" AND NOT CONNECTED -> Click Alert
           if (isMadeForYou && !isConnected) {
             return (
               <div 
@@ -63,7 +68,7 @@ export default function CategoryPills({ categories }) {
             );
           }
 
-          // Standard Category Link (Works for Connected "Made For You" too)
+          // CASE 2: Everything else (Connected Made For You + Normal Categories)
           return (
             <Link 
               key={cat.id} 
@@ -71,7 +76,6 @@ export default function CategoryPills({ categories }) {
               className="category-pill-link"
             >
               <div className="category-pill" style={greenStyle}>
-                 {/* Add icon only for Made For You */}
                  {isMadeForYou && <i className="fa-brands fa-spotify" style={{ marginRight: "6px" }}></i>}
                  {cat.name}
               </div>

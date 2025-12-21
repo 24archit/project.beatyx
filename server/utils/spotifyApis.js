@@ -1,9 +1,7 @@
-
 const axios = require("axios");
 const { getFreshTokens } = require("./getFreshTokens");
 const { getArtistShows } = require("./getArtistShows");
-const {getAccessToken} = require("./getAccessToken");
-
+const { getAccessToken } = require("./getAccessToken");
 
 // Generic function to handle retries and API requests
 async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, delay = 800) {
@@ -35,37 +33,17 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
 }
 
 // Function to fetch top tracks in India
-async function getTopTracksIndia(rightAccessToken,retries = 4, delay = 800) {
+async function getTopTracksIndia(rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbLZ52XmnySJg";
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
 
 // Function to fetch top tracks globally
 async function getTopTracksGlobal(rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
   const url = "https://api.spotify.com/v1/playlists/37i9dQZEVXbMDoHDwVN2tF";
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
 
 // Function to fetch artist info
@@ -75,175 +53,76 @@ async function getArtistInfo(id, rightAccessToken, retries = 4, delay = 800) {
   const topTracksUrl = `https://api.spotify.com/v1/artists/${id}/top-tracks?market=IN`;
   const albumsUrl = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=8&offset=0`;
   
-  const artistData = await makeApiRequest(
-    artistDataUrl,
-    "GET",
-    { Authorization: `Bearer ${accessToken}` },
-    retries,
-    delay
-  );
-  const artistShows = await getArtistShows(id,rightAccessToken, artistData.name);
-  const topTracks = await makeApiRequest(
-    topTracksUrl,
-    "GET",
-    { Authorization: `Bearer ${accessToken}` },
-    retries,
-    delay
-  );
+  const artistData = await makeApiRequest(artistDataUrl, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
+  const artistShows = await getArtistShows(id, rightAccessToken, artistData.name);
+  const topTracks = await makeApiRequest(topTracksUrl, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
+  const albums = await makeApiRequest(albumsUrl, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
 
-  const albums = await makeApiRequest(
-    albumsUrl,
-    "GET",
-    { Authorization: `Bearer ${accessToken}` },
-    retries,
-    delay
-  );
-
-  return {
-    ArtistData: artistData,
-    ArtistTopTracks: topTracks,
-    ArtistTopAlbums: albums,
-    ArtistShows: artistShows,
-  };
+  return { ArtistData: artistData, ArtistTopTracks: topTracks, ArtistTopAlbums: albums, ArtistShows: artistShows };
 }
 
 // Function to fetch search results
 async function getSearchResult(query, type, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=9`;
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
 
 // Function to fetch playlist details
 async function getPlaylist(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type),images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`;
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
+
 // Function to get album details
 async function getAlbum(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
   const url = `https://api.spotify.com/v1/albums/${id}`;
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
-async function getCurrentUserInfo(accessToken, retires=4, delay=800){
-  const url = "https://api.spotify.com/v1/me"
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retires,
-    delay
-  )
+
+async function getCurrentUserInfo(accessToken, retries = 4, delay = 800) {
+  const url = "https://api.spotify.com/v1/me";
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
-// Add this function before module.exports
 
-// Function to fetch new releases
-// server/utils/spotifyApis.js
+// --- NEW FUNCTIONS BELOW ---
 
-// ... keep existing imports and makeApiRequest ...
-
-// Add this new function
+// 1. Get New Releases
 async function getNewReleases(rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-  // Using direct Spotify API with country=IN for India specific releases
-  const url = "https://api.spotify.com/v1/browse/new-releases?country=IN&limit=10";
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  const url = "https://api.spotify.com/v1/browse/new-releases?country=IN&limit=20";
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
-// server/utils/spotifyApis.js
 
-// ... existing imports ...
-
-// Add this function for Featured Playlists
+// 2. Get Featured Playlists
 async function getFeaturedPlaylists(rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-  // Using direct Spotify API URL for Featured Playlists
-  const url = "https://api.spotify.com/v1/browse/featured-playlists?country=IN&limit=10";
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  const url = "https://api.spotify.com/v1/browse/featured-playlists?country=IN&limit=15";
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
-// server/utils/spotifyApis.js
 
-// ... existing imports ...
-
-// 2. Get Categories (Moods)
+// 3. Get Categories
 async function getCategories(rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-  // Fetching a few categories for the pills
-  const url = "https://api.spotify.com/v1/browse/categories?country=IN&limit=10";
-
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
+  const url = "https://api.spotify.com/v1/browse/categories?country=IN&locale=en_IN&limit=20";
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
+
+// 4. Get Category Playlists (With Error Handling)
 async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-  
-  // Note: 'made-for-you' is a valid Spotify Category ID in some regions, 
-  // but if it fails (404), we catch it below.
-  const url = `https://api.spotify.com/v1/browse/categories/$${id}/playlists?country=IN&limit=20`;
+
+  // Handle "Made For You" special case
+  if (id === 'made-for-you') {
+    return { playlists: { items: [] } };
+  }
+
+  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists?country=IN&limit=20`;
 
   try {
-    return await makeApiRequest(
+    const data = await makeApiRequest(
       url,
       "GET",
       {
@@ -253,15 +132,21 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
       retries,
       delay
     );
+    
+    // Safety check
+    if (!data.playlists) {
+      return { playlists: { items: [] } };
+    }
+    return data;
   } catch (error) {
-    // If category is not found (e.g., 404), return empty structure 
-    // so frontend shows the "Start Exploring" message instead of error.
-    console.warn(`Category '${id}' fetch failed or empty:`, error.message);
+    console.warn(`Category '${id}' fetch failed:`, error.message);
+    // Return empty list on error (e.g. 404) so frontend shows "No playlists" instead of crashing
     return { playlists: { items: [] } };
   }
-} 
+}
+
+// Export all functions
 module.exports = {
-  // ... existing exports ...
   getTopTracksIndia,
   getTopTracksGlobal,
   getArtistInfo,
@@ -269,9 +154,9 @@ module.exports = {
   getPlaylist,
   getAlbum,
   getCurrentUserInfo,
+  // New Exports
   getNewReleases,
   getFeaturedPlaylists,
   getCategories,
   getCategoryPlaylists
-  // <--- Export
 };

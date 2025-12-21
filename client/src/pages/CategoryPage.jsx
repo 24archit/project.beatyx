@@ -16,7 +16,12 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
   const { data, isLoading } = useQuery({
     queryKey: ["categoryPlaylists", id],
     queryFn: () => getCategoryPlaylists(id),
-    select: (data) => data.playlists ? data.playlists.items : [], // Safety check
+    // FIX: Safer selection logic.
+    // If backend returns error or structure differs, return empty array []
+    select: (data) => {
+      if (!data || !data.playlists || !data.playlists.items) return [];
+      return data.playlists.items;
+    },
     staleTime: 15 * 60 * 1000,
   });
 
@@ -24,13 +29,19 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Format Title
   const categoryName = id === "made-for-you" 
     ? "Made For You" 
     : id.charAt(0).toUpperCase() + id.slice(1);
 
-  // Check if empty
-  const isEmpty = !isLoading && (!data || data.length === 0);
+  // --- FILTERING LOGIC ---
+  // Create a clean list of VALID playlists.
+  // We filter OUT anything that is null, undefined, or missing an ID.
+  const validPlaylists = data 
+    ? data.filter(item => item !== null && item !== undefined && item.id) 
+    : [];
+
+  // Now we check if THIS valid list is empty to show the empty state
+  const isEmpty = !isLoading && validPlaylists.length === 0;
 
   return (
     <div className="page-container">
@@ -38,7 +49,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
         <title>{categoryName} Mixes - Beatyx</title>
       </Helmet>
 
-      {/* Hero Header Section */}
+      {/* Hero Header */}
       <div className="category-hero">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <i className="fa-solid fa-arrow-left"></i>
@@ -56,48 +67,46 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
         </div>
       </div>
 
-      {/* Grid Content */}
+      {/* Content Grid */}
       <div className="grid-wrapper">
         <div className="grid-container">
-          {isLoading
-            ? Array.from({ length: 8 }).map((_, i) => <SectionCardLoad key={i} />)
-            : data?.map((item) => {
-                // FILTERING LOGIC: Skip if item is null or missing crucial ID
-                if (!item || !item.id) return null;
+          
+          {/* Loading State */}
+          {isLoading && Array.from({ length: 8 }).map((_, i) => <SectionCardLoad key={i} />)}
 
-                return (
-                  <SectionCard
-                    key={item.id}
-                    imgSrc={item.images?.[0]?.url}
-                    cardName={item.name}
-                    cardId={item.id}
-                    cardType="playlist"
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                    cardStat={
-                      <span 
-                        className="card-stat-text" 
-                        dangerouslySetInnerHTML={{ __html: item.description || `By ${item.owner.display_name}` }} 
-                        style={{ 
-                          display: '-webkit-box', 
-                          WebkitLineClamp: 2, 
-                          WebkitBoxOrient: 'vertical', 
-                          overflow: 'hidden',
-                          fontSize: '0.75rem',
-                          color: '#a0a0a0'
-                        }}
-                      />
-                    }
-                    spotifyUrl={item.external_urls.spotify}
-                  />
-                );
-              })}
+          {/* Data State: Map over VALID playlists only */}
+          {!isLoading && validPlaylists.map((item) => (
+            <SectionCard
+              key={item.id}
+              imgSrc={item.images?.[0]?.url}
+              cardName={item.name}
+              cardId={item.id}
+              cardType="playlist"
+              setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
+              cardStat={
+                <span 
+                  className="card-stat-text" 
+                  dangerouslySetInnerHTML={{ __html: item.description || `By ${item.owner?.display_name || 'Spotify'}` }} 
+                  style={{ 
+                    display: '-webkit-box', 
+                    WebkitLineClamp: 2, 
+                    WebkitBoxOrient: 'vertical', 
+                    overflow: 'hidden',
+                    fontSize: '0.75rem',
+                    color: '#a0a0a0'
+                  }}
+                />
+              }
+              spotifyUrl={item.external_urls?.spotify}
+            />
+          ))}
               
-          {/* EMPTY STATE HANDLING */}
+          {/* Empty State */}
           {isEmpty && (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", marginTop: "3rem", padding: "0 1rem" }}>
               {id === "made-for-you" ? (
-                // Custom Message for Made For You
+                // MADE FOR YOU - Special Empty State
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                   <div style={{ fontSize: "3rem", color: "#1db954" }}>
                     <i className="fa-regular fa-compass"></i>
@@ -128,10 +137,11 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                   </button>
                 </div>
               ) : (
-                // Standard Empty State
+                // STANDARD CATEGORY - Generic Empty State
                 <div>
                   <i className="fa-regular fa-folder-open" style={{ fontSize: "2rem", marginBottom: "1rem", color: "#2979ff" }}></i>
-                  <p style={{ color: "#fff" }}>No playlists found for this category.</p>
+                  <p style={{ color: "#fff", fontSize: "1.2rem", fontWeight: "600" }}>No playlists found.</p>
+                  <p style={{ color: "#a0a0a0" }}>This category might be empty or unavailable in your region.</p>
                 </div>
               )}
             </div>
