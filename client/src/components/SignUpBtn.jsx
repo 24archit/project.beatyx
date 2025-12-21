@@ -9,7 +9,6 @@ import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import { getSignUp } from "../apis/apiFunctions";
 import "../assets/styles/SignUpBtn.css";
- "react-google-recaptcha-v3";
 
 // Load site key from environment
 
