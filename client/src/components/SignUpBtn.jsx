@@ -136,14 +136,16 @@ const handleSignUp = async (e) => {
         window.grecaptcha.enterprise.ready(async () => {
           const t = await window.grecaptcha.enterprise.execute(
             import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: 'SIGNUP' } // Use SIGNUP action here
+            { action: 'SIGNUP' } 
           );
           resolve(t);
         });
       });
 
-      const formData = { ...formData, recaptchaToken: token };
-      const isSignedUp = await getSignUp(formData);
+      // FIX: Use a different name like 'submissionData' to avoid conflict
+      const submissionData = { ...formData, recaptchaToken: token };
+      
+      const isSignedUp = await getSignUp(submissionData);
 
       if (isSignedUp) {
         window.location.href = import.meta.env.VITE_CLIENT_LINK;
