@@ -9,8 +9,9 @@ async function setToken(req, res, next) {
     const authToken =
       req.headers.authorization?.split(" ")[1] || req.body.authToken;
 
-    if (!authToken) {
-      // No user JWT, use generic 24archit token
+    // FIX: Strictly check for "null" and "undefined" strings
+    if (!authToken || authToken === "null" || authToken === "undefined") {
+      // No valid user JWT, use generic 24archit token
       req.session.accessToken = await getAccessToken();
       return next();
     }
@@ -23,6 +24,13 @@ async function setToken(req, res, next) {
 
     // Fetch user and user's Spotify access token
     const user = await User.findOne({ email: userEmail });
+    
+    // Safety check if user was deleted but token exists
+    if (!user) {
+         req.session.accessToken = await getAccessToken();
+         return next();
+    }
+
     const spotifyResponse = await getUserAccessToken(user.email);
 
     // Add Spotify connection info to decoded user
@@ -36,7 +44,11 @@ async function setToken(req, res, next) {
 
     return next();
   } catch (err) {
-    console.error("Token processing error:", err.message);
+    // This console.error is what you were seeing in your logs
+    // We suppress it for 'jwt malformed' since we handle the fallback below
+    if (err.message !== "jwt malformed") {
+        console.error("Token processing error:", err.message);
+    }
 
     // Fallback: Use default token if JWT is invalid or any error occurs
     req.session.accessToken = await getAccessToken();

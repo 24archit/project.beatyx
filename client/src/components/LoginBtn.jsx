@@ -9,13 +9,8 @@ import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import { getLoggedIn } from "../apis/apiFunctions";
 import "../assets/styles/LoginBtn.css";
-import {
-  useGoogleReCaptcha,
-} from "react-google-recaptcha-v3";
 
 
-
-// Styled components definitions
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
   backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -28,6 +23,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
+// ... (Keep other styled components: StyledDialogTitle, JoinButton, CancelButton, StyledTextField) ...
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   color: "#ffffff",
   fontFamily: "sans-serif",
@@ -38,7 +34,6 @@ const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   textTransform: "uppercase",
   textShadow: "2px 2px 5px rgba(0, 0, 0, 0.6)",
 }));
-
 const JoinButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText("#2196F3"),
   backgroundColor: "#2196F3",
@@ -51,7 +46,6 @@ const JoinButton = styled(Button)(({ theme }) => ({
   },
   transition: "background-color 0.3s ease",
 }));
-
 const CancelButton = styled(Button)(({ theme }) => ({
   color: "rgb(5, 4, 28)",
   backgroundColor: "#A4A3C2",
@@ -64,7 +58,6 @@ const CancelButton = styled(Button)(({ theme }) => ({
   },
   transition: "background-color 0.3s ease",
 }));
-
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-root": {
     color: "#ffffff",
@@ -96,13 +89,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-// Inner component handling dialog and login logic
 export default function LoginBtn() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [alertMessage, setAlertMessage] = React.useState(null);
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  
+  // REMOVE: const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleClickOpen = (e) => {
     setOpen(true);
@@ -122,16 +115,25 @@ export default function LoginBtn() {
       return;
     }
 
-    if (!executeRecaptcha) {
-      setAlertMessage("Recaptcha not yet available, please try again later.");
+    // CHECK IF ENTERPRISE SCRIPT LOADED
+    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
+      setAlertMessage("Security check failed to load. Please refresh.");
       return;
     }
 
     try {
-      // Run reCAPTCHA v3
-      const token = await executeRecaptcha('login');
+      // EXECUTE ENTERPRISE TOKEN GENERATION
+      // Wrap in Promise because .ready() callback is async
+      const token = await new Promise((resolve) => {
+        window.grecaptcha.enterprise.ready(async () => {
+          const t = await window.grecaptcha.enterprise.execute(
+            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+            { action: 'LOGIN' }
+          );
+          resolve(t);
+        });
+      });
 
-      // Include token in login request
       const formData = { email, password, recaptchaToken: token };
       const response = await getLoggedIn(formData);
 
@@ -140,7 +142,6 @@ export default function LoginBtn() {
         return;
       } 
 
-      // On success, redirect
       window.location.href = import.meta.env.VITE_CLIENT_LINK;
 
     } catch (error) {
@@ -190,4 +191,3 @@ export default function LoginBtn() {
     </div>
   );
 }
-

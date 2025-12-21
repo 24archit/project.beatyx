@@ -197,19 +197,31 @@ export async function getPreviousAudioLink(queueId) {
     );
   }
 }
-export async function verifyAuth(){
-   try {
-     const config = {
+// client/src/apis/apiFunctions.js
+
+export async function verifyAuth() {
+  // 1. Check local storage first
+  const token = window.localStorage.getItem("authToken");
+  
+  // 2. If no token, or it's "null"/"undefined", stop immediately.
+  if (!token || token === "null" || token === "undefined") {
+    return { isVerified: false, spotifyConnect: false };
+  }
+
+  try {
+    const config = {
       method: "GET",
       url: `${import.meta.env.VITE_SERVER_LINK}/auth/verifyauth`,
-      headers: getAuthHeaders()
+      headers: {
+        Authorization: `Bearer ${token}` // Manually set header here to be safe
+      }
     };
     const response = await axios(config);
     return response.data;
   } catch (error) {
     console.error("Auth check failed:", error.response?.data || error.message);
-    localStorage.removeItem("authToken");
-    return {isVerified : false, spotifyConnect: false};
+    localStorage.removeItem("authToken"); // Clean up bad token
+    return { isVerified: false, spotifyConnect: false };
   }
 }
 
@@ -218,31 +230,5 @@ export async function verifyAuth(){
 
 
 
-// old
-export async function getUserTopArtists(number) {
-  try {
-    return await fetchData(
-      `${protocol}://${host}${port}/api/getUserTopArtists?number=${number}`,
-      "GET",
-      `Failed to fetch top artists for user with number ${number}`
-    );
-  } catch (error) {
-    throw new Error(
-      `Error fetching top artists for user with number ${number}: ${error.message}`
-    );
-  }
-}
-
-export async function getUserInfo() {
-  try {
-    return await fetchData(
-      `${protocol}://${host}${port}/api/getUserInfo`,
-      "GET",
-      "Failed to fetch user info"
-    );
-  } catch (error) {
-    throw new Error(`Error fetching user info: ${error.message}`);
-  }
-}
 
 

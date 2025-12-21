@@ -9,9 +9,7 @@ import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import { getSignUp } from "../apis/apiFunctions";
 import "../assets/styles/SignUpBtn.css";
-import {
-  useGoogleReCaptcha,
-} from "react-google-recaptcha-v3";
+ "react-google-recaptcha-v3";
 
 // Load site key from environment
 
@@ -108,7 +106,6 @@ export default function SignUpBtn() {
     confirmPassword: "",
     recaptchaToken: "",
   });
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -122,44 +119,43 @@ export default function SignUpBtn() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignUp = async (e) => {
+const handleSignUp = async (e) => {
     e.preventDefault();
-    if (
-      !formData.confirmPassword ||
-      !formData.password ||
-      !formData.email ||
-      !formData.displayName
-    ) {
-      setAlertMessage("Please fill up all the details to register");
+    if (!formData.displayName || !formData.email || !formData.password) {
+      setAlertMessage("Please fill up all the details to join");
       return;
     }
-    if (formData.confirmPassword != formData.password) {
-      setAlertMessage(
-        "The passwords you entered do not match. Please check and try again."
-      );
-      return;
-    }
-    if (!executeRecaptcha) {
-      setAlertMessage("Recaptcha not yet available, please try again later.");
+
+    // NEW LOGIC
+    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
+      setAlertMessage("Security check failed. Please refresh.");
       return;
     }
 
     try {
-      const token = await executeRecaptcha("signup");
-      const payload = { ...formData, recaptchaToken: token };
-      const response = await getSignUp(payload);
-      if (!response) {
-        setAlertMessage(
-          "You have already registered using this email. Please login.."
-        );
-        return;
+      const token = await new Promise((resolve) => {
+        window.grecaptcha.enterprise.ready(async () => {
+          const t = await window.grecaptcha.enterprise.execute(
+            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+            { action: 'SIGNUP' } // Use SIGNUP action here
+          );
+          resolve(t);
+        });
+      });
+
+      const formData = { ...formData, recaptchaToken: token };
+      const isSignedUp = await getSignUp(formData);
+
+      if (isSignedUp) {
+        window.location.href = import.meta.env.VITE_CLIENT_LINK;
+      } else {
+        setAlertMessage("User already exists or Signup failed");
       }
-      window.location.href =
-        import.meta.env.VITE_CLIENT_LINK || "http://localhost:5173";
     } catch (error) {
-      console.error("Sign-Up failed", error);
+      console.error("Signup error", error);
+      setAlertMessage("An error occurred. Please try again.");
     }
-  };
+};
 
   return (
     <div className="signup-btn-container">
