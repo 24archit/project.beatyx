@@ -21,9 +21,16 @@ export default function CategoryPills({ categories }) {
 
   let dataToDisplay;
   if (isConnected) {
-    // 1. Filter out 'made-for-you' from fetched categories to prevent duplicates
-    const filtered = categories.filter(c => c.id !== "made-for-you");
-    // 2. Prepend our custom "Made For You"
+    // FIX: Filter by Name AND ID to catch Spotify's native "Made For You" category
+    const filtered = categories.filter((c) => {
+      const name = c.name ? c.name.toLowerCase() : "";
+      const id = c.id ? c.id.toLowerCase() : "";
+      
+      // Return FALSE to remove it if it matches "made for you"
+      return name !== "made for you" && id !== "made-for-you";
+    });
+
+    // Prepend our custom "Made For You" pill
     dataToDisplay = [{ id: "made-for-you", name: "Made For You" }, ...filtered];
   } else {
     dataToDisplay = DEFAULT_CATEGORIES;
