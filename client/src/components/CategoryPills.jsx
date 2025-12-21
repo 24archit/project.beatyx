@@ -1,10 +1,10 @@
+// client/src/components/CategoryPills.jsx
 import React from "react";
 import "../assets/styles/CategoryPills.css";
 import { Link } from "react-router-dom";
 
-// Added "Made For You" as the first item
 const DEFAULT_CATEGORIES = [
-  { id: "made-for-you", name: "Made For You" }, 
+  { id: "made-for-you", name: "Made For You" },
   { id: "toplists", name: "Top Lists" },
   { id: "bollywood", name: "Bollywood" },
   { id: "pop", name: "Pop" },
@@ -18,14 +18,17 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function CategoryPills({ categories }) {
-  // If 'categories' prop is passed (connected), use it. 
-  // Otherwise use DEFAULT_CATEGORIES (disconnected).
+  // Check if we are using real data
   const isConnected = categories && categories.length > 0;
-  const dataToDisplay = isConnected ? categories : DEFAULT_CATEGORIES;
+  
+  // If connected, we prepend "Made For You" to the fetched list
+  // If not connected, we use DEFAULT_CATEGORIES (which already has it)
+  let dataToDisplay = isConnected 
+    ? [{ id: "made-for-you", name: "Made For You" }, ...categories] 
+    : DEFAULT_CATEGORIES;
 
   const handleConnectAlert = (e) => {
     e.preventDefault();
-    // You can replace this alert with a function to open your Login/Connect Modal if you have one available in context
     alert("Please connect your Spotify account to access personalized 'Made For You' content.");
   };
 
@@ -33,8 +36,18 @@ export default function CategoryPills({ categories }) {
     <div className="category-pills-wrapper">
       <div className="category-pills-container">
         {dataToDisplay.map((cat) => {
-          // Special logic for "Made For You" when NOT connected
-          if (cat.id === "made-for-you" && !isConnected) {
+          // Identify if this is the "Made For You" pill
+          const isMadeForYou = cat.id === "made-for-you";
+          
+          // Style Object for Green Pill
+          const greenStyle = isMadeForYou ? { 
+            border: "1px solid #1db954", 
+            color: "#1db954",
+            backgroundColor: "rgba(29, 185, 84, 0.1)"
+          } : {};
+
+          // Logic for Disconnected State clicking "Made For You"
+          if (isMadeForYou && !isConnected) {
             return (
               <div 
                 key={cat.id} 
@@ -42,7 +55,7 @@ export default function CategoryPills({ categories }) {
                 onClick={handleConnectAlert}
                 style={{ cursor: "pointer" }}
               >
-                <div className="category-pill" style={{ border: "1px solid #1db954", color: "#1db954" }}>
+                <div className="category-pill" style={greenStyle}>
                   <i className="fa-brands fa-spotify" style={{ marginRight: "6px" }}></i>
                   {cat.name}
                 </div>
@@ -50,15 +63,17 @@ export default function CategoryPills({ categories }) {
             );
           }
 
-          // Standard Category Link
+          // Standard Category Link (Works for Connected "Made For You" too)
           return (
             <Link 
               key={cat.id} 
               to={`/category/${cat.id}`} 
               className="category-pill-link"
             >
-              <div className="category-pill">
-                {cat.name}
+              <div className="category-pill" style={greenStyle}>
+                 {/* Add icon only for Made For You */}
+                 {isMadeForYou && <i className="fa-brands fa-spotify" style={{ marginRight: "6px" }}></i>}
+                 {cat.name}
               </div>
             </Link>
           );

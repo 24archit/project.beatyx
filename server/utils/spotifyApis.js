@@ -237,21 +237,29 @@ async function getCategories(rightAccessToken, retries = 4, delay = 800) {
 }
 async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-  // Using direct Spotify API for category playlists
-  // Note: If you have a specific proxy ID for this, replace the URL base.
-  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists?country=IN&limit=20`;
+  
+  // Note: 'made-for-you' is a valid Spotify Category ID in some regions, 
+  // but if it fails (404), we catch it below.
+  const url = `https://api.spotify.com/v1/browse/categories/$${id}/playlists?country=IN&limit=20`;
 
-  return makeApiRequest(
-    url,
-    "GET",
-    {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    retries,
-    delay
-  );
-}
+  try {
+    return await makeApiRequest(
+      url,
+      "GET",
+      {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      retries,
+      delay
+    );
+  } catch (error) {
+    // If category is not found (e.g., 404), return empty structure 
+    // so frontend shows the "Start Exploring" message instead of error.
+    console.warn(`Category '${id}' fetch failed or empty:`, error.message);
+    return { playlists: { items: [] } };
+  }
+} 
 module.exports = {
   // ... existing exports ...
   getTopTracksIndia,
