@@ -111,27 +111,48 @@ async function getCategories(rightAccessToken, retries = 4, delay = 800) {
 }
 
 // 4. Get Category Playlists (With Error Handling)
+// server/utils/spotifyApis.js
+
+// ... existing imports ...
+
+// 4. Get Category Playlists (Hybrid: Search for Made For You, Browse for others)
 async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-
-  let fetchId = id;
-  let queryParams = "?limit=20"; // Default params
-
-  // MAP: 'made-for-you' -> Spotify's internal ID
+  
+  // STRATEGY 1: "Made For You" -> Use SEARCH API
+  // We search for the specific names of algorithmic playlists. 
+  // This guarantees we get the user's personal versions (On Repeat, Daily Mix, etc.)
   if (id === 'made-for-you') {
-    fetchId = '0JQ5DAqbMKFHOzuVTgTizF'; 
-    
-    // CRITICAL FIX: Do NOT pass 'country=IN' for personalized categories.
-    // Leaving country undefined forces Spotify to use the User's account location
-    // and personalized algorithms.
-    queryParams = "?limit=20"; 
-  } else {
-    // For standard categories (Pop, Party), it's safe/good to specify country
-    // to ensure the content is available in the user's region.
-    queryParams = "?country=IN&limit=20";
+    const query = "On Repeat OR Daily Mix OR Discover Weekly OR Release Radar OR Time Capsule OR Repeat Rewind";
+    // Using Proxy ID 31 (Search)
+    const url = `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=playlist&limit=20`;
+
+    try {
+      const data = await makeApiRequest(
+        url,
+        "GET",
+        {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        retries,
+        delay
+      );
+      // Search returns { playlists: { items: [...] } }, which matches our expected structure
+      if (!data.playlists) {
+        return { playlists: { items: [] } };
+      }
+      return data;
+    } catch (error) {
+      console.warn(`Made For You search failed:`, error.message);
+      return { playlists: { items: [] } };
+    }
   }
 
-  const url = `https://api.spotify.com/v1/browse/categories/${fetchId}/playlists${queryParams}`;
+  // STRATEGY 2: Standard Categories -> Use BROWSE API
+  // For Pop, Party, Bollywood, etc., we use the standard category endpoint.
+  const queryParams = "?country=IN&limit=20"; 
+  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists${queryParams}`;
 
   try {
     const data = await makeApiRequest(
@@ -154,6 +175,8 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
     return { playlists: { items: [] } };
   }
 }
+
+// ... existing exports ...
 // Export all functions
 module.exports = {
   getTopTracksIndia,
