@@ -114,12 +114,14 @@ async function getCategories(rightAccessToken, retries = 4, delay = 800) {
 async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
 
-  // Handle "Made For You" special case
+  // FIX: Map our custom ID to Spotify's real "Made For You" Category ID
+  let fetchId = id;
   if (id === 'made-for-you') {
-    return { playlists: { items: [] } };
+    fetchId = '0JQ5DAqbMKFHOzuVTgTizF'; 
   }
 
-  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists?country=IN&limit=20`;
+  // Use fetchId in the URL instead of id
+  const url = `https://api.spotify.com/v1/browse/categories/${fetchId}/playlists?country=IN&limit=20`;
 
   try {
     const data = await makeApiRequest(
@@ -139,12 +141,11 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
     }
     return data;
   } catch (error) {
-    console.warn(`Category '${id}' fetch failed:`, error.message);
-    // Return empty list on error (e.g. 404) so frontend shows "No playlists" instead of crashing
+    // Only if it really fails (e.g. 404 because user has no history), return empty
+    console.warn(`Category '${id}' (mapped to ${fetchId}) fetch failed:`, error.message);
     return { playlists: { items: [] } };
   }
 }
-
 // Export all functions
 module.exports = {
   getTopTracksIndia,

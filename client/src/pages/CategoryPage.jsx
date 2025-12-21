@@ -12,15 +12,14 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
   const navigate = useNavigate();
   const location = useLocation(); 
 
-  // 1. Determine Title from State (passed by Pill) or fallback
+  // 1. Determine Title
   let displayName;
   if (location.state && location.state.categoryName) {
     displayName = location.state.categoryName;
   } else if (id === "made-for-you") {
     displayName = "Made For You";
   } else {
-    // Capitalize fallback (This is the line that was crashing in the wrong file)
-    displayName = id ? id.charAt(0).toUpperCase() + id.slice(1) : "Category";
+    displayName = id.charAt(0).toUpperCase() + id.slice(1);
   }
 
   // 2. Fetch Data
@@ -28,7 +27,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
     queryKey: ["categoryPlaylists", id],
     queryFn: () => getCategoryPlaylists(id),
     select: (data) => {
-      // Safety check: ensure we have items
+      // Safety: Return empty array if structure is missing
       if (!data || !data.playlists || !data.playlists.items) return [];
       return data.playlists.items;
     },
@@ -39,16 +38,24 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // 3. Filter Valid Playlists
+  // 3. FILTERING LOGIC (The part you asked about)
+  // This runs for EVERY item individually. 
+  // It only removes specific items that fail the check.
   const validPlaylists = data 
     ? data.filter(item => {
+        // Must exist and have an ID
         if (!item || !item.id) return false;
-        // Check if playlist is empty (if track count is available)
-        if (item.tracks && item.tracks.total === 0) return false;
-        return true;
+        
+        // If track count is provided, it must be greater than 0
+        // We use '?.' to be safe in case 'tracks' is undefined
+        if (item.tracks?.total === 0) return false; 
+        
+        return true; // Keep this playlist
       })
     : [];
 
+  // 4. Empty State Condition
+  // This is true ONLY if we have 0 valid playlists left.
   const isEmpty = !isLoading && validPlaylists.length === 0;
 
   return (
@@ -110,11 +117,11 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
             />
           ))}
               
-          {/* Empty State Handling */}
+          {/* Empty State (Only shows if ALL are filtered out) */}
           {isEmpty && (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", marginTop: "3rem", padding: "0 1rem" }}>
               {id === "made-for-you" ? (
-                // Made For You - Start Exploring Message
+                // Made For You Empty Message
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                   <div style={{ fontSize: "3rem", color: "#1db954" }}>
                     <i className="fa-regular fa-compass"></i>
@@ -123,7 +130,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                     Your mix is still cooking!
                   </h2>
                   <p style={{ color: "#b3b3b3", fontSize: "1rem", maxWidth: "500px", lineHeight: "1.6" }}>
-                    We don't have enough data to create personalized playlists for you yet, or your playlists are currently empty. 
+                    We couldn't find any tracks in your personal mixes yet. 
                     Start exploring the <strong>Home Page</strong>, listen to some music, and check back later!
                   </p>
                   <button 
@@ -144,7 +151,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                   </button>
                 </div>
               ) : (
-                // Generic Category Empty State
+                // Generic Empty Message
                 <div>
                   <i className="fa-regular fa-folder-open" style={{ fontSize: "2rem", marginBottom: "1rem", color: "#2979ff" }}></i>
                   <p style={{ color: "#fff", fontSize: "1.2rem", fontWeight: "600" }}>No playlists found.</p>
