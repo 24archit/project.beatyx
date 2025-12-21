@@ -1,17 +1,17 @@
-// App.jsx
+// client/src/App.jsx
 import "./assets/styles/App.css";
 import { useEffect, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
-import {
-  Routes,
-  Route,
-  BrowserRouter as Router,
-  Outlet,
-} from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router, Outlet } from "react-router-dom";
+
+// Components
 import NavBar from "./components/NavBar";
 import Side from "./components/Side";
 import Footer from "./components/Footer";
 import Player from "./components/Player";
+import CurrentTrackButton from "./components/CurrentTrack";
+
+// Pages
 import HomePage from "./pages/HomePage";
 import ArtistPage from "./pages/ArtistPage";
 import PlaylistPage from "./pages/PlaylistPage";
@@ -20,7 +20,8 @@ import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import TrackPage from "./pages/TrackPage";
-import CurrentTrackButton from "./components/CurrentTrack";
+import CategoryPage from "./pages/CategoryPage"; 
+
 import { PlayerProvider } from "./context/PlayerContext";
 import { verifyAuth } from "./apis/apiFunctions";
 import { Analytics } from "@vercel/analytics/react";
@@ -32,31 +33,27 @@ const queryClient = new QueryClient();
 function Layout({
   isAuth,
   playerMeta,
-  setPlayerMeta,
   trackInfo,
-  setTrackInfo,
   isMobile,
   isSpotifyConnected,
 }) {
   return (
-    <>
-      <PlayerProvider
-        initialUrl={playerMeta}
-        initialTrackInfo={trackInfo}
-        initialIsAuth={isAuth}
-        initialIsSpotifyConnected={isSpotifyConnected}
-      >
-        <NavBar />
-        <Side />
-        <div className="content">
-          <main>
-            <Outlet />
-          </main>
-        </div>
-        <Footer />
-        {isMobile ? <CurrentTrackButton /> : <Player />}
-      </PlayerProvider>
-    </>
+    <PlayerProvider
+      initialUrl={playerMeta}
+      initialTrackInfo={trackInfo}
+      initialIsAuth={isAuth}
+      initialIsSpotifyConnected={isSpotifyConnected}
+    >
+      <Side />
+      <NavBar />
+      <div className="content">
+        <main>
+          <Outlet />
+        </main>
+      </div>
+      <Footer />
+      {isMobile ? <CurrentTrackButton /> : <Player />}
+    </PlayerProvider>
   );
 }
 
@@ -112,12 +109,14 @@ function App() {
                 />
               }
             >
+              {/* PASS PROP HERE */}
               <Route
                 path="/"
                 element={
                   <HomePage
                     setPlayerMeta={setPlayerMeta}
                     setTrackInfo={setTrackInfo}
+                    isSpotifyConnected={isSpotifyConnected} 
                   />
                 }
               />
@@ -143,6 +142,15 @@ function App() {
                 path="/album/:id"
                 element={
                   <AlbumPage
+                    setPlayerMeta={setPlayerMeta}
+                    setTrackInfo={setTrackInfo}
+                  />
+                }
+              />
+              <Route
+                path="/category/:id"
+                element={
+                  <CategoryPage
                     setPlayerMeta={setPlayerMeta}
                     setTrackInfo={setTrackInfo}
                   />

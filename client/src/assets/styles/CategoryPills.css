@@ -1,0 +1,68 @@
+.category-pills-wrapper {
+  position: relative;
+  width: 96%;
+  margin: 1rem auto 0.5rem auto;
+}
+
+.category-pills-container {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.2rem;
+  scrollbar-width: none; /* Firefox */
+  scroll-behavior: smooth;
+}
+
+.category-pills-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.category-pill {
+  /* Glassy Background */
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(5px);
+}
+
+.category-pill:hover {
+  /* Blue Theme Active State */
+  background: #2979ff; 
+  border-color: #2979ff;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(41, 121, 255, 0.4);
+}
+
+/* Fade effect to show there's more to scroll */
+.category-fade-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 50px;
+  background: linear-gradient(90deg, transparent, rgba(10, 15, 30, 0.9));
+  pointer-events: none;
+}
+.category-pill-link {
+  text-decoration: none;
+  display: inline-block;
+}
+@media (max-width: 768px) {
+  .category-pills-wrapper {
+    width: 100%;
+    padding-left: 1rem;
+  }
+  .category-pill {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}

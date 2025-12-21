@@ -1,0 +1,101 @@
+/* client/src/assets/styles/ConnectSpotifySection.css */
+.connect-spotify-section {
+  position: relative;
+  width: 96%;
+  margin: 2rem auto;
+  background: linear-gradient(135deg, #0b4f25 0%, #191414 100%); /* Spotify Green to Black */
+  border-radius: 1rem;
+  padding: 2.5rem 3rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.connect-spotify-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2rem;
+}
+
+.connect-spotify-text h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.connect-spotify-text p {
+  font-size: 1rem;
+  color: #b3b3b3;
+  margin: 0;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.connect-spotify-cta-btn {
+  background-color: #1db954; /* Spotify Green */
+  color: #000;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+}
+
+.connect-spotify-cta-btn:hover {
+  background-color: #1ed760;
+  transform: scale(1.05);
+}
+
+/* Background Decorative Icon */
+.connect-spotify-bg-icon {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%) rotate(15deg);
+  font-size: 15rem;
+  color: rgba(255, 255, 255, 0.03);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .connect-spotify-section {
+    padding: 2rem 1.5rem;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .connect-spotify-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .connect-spotify-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .connect-spotify-text p {
+    font-size: 0.9rem;
+  }
+
+  .connect-spotify-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

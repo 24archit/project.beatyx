@@ -229,7 +229,66 @@ export async function verifyAuth() {
     return { isVerified: false, spotifyConnect: false };
   }
 }
+export async function getNewReleases() {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getNewReleases`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+// client/src/apis/apiFunctions.js
 
+// ... existing functions ...
+
+export async function getFeaturedPlaylists() {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getFeaturedPlaylists`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+// client/src/apis/apiFunctions.js
+
+// ... existing functions ...
+
+
+
+export async function getCategories() {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getCategories`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Categories fetch error", error);
+    return { categories: { items: [] } };
+  }
+}
+// Add this function
+export async function getCategoryPlaylists(id) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getCategoryPlaylists/${id}`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 
 
 

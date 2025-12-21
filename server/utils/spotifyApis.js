@@ -169,13 +169,101 @@ async function getCurrentUserInfo(accessToken, retires=4, delay=800){
     delay
   )
 }
-// Export all functions
+// Add this function before module.exports
+
+// Function to fetch new releases
+// server/utils/spotifyApis.js
+
+// ... keep existing imports and makeApiRequest ...
+
+// Add this new function
+async function getNewReleases(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Using direct Spotify API with country=IN for India specific releases
+  const url = "https://api.spotify.com/v1/browse/new-releases?country=IN&limit=10";
+
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
+}
+// server/utils/spotifyApis.js
+
+// ... existing imports ...
+
+// Add this function for Featured Playlists
+async function getFeaturedPlaylists(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Using direct Spotify API URL for Featured Playlists
+  const url = "https://api.spotify.com/v1/browse/featured-playlists?country=IN&limit=10";
+
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
+}
+// server/utils/spotifyApis.js
+
+// ... existing imports ...
+
+// 2. Get Categories (Moods)
+async function getCategories(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Fetching a few categories for the pills
+  const url = "https://api.spotify.com/v1/browse/categories?country=IN&limit=10";
+
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
+}
+async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Using direct Spotify API for category playlists
+  // Note: If you have a specific proxy ID for this, replace the URL base.
+  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists?country=IN&limit=20`;
+
+  return makeApiRequest(
+    url,
+    "GET",
+    {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    retries,
+    delay
+  );
+}
 module.exports = {
+  // ... existing exports ...
   getTopTracksIndia,
   getTopTracksGlobal,
   getArtistInfo,
   getSearchResult,
   getPlaylist,
   getAlbum,
-  getCurrentUserInfo
+  getCurrentUserInfo,
+  getNewReleases,
+  getFeaturedPlaylists,
+  getCategories,
+  getCategoryPlaylists
+  // <--- Export
 };
