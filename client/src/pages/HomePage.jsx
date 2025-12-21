@@ -91,6 +91,7 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
           setPlayerMeta={setPlayerMeta}
           setTrackInfo={setTrackInfo}
           sectionName="new-releases"
+          button={false}
         />
       ) : <SectionLoading name=" New Releases" />}
 

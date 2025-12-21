@@ -1,14 +1,14 @@
 .category-pills-wrapper {
   position: relative;
   width: 96%;
-  margin: 1rem auto 0.5rem auto;
+  margin: 0.5rem auto 0.5rem auto;
 }
 
 .category-pills-container {
   display: flex;
   gap: 0.8rem;
   overflow-x: auto;
-  padding: 0.5rem 0.2rem;
+  padding: 1rem 0.2rem;
   scrollbar-width: none; /* Firefox */
   scroll-behavior: smooth;
 }
@@ -60,6 +60,7 @@
   .category-pills-wrapper {
     width: 100%;
     padding-left: 1rem;
+    padding-top: 1.2rem;
   }
   .category-pill {
     padding: 0.5rem 1.2rem;
