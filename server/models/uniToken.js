@@ -1,14 +1,10 @@
 const mongoose = require("mongoose");
 
-const tokenSchema = new mongoose.Schema({
-  accessToken: {
-    type: String,
-  },
-  updationTime: {
-    type: Date
-  }
+const uniTokenSchema = new mongoose.Schema({
+  accessToken: { type: String, required: true },
+  refreshToken: { type: String, required: true },
+  expiresIn: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now } // <--- MAKE SURE THIS LINE EXISTS
 });
 
-const UniToken = mongoose.model("UniToken", tokenSchema);
-
-module.exports = UniToken;
+module.exports = mongoose.model("UniToken", uniTokenSchema);

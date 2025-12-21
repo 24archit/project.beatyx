@@ -1,3 +1,4 @@
+// server/utils/spotifyApis.js
 const axios = require("axios");
 const { getFreshTokens } = require("./getFreshTokens");
 const { getArtistShows } = require("./getArtistShows");
@@ -16,14 +17,28 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
     const status = error.response?.status || error.message;
     console.error(`Error with API request: ${url}. Status: ${status}`);
 
+    // --- FIX STARTS HERE ---
     if (status === 401) {
-      console.log("Refreshing access tokens...");
-      await getFreshTokens();
+      console.log("401 Unauthorized. Refreshing Universal Token...");
+      
+      // 1. Generate new token in DB
+      await getFreshTokens(); 
+      
+      // 2. Fetch the NEW token string
+      const newUniToken = await getAccessToken();
+
+      // 3. Update the Header for the retry
+      if (newUniToken) {
+        headers.Authorization = `Bearer ${newUniToken}`;
+        console.log("Header updated with fresh token.");
+      }
     }
+    // --- FIX ENDS HERE ---
 
     if (retries > 0) {
       console.log(`Retrying API request... (${4 - retries + 1}/4)`);
       await new Promise((resolve) => setTimeout(resolve, delay));
+      // Retry with the UPDATED headers
       return makeApiRequest(url, method, headers, retries - 1, delay);
     } else {
       console.error("Max retries reached. Could not complete the API request.");
@@ -110,17 +125,9 @@ async function getCategories(rightAccessToken, retries = 4, delay = 800) {
   return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
 
-// 4. Get Category Playlists (With Error Handling)
-// server/utils/spotifyApis.js
-
-// ... existing imports ...
-
-// 4. Get Category Playlists (Hybrid: Search for Made For You, Browse for others)
-async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
+// 4. Get Category Playlists (Standard)
+async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
-
-  // Simple, standard Browse API call. 
-  // We keep country=IN to ensure playlists are playable in the region.
   const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists?country=IN&limit=20`;
 
   try {
@@ -144,66 +151,7 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
     return { playlists: { items: [] } };
   }
 }
-  const accessToken = rightAccessToken;
-  
-  // STRATEGY 1: "Made For You" -> Use SEARCH API
-  // We search for the specific names of algorithmic playlists. 
-  // This guarantees we get the user's personal versions (On Repeat, Daily Mix, etc.)
-  if (id === 'made-for-you') {
-    const query = "On Repeat OR Daily Mix OR Discover Weekly OR Release Radar OR Time Capsule OR Repeat Rewind";
-    // Using Proxy ID 31 (Search)
-    const url = `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=playlist&limit=20`;
 
-    try {
-      const data = await makeApiRequest(
-        url,
-        "GET",
-        {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        retries,
-        delay
-      );
-      // Search returns { playlists: { items: [...] } }, which matches our expected structure
-      if (!data.playlists) {
-        return { playlists: { items: [] } };
-      }
-      return data;
-    } catch (error) {
-      console.warn(`Made For You search failed:`, error.message);
-      return { playlists: { items: [] } };
-    }
-  }
-
-  // STRATEGY 2: Standard Categories -> Use BROWSE API
-  // For Pop, Party, Bollywood, etc., we use the standard category endpoint.
-  const queryParams = "?country=IN&limit=20"; 
-  const url = `https://api.spotify.com/v1/browse/categories/${id}/playlists${queryParams}`;
-
-  try {
-    const data = await makeApiRequest(
-      url,
-      "GET",
-      {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      retries,
-      delay
-    );
-    
-    if (!data.playlists) {
-      return { playlists: { items: [] } };
-    }
-    return data;
-  } catch (error) {
-    console.warn(`Category '${id}' fetch failed:`, error.message);
-    return { playlists: { items: [] } };
-  }
-}
-
-// ... existing exports ...
 // Export all functions
 module.exports = {
   getTopTracksIndia,
@@ -213,7 +161,6 @@ module.exports = {
   getPlaylist,
   getAlbum,
   getCurrentUserInfo,
-  // New Exports
   getNewReleases,
   getFeaturedPlaylists,
   getCategories,

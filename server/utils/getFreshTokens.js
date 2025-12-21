@@ -1,93 +1,60 @@
-require("dotenv").config();
 const axios = require("axios");
-const UniToken = require("../models/uniToken");
-const User = require("../models/user");
+const qs = require("qs");
+const UniToken = require("../models/uniToken"); // Ensure path is correct
 
 async function getFreshTokens() {
-  const refreshToken = process.env.REFRESH_TOKEN;
-
-  const encodedCredentials = Buffer.from(
-    `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
-  ).toString("base64");
-
   try {
-    const response = await axios.post(
-      "https://accounts.spotify.com/api/token",
-      new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${encodedCredentials}`,
-        },
-      }
-    );
-    const body = response.data;
-    await UniToken.updateOne(
-      {}, // Assuming there's only one document
-      { accessToken: body.access_token, updationTime: new Date() },
-      { upsert: true }
-    );
-    console.log(
-      `Access token updated successfully at ${new Date().toLocaleString()}`
-    );
-    return body.access_token;
-  } catch (error) {
-    console.error(
-      "Error fetching tokens:",
-      error.response?.data || error.messageS
-    );
-    return null;
-    // Consider retrying or logging to handle the error gracefully
-  }
-}
-async function getUserFreshTokens(refreshToken, email) {
-  const encodedCredentials = Buffer.from(
-    `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
-  ).toString("base64");
+    console.log("[TokenSystem] Fetching Refresh Token from DB...");
+    
+    // 1. Get the latest token document
+    const tokenDoc = await UniToken.findOne().sort({ _id: -1 });
 
-  try {
-    const response = await axios.post(
-      "https://accounts.spotify.com/api/token",
-      new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${encodedCredentials}`,
-        },
-      }
-    );
-    const body = response.data;
-    const updateData = {
-      accessToken: body.access_token,
-      updationTime: new Date(),
-    };
-
-    if ("refresh_token" in body) {
-      updateData.refreshToken = body.refresh_token;
+    if (!tokenDoc) {
+      console.error("[TokenSystem] ❌ No Refresh Token found in DB! Please run seedToken.js");
+      return null;
     }
 
-    await User.updateOne(
-      { email: email },
-      { $set: updateData },
-      { upsert: true }
-    );
-    console.log(
-      `Access token updated successfully at ${new Date().toLocaleString()}`
-    );
-    return body.access_token;
+    // Debug Log (Masked)
+    console.log(`[TokenSystem] Using Refresh Token: ${tokenDoc.refreshToken.substring(0, 10)}...`);
+
+    // 2. Exchange with Spotify
+    const response = await axios({
+      method: "post",
+      url: "https://accounts.spotify.com/api/token", // Official Token URL
+      data: qs.stringify({
+        grant_type: "refresh_token",
+        refresh_token: tokenDoc.refreshToken,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    const { access_token, expires_in } = response.data;
+    console.log("[TokenSystem] ✅ Spotify Accepted! New Access Token received.");
+
+    // 3. Update the Database
+    tokenDoc.accessToken = access_token;
+    tokenDoc.expiresIn = expires_in;
+    tokenDoc.createdAt = new Date(); // Reset timer
+    await tokenDoc.save();
+
+    console.log("[TokenSystem] Database updated with fresh Access Token.");
+    return access_token;
+
   } catch (error) {
-    console.error(
-      "Error fetching tokens:",
-      error.response?.data || error.messageS
-    );
+    console.error("------------------------------------------------");
+    console.error("[TokenSystem] ❌ FAILED to refresh token.");
+    if (error.response) {
+      console.error("Spotify Response:", error.response.data); // Look for 'invalid_grant' here
+    } else {
+      console.error("Error:", error.message);
+    }
+    console.error("------------------------------------------------");
     return null;
-    // Consider retrying or logging to handle the error gracefully
   }
 }
-module.exports = { getFreshTokens, getUserFreshTokens };
+
+module.exports = { getFreshTokens };
