@@ -114,14 +114,24 @@ async function getCategories(rightAccessToken, retries = 4, delay = 800) {
 async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 800) {
   const accessToken = rightAccessToken;
 
-  // FIX: Map our custom ID to Spotify's real "Made For You" Category ID
   let fetchId = id;
+  let queryParams = "?limit=20"; // Default params
+
+  // MAP: 'made-for-you' -> Spotify's internal ID
   if (id === 'made-for-you') {
     fetchId = '0JQ5DAqbMKFHOzuVTgTizF'; 
+    
+    // CRITICAL FIX: Do NOT pass 'country=IN' for personalized categories.
+    // Leaving country undefined forces Spotify to use the User's account location
+    // and personalized algorithms.
+    queryParams = "?limit=20"; 
+  } else {
+    // For standard categories (Pop, Party), it's safe/good to specify country
+    // to ensure the content is available in the user's region.
+    queryParams = "?country=IN&limit=20";
   }
 
-  // Use fetchId in the URL instead of id
-  const url = `https://api.spotify.com/v1/browse/categories/${fetchId}/playlists?country=IN&limit=20`;
+  const url = `https://api.spotify.com/v1/browse/categories/${fetchId}/playlists${queryParams}`;
 
   try {
     const data = await makeApiRequest(
@@ -135,14 +145,12 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
       delay
     );
     
-    // Safety check
     if (!data.playlists) {
       return { playlists: { items: [] } };
     }
     return data;
   } catch (error) {
-    // Only if it really fails (e.g. 404 because user has no history), return empty
-    console.warn(`Category '${id}' (mapped to ${fetchId}) fetch failed:`, error.message);
+    console.warn(`Category '${id}' fetch failed:`, error.message);
     return { playlists: { items: [] } };
   }
 }
