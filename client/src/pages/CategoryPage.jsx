@@ -1,6 +1,6 @@
 // client/src/pages/CategoryPage.jsx
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { getCategoryPlaylists } from "../apis/apiFunctions";
@@ -11,14 +11,25 @@ import "../assets/styles/CategoryPage.css";
 export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation(); // Hook to get state passed from Link
 
-  // Fetch Category Data
+  // 1. Determine Title
+  // Priority: State Name > Special ID Check > Raw ID formatting
+  let displayName;
+  if (location.state && location.state.categoryName) {
+    displayName = location.state.categoryName;
+  } else if (id === "made-for-you") {
+    displayName = "Made For You";
+  } else {
+    displayName = "Category"; // Fallback if direct link access
+  }
+
+  // 2. Fetch Data
   const { data, isLoading } = useQuery({
     queryKey: ["categoryPlaylists", id],
     queryFn: () => getCategoryPlaylists(id),
-    // FIX: Safer selection logic.
-    // If backend returns error or structure differs, return empty array []
     select: (data) => {
+      // Robust selection to avoid crashes
       if (!data || !data.playlists || !data.playlists.items) return [];
       return data.playlists.items;
     },
@@ -29,24 +40,17 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
     window.scrollTo(0, 0);
   }, [id]);
 
-  const categoryName = id === "made-for-you" 
-    ? "Made For You" 
-    : id.charAt(0).toUpperCase() + id.slice(1);
-
-  // --- FILTERING LOGIC ---
-  // Create a clean list of VALID playlists.
-  // We filter OUT anything that is null, undefined, or missing an ID.
+  // 3. Filter Valid Playlists
   const validPlaylists = data 
-    ? data.filter(item => item !== null && item !== undefined && item.id) 
+    ? data.filter(item => item && item.id) // Ensure item exists and has ID
     : [];
 
-  // Now we check if THIS valid list is empty to show the empty state
   const isEmpty = !isLoading && validPlaylists.length === 0;
 
   return (
     <div className="page-container">
       <Helmet>
-        <title>{categoryName} Mixes - Beatyx</title>
+        <title>{displayName} - Beatyx</title>
       </Helmet>
 
       {/* Hero Header */}
@@ -56,25 +60,25 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
         </button>
         
         <div className="category-header-content">
-          <div className="category-label">Browse Category</div>
-          <h1 className="category-title">{categoryName}</h1>
+          <div className="category-label">Browse</div>
+          <h1 className="category-title">{displayName}</h1>
           <p className="category-subtitle">
             {id === "made-for-you" 
               ? "Personalized playlists curated just for you based on your listening history."
-              : `Dive into the best curated playlists for ${categoryName}. Handpicked for your mood.`
+              : `The best playlists for ${displayName}, curated for your mood.`
             }
           </p>
         </div>
       </div>
 
-      {/* Content Grid */}
+      {/* Grid Content */}
       <div className="grid-wrapper">
         <div className="grid-container">
           
-          {/* Loading State */}
+          {/* Loading Skeletons */}
           {isLoading && Array.from({ length: 8 }).map((_, i) => <SectionCardLoad key={i} />)}
 
-          {/* Data State: Map over VALID playlists only */}
+          {/* Render Playlists */}
           {!isLoading && validPlaylists.map((item) => (
             <SectionCard
               key={item.id}
@@ -102,11 +106,11 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
             />
           ))}
               
-          {/* Empty State */}
+          {/* Empty State Handling */}
           {isEmpty && (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", marginTop: "3rem", padding: "0 1rem" }}>
               {id === "made-for-you" ? (
-                // MADE FOR YOU - Special Empty State
+                // Made For You Empty State (Keep Exploring)
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                   <div style={{ fontSize: "3rem", color: "#1db954" }}>
                     <i className="fa-regular fa-compass"></i>
@@ -137,11 +141,11 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
                   </button>
                 </div>
               ) : (
-                // STANDARD CATEGORY - Generic Empty State
+                // Generic Empty State
                 <div>
                   <i className="fa-regular fa-folder-open" style={{ fontSize: "2rem", marginBottom: "1rem", color: "#2979ff" }}></i>
                   <p style={{ color: "#fff", fontSize: "1.2rem", fontWeight: "600" }}>No playlists found.</p>
-                  <p style={{ color: "#a0a0a0" }}>This category might be empty or unavailable in your region.</p>
+                  <p style={{ color: "#a0a0a0" }}>This category appears to be empty.</p>
                 </div>
               )}
             </div>
