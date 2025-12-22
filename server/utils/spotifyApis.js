@@ -164,6 +164,40 @@ async function getUserTopTracks(rightAccessToken, retries = 4, delay = 800) {
   const url = "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10"; 
   return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
 }
+async function getTrack(id, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  const url = `https://api.spotify.com/v1/tracks/${id}`;
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
+}
+
+// Function to fetch recommendations (Using official API)
+async function getRecommendations(seedTrackId, seedArtistId, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  const url = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTrackId}&seed_artists=${seedArtistId}&limit=20&market=IN`;
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
+}
+
+// Function to fetch Artist Top Tracks (Reusable helper)
+async function getArtistTopTracks(artistId, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Reuse the proxy pattern or standard API. Let's use standard for reliability here.
+  const url = `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=IN`;
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}` }, retries, delay);
+}
+
+async function getSeveralTracks(ids, rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Use DIRECT Spotify API URL to ensure it works
+  const url = `https://api.spotify.com/v1/tracks?ids=${ids}&market=IN`;
+  
+  return makeApiRequest(
+      url, 
+      "GET", 
+      { Authorization: `Bearer ${accessToken}` }, 
+      retries, 
+      delay
+  );
+}
 // Export all functions
 module.exports = {
   getTopTracksIndia,
@@ -173,11 +207,15 @@ module.exports = {
   getPlaylist,
   getAlbum,
   getCurrentUserInfo,
+  getSeveralTracks,
   getNewReleases,
   getFeaturedPlaylists,
   getCategories,
   getCategoryPlaylists,
   getUserTopArtists,
-  
-  getUserTopTracks
+ 
+  getUserTopTracks,
+  getTrack,              // Added
+  getRecommendations,    // Added
+  getArtistTopTracks
 };

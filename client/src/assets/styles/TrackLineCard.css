@@ -1,99 +1,157 @@
-.track-line-card{
-    display: flex;
-    align-items: center;
-    padding: 0.4rem;
-    border-radius: 1.9rem;
-    align-content: center;
-    justify-content: space-evenly;
-}
-.track-line-card:hover{
-    background-color: rgba(164, 197, 223, 0.199);
-}
-.img-container img {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.4rem;
+/* client/src/assets/styles/TrackLineCard.css */
 
+.track-line-card {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%; /* Ensure it takes full width of container */
+  box-sizing: border-box; /* Prevent padding from causing overflow */
+  transition: background-color 0.2s ease;
 }
-.track-line-card p{
-   color: rgb(134, 185, 229);
-   text-align: center;
-   font-family: Arial, Helvetica, sans-serif;
-   margin-left: 2rem;  
-   font-size: large; 
+
+.track-line-card:hover {
+  background-color: rgba(164, 197, 223, 0.199);
 }
-.Track-name{
-    width: 18rem;
+
+/* Image Container */
+.img-container img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
 }
-.Track-artists-name{
-    width: 29rem;
+
+/* General Text Styling */
+.track-line-card p {
+  color: rgb(134, 185, 229);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.Duration{
-    width: 12rem;
+
+/* Flexible Columns */
+.track-rank {
+  width: 2rem;
+  flex-shrink: 0;
+  text-align: center;
 }
-.track-play{
-    width: 2rem;
-    height: 2rem;
-    color: rgb(1, 255, 238);
-    text-align: center;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.Track-name {
+  flex: 2; /* Takes up most space */
+  min-width: 0; /* Allows text truncation to work */
 }
-.track-play:hover{
-    background: linear-gradient(rgba(89, 18, 196, 0.888), rgba(16, 16, 134, 0.61));
-    color: #a4a8c6;
-    font-weight: bold;
-    transition: background-color 0.08s ease-out;
+
+.Track-artists-name {
+  flex: 1.5;
+  min-width: 0;
+  color: #b3b3b3; /* Slightly dim artist name */
 }
-.track-rank{
-    width: 2rem;
+
+.Duration {
+  width: 4rem;
+  flex-shrink: 0;
+  text-align: right;
 }
-.track-rank p{
-    margin-left: 0rem;
+
+.spotify-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Play Button */
+.track-play {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: rgb(1, 255, 238);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent button from squishing */
+}
+
+.track-play:hover {
+  background: linear-gradient(rgba(89, 18, 196, 0.888), rgba(16, 16, 134, 0.61));
+  color: #a4a8c6;
+  font-weight: bold;
+}
+
+/* Animation */
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(10px);
   }
   to {
     opacity: 1;
     transform: translateX(0);
   }
 }
+
 .track-line-card {
-    animation: slideIn 0.3s ease-out;
+  animation: slideIn 0.3s ease-out;
 }
+
+/* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
-    .img-container img {
-        width: 2rem;
-        height: 2rem;
-    }
-   .Track-artists-name, .Duration {
-        width: auto;
-        text-align: center;
-        display: none;
-    }
-    p {
-        margin-left: 0;
-    }
-    .track-play {
-        width: 1.5rem;
-        height: 1.5rem;
-        padding: 1rem;
-    }
-    .track-rank {
-     display: none;
-    }
-    .Track-name{
-        width: 7rem;
-        text-align: left;
-        
-    }
-    .Track-name p{
-       font-size: 0.8rem;
-       margin: 0;
-    }
+  .track-line-card {
+    padding: 0.5rem; /* Reduce padding */
+    gap: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .img-container img {
+    width: 2.5rem; /* Smaller Image */
+    height: 2.5rem;
+  }
+
+  .track-rank {
+    display: none; /* Hide Rank on mobile to save space */
+  }
+
+  .Track-name {
+    flex: 1; /* Let name take available space */
+  }
+
+  .Track-name p {
+    font-size: 0.9rem; /* Smaller font */
+    text-align: left;
+  }
+
+  /* Hide Artist Name on very small screens, or show if space permits */
+  .Track-artists-name {
+    display: none; 
+  }
+
+  /* Optional: If you want to show artist name on slightly larger mobiles */
+  @media (min-width: 480px) {
+      .Track-artists-name {
+          display: block;
+          flex: 1;
+          font-size: 0.85rem;
+      }
+  }
+
+  .Duration {
+    display: none; /* Hide duration on mobile */
+  }
+
+  .spotify-logo {
+    display: none; /* Hide extra actions on mobile */
+  }
+
+  .track-play {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.9rem;
+  }
 }

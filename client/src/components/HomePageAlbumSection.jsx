@@ -42,7 +42,7 @@ export default function HomePageAlbumSection(props) {
                   ? item.images[0].url
                   : TrackLogo
               }
-              iconClass={"fa-solid fa-play"}
+              iconClass={"fa-solid fa-link"}
               iconId={"play-btn"}
               cardName={item.name}
               cardId={item.id}

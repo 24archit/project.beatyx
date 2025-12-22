@@ -1,7 +1,7 @@
 // src/context/PlayerProvider.jsx
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { getNextAudioLink, getPreviousAudioLink } from '../apis/apiFunctions';
-
+import { getLikedSongs } from "../apis/apiFunctions"; // Import thi
 // Throttle helper
 function useThrottle(callback, delay) {
   const lastCallRef = useRef(0);
@@ -46,6 +46,29 @@ export const PlayerProvider = ({
   // — References
   const playerRef = useRef(null);
   const volumeSliderRef = useRef(null);
+
+
+  const [likedSongs, setLikedSongs] = useState([]);
+  const fetchLikedSongs = async () => {
+    const data = await getLikedSongs();
+    if (data && data.likedSongs) {
+      setLikedSongs(data.likedSongs);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikedSongs();
+  }, []); // Runs once on app load
+
+
+const toggleLikeLocal = (trackId) => {
+    if (likedSongs.includes(trackId)) {
+      setLikedSongs(prev => prev.filter(id => id !== trackId));
+    } else {
+      setLikedSongs(prev => [...prev, trackId]);
+    }
+  };
+
 
   // — Helpers
   const extractVideoId = useCallback((videoUrl) => {
@@ -145,8 +168,9 @@ export const PlayerProvider = ({
     }
 
     let nextUrl = nextTrackInfo?.audioLink?.url;
-    let details = nextTrackInfo
+  let details = nextTrackInfo
       ? { 
+          id: nextTrackInfo.id, // <--- ADD THIS LINE
           trackName: nextTrackInfo.trackName, 
           imgSrc: nextTrackInfo.imgSrc,
           artistNames: nextTrackInfo.artistNames || ["Unknown Artist"]
@@ -162,12 +186,12 @@ export const PlayerProvider = ({
         if (nxt?.audioLink?.url) {
           nextUrl = nxt.audioLink.url;
           details = {
+            id: nxt.id, // <--- ADD THIS LINE
             trackName: nxt.trackName,
             imgSrc: nxt.imgSrc,
             artistNames: nxt.artistNames || ["Unknown Artist"],
           };
-        }
-      } catch (e) {
+        }} catch (e) {
         console.error("playNextTrack fetch error", e);
         setIsTransitioning(false);
         return;
@@ -190,9 +214,10 @@ export const PlayerProvider = ({
     if (!q) return setIsTransitioning(false);
 
     try {
-      const prev = await getPreviousAudioLink(q);
+     const prev = await getPreviousAudioLink(q);
       const urlToPlay = prev?.audioLink?.url;
       const details = {
+        id: prev.id, // <--- ADD THIS LINE
         trackName: prev.trackName,
         imgSrc: prev.imgSrc,
         artistNames: prev.artistNames || ["Unknown Artist"],
@@ -462,6 +487,11 @@ export const PlayerProvider = ({
     handlePlay,
     handlePause,
     handleReady,
+
+    likedSongs,         // Export state
+        setLikedSongs,      // Export setter
+        fetchLikedSongs,    // Export fetcher
+        toggleLikeLocal
   };
 
   return (

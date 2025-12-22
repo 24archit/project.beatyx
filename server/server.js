@@ -12,6 +12,7 @@ const searchRoutes = require("./routes/search");
 const playlistRoutes = require("./routes/playlist");
 const albumRoutes = require("./routes/album");
 const userRoutes = require("./routes/user.js");
+const trackRoutes = require("./routes/track.js");
 const cors = require("cors");
 const { connectToDb } = require("./utils/connectToDb");
 // const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -60,6 +61,7 @@ app.use("/search", searchRoutes);
 app.use("/playlist", playlistRoutes);
 app.use("/album", albumRoutes);
 app.use("/user", userRoutes);
+app.use("/track", trackRoutes);
 
 // const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

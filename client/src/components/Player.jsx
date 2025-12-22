@@ -47,12 +47,12 @@ const Player = () => {
     handleReady,
     setIsPlayerReady,
   } = useSharedPlayer();
-
+const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
   return (
     <div className="player">
       <h2 className="track-heading">Now Playing</h2>
 
-      <Link to="/track" className="track-info">
+      <Link to={trackLink} className="track-info">
         <div className="thumbnail">
           <img
             src={trackInfo.imgSrc || TrackLogo}

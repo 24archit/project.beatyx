@@ -1,5 +1,7 @@
+// server/models/user.js
 const mongoose = require("mongoose");
 const crypto = require("crypto");
+
 const userSchema = new mongoose.Schema({
   displayName: {
     type: String,
@@ -45,6 +47,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // ADD THIS NEW FIELD
+  likedSongs: {
+    type: [String], // Array of Track IDs
+    default: []
+  }
 });
 
 const User = mongoose.model("User", userSchema);

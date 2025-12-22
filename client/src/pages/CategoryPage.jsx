@@ -56,9 +56,7 @@ export default function CategoryPage({ setPlayerMeta, setTrackInfo }) {
 
       {/* Hero Header */}
       <div className="category-hero">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          <i className="fa-solid fa-arrow-left"></i>
-        </button>
+        
         
         <div className="category-header-content">
           <div className="category-label">Browse</div>

@@ -304,7 +304,72 @@ export async function getUserProfile() {
     throw new Error(error.message);
   }
 }
+// client/src/apis/apiFunctions.js
 
+// ... existing functions ...
+export async function getTrackInfo(id) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/track/api/getTrackInfo/${id}`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    // Set current playlist ID for the player context
+    window.sessionStorage.setItem("currPlaylistId", response.data.currPlaylistId);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching track info: ${error.message}`);
+  }
+}
+// client/src/apis/apiFunctions.js
+
+// ... existing functions ...
+
+export async function addLikedSong(trackId) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/addLikedSong`,
+      method: "PUT",
+      data: { trackId },
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function removeLikedSong(trackId) {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/removeLikedSong`,
+      method: "PUT",
+      data: { trackId },
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+
+export async function getLikedSongs() {
+  const token = window.localStorage.getItem("authToken");
+  if (!token) return { likedSongs: [], items: [] };
+
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/getLikedSongs`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching liked songs:", error);
+    return { likedSongs: [], items: [] };
+  }
+}
 
 
 

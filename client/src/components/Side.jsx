@@ -1,3 +1,4 @@
+// client/src/components/Side.jsx
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -9,15 +10,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip"; 
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-// import LightbulbIcon from "@mui/icons-material/Lightbulb";
-// import InfoIcon from "@mui/icons-material/Info";
-// import ContactMailIcon from "@mui/icons-material/ContactMail";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
@@ -26,6 +25,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import LeftArrowIcon from "@mui/icons-material/ArrowBack";
 import RightArrowIcon from "@mui/icons-material/ArrowForward"
 import { useNavigate } from 'react-router-dom';
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -78,7 +78,10 @@ export default function Sidebar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const drawerRef = React.useRef(null);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  // 1. Get Auth Token
+  const authToken = window.localStorage.getItem("authToken");
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -109,26 +112,27 @@ export default function Sidebar() {
     }
   };
 
+  // 2. Define Menu Items with Auth requirements and Alerts
   const menuItems = [
     {
       text: "Go Back",
       icon: <LeftArrowIcon/>,
       onClick: ()=>navigate(-1),
       link: "#"
-
     },
     {
       text: "Go Forward",
       icon: <RightArrowIcon/>,
       onClick: ()=>navigate(1),
       link: "#"
-
     },
     {
       text: "Profile",
       icon: <PersonIcon />,
       onClick: () => setOpen(false),
       link: "/profile",
+      authRequired: true,
+      alertMsg: "Please sign up or login to view your Profile!"
     },
     {
       text: "Home",
@@ -137,41 +141,45 @@ export default function Sidebar() {
       link: "/",
     },
     {
-      text: "Currently Playing",
-      icon: <MusicNoteIcon />,
+      text: "Liked Songs",
+      icon: <HeartIcon />,
       onClick: () => setOpen(false),
-      link: "/currentTrack",
+      link: "/liked-songs",
+      authRequired: true,
+      alertMsg: "Please sign up or login to access your Liked Songs!"
     },
+   
     {
       text: "Playlists",
       icon: <LibraryMusicIcon />,
       onClick: () => setOpen(false),
-      link: "/playlists",
+      link: "/#",
+      authRequired: true,
+      alertMsg: "Please sign up or login to access Playlists!"
     },
     {
       text: "Albums",
       icon: <AlbumIcon />,
       onClick: () => setOpen(false),
-      link: "/albums",
+      link: "/#",
+      authRequired: true,
+      alertMsg: "Please sign up or login to save and view Albums!"
     },
-    // { text: "Connect to Spotify", icon: <MusicNoteIcon />, onClick: () => setOpen(false) },
-    // { text: "Create using AI", icon: <LightbulbIcon />, onClick: () => setOpen(false), link: "/ai" },
-    // { text: "About Us", icon: <InfoIcon />, onClick: () => setOpen(false), link: "/about" },
-    // { text: "Contact Us", icon: <ContactMailIcon />, onClick: () => setOpen(false), link: "/contact" },
-    {
-      text: "Liked Songs",
-      icon: <HeartIcon />,
-      onClick: () => setOpen(false),
-      link: "/liked-songs",
+    
+    // {
+    //   text: "Listening History",
+    //   icon: <HistoryIcon />,
+    //   onClick: () => setOpen(false),
+    //   link: "/listening-history",
+    //   authRequired: true,
+    //   alertMsg: "Please sign up or login to view your Listening History!"
+    // },
+    { 
+        text: "Logout", 
+        icon: <ExitToAppIcon />, 
+        onClick: handleLogoutClick,
+        visibleOnlyAuth: true // Flag to show only when logged in
     },
-
-    {
-      text: "Listening History",
-      icon: <HistoryIcon />,
-      onClick: () => setOpen(false),
-      link: "/listening-history",
-    },
-    { text: "Logout", icon: <ExitToAppIcon />, onClick: handleLogoutClick },
   ];
 
   return (
@@ -188,89 +196,87 @@ export default function Sidebar() {
         }}
       >
         <DrawerHeader>
-          <IconButton
-            onClick={toggleDrawer}
-            sx={{
-              color: "white",
-              "&:focus, &:focus-visible": {
-                outline: "none",
-                boxShadow: "none",
-              },
-            }}
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-          </IconButton>
+          <Tooltip title={open ? "Close Sidebar" : "Open Sidebar"} placement="right">
+            <IconButton
+              onClick={toggleDrawer}
+              sx={{
+                color: "white",
+                "&:focus, &:focus-visible": {
+                  outline: "none",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {open ? <CloseIcon /> : <MenuIcon />}
+            </IconButton>
+          </Tooltip>
         </DrawerHeader>
         <Divider sx={{ backgroundColor: "white" }} />
         <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-              {item.link ? (
-                <Link
-                  to={item.link}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <ListItemButton
-                    onClick={item.onClick}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                      color: "white",
-                      "&:focus, &:focus-visible": {
-                        outline: "none",
-                        boxShadow: "none",
-                      },
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        justifyContent: "center",
-                        mr: open ? 3 : "auto",
-                        color: "white",
-                      }}
-                    >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{ opacity: open ? 1 : 0, color: "white" }}
-                    />
-                  </ListItemButton>
-                </Link>
-              ) : (
+          {menuItems.map((item) => {
+            // 3. Logic to hide items (Logout if no token)
+            if (item.visibleOnlyAuth && !authToken) return null;
+
+            // 4. Logic to restrict access
+            const isRestricted = item.authRequired && !authToken;
+
+            const handleRestrictedClick = () => {
+                alert(item.alertMsg || "Please login first!");
+            };
+
+            const ButtonContent = (
+               <Tooltip title={open ? "" : item.text} placement="right">
                 <ListItemButton
-                  onClick={item.onClick}
-                  sx={{
+                    // If restricted, use the alert handler, otherwise use the item's onClick
+                    onClick={isRestricted ? handleRestrictedClick : item.onClick}
+                    sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
                     px: 2.5,
                     color: "white",
                     "&:focus, &:focus-visible": {
-                      outline: "none",
-                      boxShadow: "none",
+                        outline: "none",
+                        boxShadow: "none",
                     },
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      justifyContent: "center",
-                      mr: open ? 3 : "auto",
-                      color: "white",
                     }}
-                  >
+                >
+                    <ListItemIcon
+                    sx={{
+                        minWidth: 0,
+                        justifyContent: "center",
+                        mr: open ? 3 : "auto",
+                        color: "white",
+                    }}
+                    >
                     {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
+                    </ListItemIcon>
+                    <ListItemText
                     primary={item.text}
                     sx={{ opacity: open ? 1 : 0, color: "white" }}
-                  />
+                    />
                 </ListItemButton>
-              )}
-            </ListItem>
-          ))}
+               </Tooltip>
+            );
+
+            return (
+              <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
+                {/* If the item has a link AND the user is allowed (auth present OR not required),
+                   we wrap in <Link>.
+                   Otherwise (restricted), we render just the button so clicking triggers the alert, not navigation.
+                */}
+                {item.link && !isRestricted ? (
+                  <Link
+                    to={item.link}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    {ButtonContent}
+                  </Link>
+                ) : (
+                  ButtonContent
+                )}
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
     </Box>

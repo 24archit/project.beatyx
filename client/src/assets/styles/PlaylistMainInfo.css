@@ -1,3 +1,5 @@
+/* client/src/assets/styles/PlaylistMainInfo.css */
+
 #playlist-description {
   margin-top: 10px;
   font-size: 1rem;
@@ -29,6 +31,30 @@
   gap: 1.5rem;
   box-sizing: border-box;
 }
+
+/* Added Styles for name-stat-1 */
+.name-stat-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Keep centered to match Playlist/Artist style */
+  justify-content: center;
+  flex: 1; /* Take remaining width */
+  min-width: 280px; /* Prevent squishing */
+  text-align: center;
+  padding: 10px;
+}
+
+/* Container for the Track Play Button */
+.track-play-container {
+  display: flex;
+  gap: 0.3rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1rem;
+  justify-content: flex-start; /* Left align on desktop */
+  padding-left: 1.5rem;
+  width: 100%;
+}
+
 .name-stat {
   display: flex;
   flex-direction: column;
@@ -38,16 +64,32 @@
   text-align: center;
   padding: 10px;
 }
+
 @media (max-width: 768px) {
   #playlist-description {
-    font-size: 0.6rem; /* Adjusted for smaller screens */
-    margin-top: 8px; /* Reduced margin for smaller screens */
+    font-size: 0.6rem; 
+    margin-top: 8px; 
   }
-  .name-stat {
-    width: 100%; /* Full width for smaller screens */
-    text-align: center;
-    flex-wrap: wrap; /* Ensures text wraps nicely */
-    padding: 5 10px; /* Reduced padding for smaller screens */
+  
+  .mainInfo-1 {
+    flex-direction: column; /* Stack vertically on mobile */
+    padding: 1.5rem;
+  }
+  
+  .name-stat-1 {
+    width: 100%;
+    min-width: auto;
+  }
 
+  .track-play-container {
+    justify-content: center; /* Center play button on mobile */
+    padding-left: 0;
+  }
+
+  .name-stat {
+    width: 100%; 
+    text-align: center;
+    flex-wrap: wrap; 
+    padding: 5px 10px; 
   }
 }

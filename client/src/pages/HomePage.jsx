@@ -80,21 +80,6 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
       {!isSpotifyConnected && (
         <ConnectSpotifySection />
       )}
-
-      {/* 4. New Releases */}
-      {!loadingNewReleases && newReleases ? (
-        <HomePageAlbumSection
-          iconClass="fa-solid fa-compact-disc"
-          iconId="trend-icon"
-          name=" New Releases"
-          data={newReleases}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-          sectionName="new-releases"
-          button={false}
-        />
-      ) : <SectionLoading name=" New Releases" />}
-
       {/* 5. Featured Playlists */}
       {!loadingFeatured && featuredPlaylists ? (
         <HomePagePlaylistSection
@@ -137,6 +122,21 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
           routeTo="/playlist/37i9dQZEVXbMDoHDwVN2tF"
         />
       ) : <SectionLoading name=" Global Top Tracks" />}
+      {/* 4. New Releases */}
+      {!loadingNewReleases && newReleases ? (
+        <HomePageAlbumSection
+          iconClass="fa-solid fa-compact-disc"
+          iconId="trend-icon"
+          name=" New Releases"
+          data={newReleases}
+          setPlayerMeta={setPlayerMeta}
+          setTrackInfo={setTrackInfo}
+          sectionName="new-releases"
+          button={false}
+        />
+      ) : <SectionLoading name=" New Releases" />}
+
+    
     </>
   );
 }

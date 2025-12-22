@@ -19,8 +19,11 @@ import AlbumPage from "./pages/AlbumPage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TrackPage from "./pages/TrackPage";
-import CategoryPage from "./pages/CategoryPage"; 
+import CategoryPage from "./pages/CategoryPage";
 import ProfilePage from './pages/ProfilePage';
+import LikedSongsPage from "./pages/LikedSongsPage";
+
+// Context
 import { PlayerProvider } from "./context/PlayerContext";
 import { verifyAuth } from "./apis/apiFunctions";
 import { Analytics } from "@vercel/analytics/react";
@@ -115,7 +118,7 @@ function App() {
                   <HomePage
                     setPlayerMeta={setPlayerMeta}
                     setTrackInfo={setTrackInfo}
-                    isSpotifyConnected={isSpotifyConnected} 
+                    isSpotifyConnected={isSpotifyConnected}
                   />
                 }
               />
@@ -165,7 +168,7 @@ function App() {
                 }
               />
               <Route
-                path="/track"
+                path="/track/:id" // CHANGED: Added /:id parameter
                 element={
                   <TrackPage
                     setPlayerMeta={setPlayerMeta}
@@ -173,6 +176,15 @@ function App() {
                   />
                 }
               />
+              <Route
+  path="/liked-songs" // Route URL
+  element={
+    <LikedSongsPage
+      setPlayerMeta={setPlayerMeta}
+      setTrackInfo={setTrackInfo}
+    />
+  }
+/>
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
