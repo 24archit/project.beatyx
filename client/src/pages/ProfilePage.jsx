@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserProfile } from '../apis/apiFunctions';
+import { getUserProfile, verifyAuth } from '../apis/apiFunctions';
 import '../assets/styles/ProfilePage.css';
 const ProfileSkeleton = () => {
   return (
@@ -133,7 +133,44 @@ if (loading) return <ProfileSkeleton />;
   if (!data) return null;
 
   const { user, spotify } = data;
-
+  const handleClickOpen = async () => {
+      try {
+        const authToken = localStorage.getItem("authToken");
+  
+        if (!authToken) {
+          alert("🔐 Please log in or sign up to connect your Spotify account.");
+          return;
+        }
+  
+        const response = await verifyAuth(authToken);
+  
+        if (response.isVerified) {
+          
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
+          form.target = "_self";
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "authToken";
+          input.value = authToken;
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+  
+        } else {
+          alert(
+            "🎵 You're just one step away! Log in or sign up to connect your Spotify and start the vibe."
+          );
+        }
+      } catch (error) {
+        console.error("Error while verifying auth or connecting Spotify:", error);
+        alert(
+          "⚠️ Something went wrong. Please try again later or check your network connection."
+        );
+        window.open(`${import.meta.env.VITE_CLIENT_LINK}`);
+      }
+    };
   return (
     <div className="custom-profile-page fade-in">
       {/* Background Ambience */}
@@ -217,7 +254,7 @@ if (loading) return <ProfileSkeleton />;
                         <p>Connect to unlock your Top Artists and Tracks analysis.</p>
                         <button 
                             className="sp-sync-btn" 
-                            onClick={() => window.location.href = `${import.meta.env.VITE_SERVER_LINK}/auth/spotify`}
+                            onClick={handleClickOpen}
                         >
                             CONNECT NOW
                         </button>
