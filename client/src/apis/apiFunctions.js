@@ -23,9 +23,9 @@ export async function getSignUp(FormData) {
     }
   } catch (error) {
     // Return an object indicating failure, with the status code
-    return { 
-      success: false, 
-      status: error.response ? error.response.status : 500 
+    return {
+      success: false,
+      status: error.response ? error.response.status : 500
     };
   }
 }
@@ -89,8 +89,8 @@ export async function getArtistInfo(id) {
 }
 
 export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueId) {
-  try{
-    if(isPlaylist){
+  try {
+    if (isPlaylist) {
       await updatePlayerQueue(index, currPlaylistId, queueId);
     }
     const response = await axios({
@@ -207,7 +207,7 @@ export async function getPreviousAudioLink(queueId) {
 export async function verifyAuth() {
   // 1. Check local storage first
   const token = window.localStorage.getItem("authToken");
-  
+
   // 2. If no token, or it's "null"/"undefined", stop immediately.
   if (!token || token === "null" || token === "undefined") {
     return { isVerified: false, spotifyConnect: false };
@@ -290,6 +290,20 @@ export async function getCategoryPlaylists(id) {
   }
 }
 
+// ... existing functions ...
+
+export async function getUserProfile() {
+  try {
+    const response = await axios({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/profile`,
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 
 
 

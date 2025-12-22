@@ -20,7 +20,7 @@ import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TrackPage from "./pages/TrackPage";
 import CategoryPage from "./pages/CategoryPage"; 
-
+import ProfilePage from './pages/ProfilePage';
 import { PlayerProvider } from "./context/PlayerContext";
 import { verifyAuth } from "./apis/apiFunctions";
 import { Analytics } from "@vercel/analytics/react";
@@ -173,6 +173,7 @@ function App() {
                   />
                 }
               />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

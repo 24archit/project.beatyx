@@ -151,7 +151,19 @@ async function getCategoryPlaylists(id, rightAccessToken, retries = 4, delay = 8
     return { playlists: { items: [] } };
   }
 }
-
+async function getUserTopArtists(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // Using standard Spotify API endpoint. 
+  // If you have a specific proxy URL for this, replace it here.
+  const url = "https://api.spotify.com/v1/me/top/artists?limit=10"; 
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
+}
+async function getUserTopTracks(rightAccessToken, retries = 4, delay = 800) {
+  const accessToken = rightAccessToken;
+  // FIX: Pointing explicitly to the 'tracks' endpoint
+  const url = "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10"; 
+  return makeApiRequest(url, "GET", { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" }, retries, delay);
+}
 // Export all functions
 module.exports = {
   getTopTracksIndia,
@@ -164,5 +176,8 @@ module.exports = {
   getNewReleases,
   getFeaturedPlaylists,
   getCategories,
-  getCategoryPlaylists
+  getCategoryPlaylists,
+  getUserTopArtists,
+  
+  getUserTopTracks
 };
