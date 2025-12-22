@@ -18,7 +18,6 @@ import PlaylistPage from "./pages/PlaylistPage";
 import AlbumPage from "./pages/AlbumPage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import ProfilePage from "./pages/ProfilePage";
 import TrackPage from "./pages/TrackPage";
 import CategoryPage from "./pages/CategoryPage"; 
 
@@ -169,15 +168,6 @@ function App() {
                 path="/track"
                 element={
                   <TrackPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProfilePage
                     setPlayerMeta={setPlayerMeta}
                     setTrackInfo={setTrackInfo}
                   />
