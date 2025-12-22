@@ -8,6 +8,7 @@ import spotifyLogo from "/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
 import { useSharedPlayer } from "../context/PlayerContext"; 
 import { addLikedSong, removeLikedSong } from "../apis/apiFunctions";
+import { useNavigate } from "react-router-dom"; 
 
 export function SectionCard({
   imgSrc = TrackLogo,
@@ -26,16 +27,42 @@ export function SectionCard({
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { likedSongs, toggleLikeLocal, trackInfo, playing } = useSharedPlayer();
+  const navigate = useNavigate();
 
   const isTrackCard = cardType === "track";
   const isLiked = isTrackCard && likedSongs.includes(cardId);
   const isPlayingThis = isTrackCard && trackInfo?.id === cardId && playing;
 
+  // Dynamic Navigation Path Logic
+  const getNavPath = () => {
+    switch (cardType) {
+      case "album":
+        return `/album/${cardId}`;
+      case "playlist":
+        return `/playlist/${cardId}`;
+      case "track":
+        return `/track/${cardId}`;
+      case "artist": // Added for completeness, usually follows the same pattern
+        return `/artist/${cardId}`;
+      default:
+        return ""; // No navigation if type is unknown
+    }
+  };
+
+  const handleCardClick = () => {
+    const path = getNavPath();
+    if (path) {
+      navigate(path);
+    }
+  };
+
   const handleMenuClick = (event) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (event) => {
+    if(event) event.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -43,7 +70,6 @@ export function SectionCard({
     e.stopPropagation(); 
     const token = window.localStorage.getItem("authToken");
     
-    // DETAILED ALERT
     if (!token) {
       alert(
         "Login Required\n\nYou must be logged in to save songs to your library. Please log in to your account to continue."
@@ -66,14 +92,18 @@ export function SectionCard({
 
   return (
     <div className="card-container">
-      <div className="card">
+      <div 
+        className="card" 
+        onClick={handleCardClick}
+        style={{ cursor: "pointer" }}
+      >
         {/* Card Header */}
         <div className="card-header">
           <div className="card-menu">
             <IconButton 
               onClick={handleMenuClick} 
               aria-label="more options"
-              title="More options" // Added Label
+              title="More options"
             >
               <i className="fa-solid fa-ellipsis-v" id="kebab-menu-icon"></i>
             </IconButton>
@@ -95,7 +125,8 @@ export function SectionCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open in Spotify"
-              title="Open this content in Spotify" // Added Label
+              title="Open this content in Spotify"
+              onClick={(e) => e.stopPropagation()}
             >
               <img src={spotifyLogo} alt="Spotify" style={{ width: "22px", height: "22px" }} />
             </a>
@@ -151,7 +182,7 @@ export function SectionCard({
                <div 
                   className="like-icon-section" 
                   onClick={handleLikeClick} 
-                  title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"} // Dynamic Label
+                  title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"} 
                >
                   <i 
                      className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
@@ -183,7 +214,6 @@ export function SectionCard({
   );
 }
 
-// ... SectionCardLoad remains unchanged
 export function SectionCardLoad() {
     return (
     <div className="card-container">
