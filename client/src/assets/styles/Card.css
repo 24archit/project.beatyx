@@ -140,7 +140,8 @@
     width: 1.5rem; /* Reduced size */
     border-radius: 50%;
     opacity: 0.6;
-    margin-top: 0.4rem;    /* Adds spacing between the logo and content */
+    margin-top: 0.8rem;
+    padding: 0.5rem;    /* Adds spacing between the logo and content */
     display: flex;
     margin-bottom: 0.4rem; /* Adds spacing below the logo */
 }

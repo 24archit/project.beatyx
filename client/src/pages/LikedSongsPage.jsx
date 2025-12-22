@@ -53,7 +53,10 @@ export default function LikedSongsPage({ setPlayerMeta, setTrackInfo }) {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["likedSongsPage"],
     queryFn: getLikedSongs,
-    staleTime: 5 * 60 * 1000, 
+    // CHANGED: 0 means the data is considered "old" immediately, prompting a refetch
+    staleTime: 0, 
+    // ADDED: Explicitly force a fetch whenever this component mounts (visits)
+    refetchOnMount: true,
   });
 
   useEffect(() => {
