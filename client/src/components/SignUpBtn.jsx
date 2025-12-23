@@ -147,7 +147,7 @@ const handleSignUp = async (e) => {
       const result = await getSignUp(submissionData);
 
       if (result.success) {
-        window.location.href = import.meta.env.VITE_CLIENT_LINK;
+        window.location.href = "/";
       } else {
         // Handle specific error codes here
         if (result.status === 409) {

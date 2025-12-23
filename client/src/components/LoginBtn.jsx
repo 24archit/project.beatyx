@@ -142,7 +142,7 @@ export default function LoginBtn() {
         return;
       } 
 
-      window.location.href = import.meta.env.VITE_CLIENT_LINK;
+      window.location.href = "/";
 
     } catch (error) {
       console.error("Login failed", error);

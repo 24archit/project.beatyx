@@ -168,7 +168,7 @@ if (loading) return <ProfileSkeleton />;
         alert(
           "⚠️ Something went wrong. Please try again later or check your network connection."
         );
-        window.open(`${import.meta.env.VITE_CLIENT_LINK}`);
+        window.open("/");
       }
     };
   return (

@@ -21,7 +21,6 @@ const session = require("express-session");
 // CORS options
 const corsOptions = {
   origin: "*",
-  // credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 // Enable compression
