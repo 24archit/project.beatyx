@@ -6,7 +6,7 @@ import prettyMilliseconds from "pretty-ms";
 import { getAudioLink, addLikedSong, removeLikedSong } from "../apis/apiFunctions";
 import { useSharedPlayer } from "../context/PlayerContext";
 import { Link } from "react-router-dom"; // Added import
-
+import { useState } from "react";
 export function TrackLineCard({
   imgSrc = trackLogo,
   trackName,
@@ -25,7 +25,6 @@ export function TrackLineCard({
     playing, 
     togglePlayPause, 
     setTrackInfo: setContextTrackInfo,
-    setUrl,
     likedSongs,
     toggleLikeLocal 
   } = useSharedPlayer();
@@ -33,7 +32,8 @@ export function TrackLineCard({
   const isCurrentTrack = currentTrack?.id === cardId;
   const isPlayingThis = isCurrentTrack && playing;
   const isLiked = likedSongs.includes(cardId);
-
+   const [isPlayLoading, setIsPlayLoading] = useState(false);
+    const isCurrentTrackLoaded = currentTrack?.trackName === trackName;
   const handelOnClick = async (e) => {
     e.stopPropagation(); 
     if (isCurrentTrack) {
@@ -43,6 +43,7 @@ export function TrackLineCard({
     }
     
     try {
+      setIsPlayLoading(true);
       const currPlaylistId = window.sessionStorage.getItem("currPlaylistId");
       const queueId = window.sessionStorage.getItem("queueId");
       const data = await getAudioLink(cardId, isPlaylist, trackRank - 1, currPlaylistId, queueId);
@@ -55,6 +56,8 @@ export function TrackLineCard({
     } catch (error) {
       console.error(error);
       alert("Audio Source Unavailable\n\nWe couldn't retrieve the audio source for this track right now.");
+    } finally {
+      setIsPlayLoading(false);
     }
   };
 
@@ -83,7 +86,7 @@ export function TrackLineCard({
       {/* 1. Rank / Wave */}
       <div className="track-rank">
         {isPlayingThis ? (
-            <div className="music-wave" title="Playing Now">
+            <div className="music-wave-container" title="Playing Now">
                 <div className="bar"></div>
                 <div className="bar"></div>
                 <div className="bar"></div>
@@ -151,7 +154,11 @@ export function TrackLineCard({
         onClick={handelOnClick}
         title={isPlayingThis ? "Pause Track" : "Play Track"}
       >
-        <i className={`fa-solid ${isPlayingThis ? "fa-pause" : "fa-play"}`} id="play-btn"></i>
+         {isPlayLoading ? (
+                    <i className="fa-solid fa-spinner fa-spin" id="play-btn"></i>
+                  ) : (
+                    <i className={`fa-solid ${isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"}`} id="play-btn"></i>
+                  )}
       </div>
     </div>
   );
