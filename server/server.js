@@ -20,14 +20,8 @@ const session = require("express-session");
 
 // CORS options
 const corsOptions = {
-  origin: [
-    process.env.CLIENT_LINK,             // Your web version
-    "http://localhost",                  // Android App (Capacitor)
-    "capacitor://localhost",             // iOS/Android alternate
-    "http://localhost:5173",             // Local dev
-    "https://beatyx-server.vercel.app"   // Self-reference (optional safety)
-  ],
-  credentials: true,
+  origin: "*",
+  // credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 // Enable compression
