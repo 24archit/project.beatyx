@@ -3,6 +3,7 @@ inject();
 require("dotenv").config();
 const express = require("express");
 const app = express();
+app.set('trust proxy', 1);
 const compression = require("compression");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
