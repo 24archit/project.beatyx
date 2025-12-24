@@ -1,7 +1,7 @@
 import React from 'react';
 import '../assets/styles/Section.css';
-import { SectionName, SectionNameLoad } from './SectionName.jsx';
-import { SectionCard, SectionCardLoad } from './SectionCard.jsx';
+import { SectionName } from './SectionName.jsx';
+import { SectionCard } from './SectionCard.jsx';
 import { Link } from 'react-router-dom';
 import PlaylistIcon from "/playlist-icon.webp"
 import Carousel from './Carousel.jsx';
@@ -25,7 +25,7 @@ export default function SearchPageAlbumSection(props) {
                           gap="1rem"
                           className="track-carousel"
                         >
-                {props.data.map((item, idx) => (
+                {props.data.map((item) => (
                     <SectionCard
                         key={item.id}
                         imgSrc={item.images && item.images.length > 0 ? item.images[0].url : PlaylistIcon}

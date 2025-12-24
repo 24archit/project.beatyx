@@ -1,14 +1,12 @@
-import React from "react";
 import "../assets/styles/NavBar.css";
 import Logo from "./Logo";
 import SearchBar from "./SearchBar";
-import Logout from "./LogoutBtn";
 import LoginBtn from "./LoginBtn";
 import SignUpBtn from "./SignUpBtn";
 import { SpotifyConnectBtn } from "./SpotifyConnectBtn";
 import { useSharedPlayer } from "../context/PlayerContext";
 
-export default function NavBar(props) {
+export default function NavBar() {
   const { isAuth, isSpotifyConnected } = useSharedPlayer();
   
   return (

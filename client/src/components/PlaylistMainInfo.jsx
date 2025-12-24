@@ -4,11 +4,10 @@ import {ArtistFollowersCountLoad } from "./ArtistFollowersCount";
 import {FollowBtnLoad } from '../components/FollowBtn.jsx'
 import { Skeleton } from "@mui/material";
 import {PlaylistProfilePic} from "./PlaylistProfilePic.jsx";
-
+import {ArtistProfilePicLoad} from "./ArtistProfilePic.jsx";
 export function PlaylistMainInfo({
     PlaylistName,
     description,
-    owner,
     img,
 }) {
     return (

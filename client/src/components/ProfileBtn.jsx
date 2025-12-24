@@ -1,7 +1,7 @@
 import '../assets/styles/ProfileBtn.css'; 
 import profilePic from '../assets/media/profile-pic.png'; 
 import { getUserInfo } from '../apis/apiFunctions'; 
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material';
 
 export default function ProfileBtn() {

@@ -1,5 +1,4 @@
 // client/src/components/CategoryPills.jsx
-import React from "react";
 import "../assets/styles/CategoryPills.css";
 import { Link } from "react-router-dom";
 

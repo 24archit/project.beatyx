@@ -6,7 +6,7 @@ import {
   ArtistProfilePic,
   ArtistProfilePicLoad,
 } from "../components/ArtistProfilePic.jsx";
-import { FollowBtn, FollowBtnLoad } from "../components/FollowBtn.jsx";
+import { FollowBtn } from "../components/FollowBtn.jsx";
 import { ArtistTrendScore } from "./ArtistTrendScore.jsx";
 
 export function ArtistMainInfo({ artistName, followers, trendScore, img }) {

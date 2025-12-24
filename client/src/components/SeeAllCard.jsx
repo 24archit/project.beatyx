@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Rows3 } from 'lucide-react'; // Unique Lucide icon
 import '../assets/styles/SeeAllCard.css';

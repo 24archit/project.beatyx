@@ -1,5 +1,4 @@
 // client/src/components/HomePageAlbumSection.jsx
-import React from "react";
 import "../assets/styles/Section.css";
 import { SectionName } from "./SectionName.jsx";
 import { SectionCard } from "./SectionCard.jsx";

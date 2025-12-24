@@ -4,6 +4,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const compression = require("compression");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
 const homeRoutes = require("./routes/home");
 const authRoutes = require("./routes/auth");
 const artistRoutes = require("./routes/artist");
@@ -17,40 +20,46 @@ const cors = require("cors");
 const { connectToDb } = require("./utils/connectToDb");
 // const { GoogleGenerativeAI } = require("@google/generative-ai");
 const session = require("express-session");
-
+const MongoStore = require("connect-mongo").default || require("connect-mongo");
 // CORS options
 const corsOptions = {
   origin: `${process.env.CLIENT_LINK}`,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
+app.use(morgan("combined"));
+app.use(helmet());
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window (15 mins)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: "Too many requests from this IP, please try again later."
+});
+app.use(limiter);
 // Enable compression
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
-if (process.env.VERCEL !== "true") {
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: { maxAge: 15 * 60 * 1000, secure: false, httpOnly: true },
-    })
-  );
-} else {
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        secure: true,
-        httpOnly: true,
-        maxAge: 15 * 60 * 1000,
-      },
-    })
-  );
-}
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false, // Changed to false for better login logic (only save if something is stored)
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // Uses your existing DB connection string
+      collectionName: "sessions", // Optional: Name of collection to store sessions
+      ttl: 15 * 60 // Session expiration in seconds (15 mins to match your cookie)
+    }),
+    cookie: {
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      httpOnly: true,
+      // Secure is TRUE if on Vercel (Production), FALSE if local
+      secure: process.env.VERCEL === "true" 
+    },
+  })
+);
 connectToDb();
 
 app.use("/home", homeRoutes);
@@ -207,7 +216,19 @@ app.use("/track", trackRoutes);
 //     res.status(500).json({ error: 'Failed to fetch shows. See server logs for details.' });
 //   }
 // });
+app.use((err, req, res, next) => {
+  console.error("❌ Global Error:", err.stack); // Log full error on server
 
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(statusCode).json({
+    success: false,
+    message: message,
+    // ONLY show detailed stack trace in development, NEVER in production
+    stack: process.env.VERCEL === "true" ? null : err.stack,
+  });
+});
 if (process.env.VERCEL !== "true") {
   app.listen(2424, () => {
     console.log("Server is running on http://localhost:2424");

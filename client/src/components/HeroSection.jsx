@@ -1,5 +1,4 @@
 // client/src/components/HeroSection.jsx
-import React from "react";
 import "../assets/styles/HeroSection.css"; 
 import { Link } from "react-router-dom";
 import { Skeleton } from "@mui/material";

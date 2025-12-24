@@ -1,4 +1,3 @@
-import React from "react";
 import "../assets/styles/SpotifyConnectBtn.css";
 import { verifyAuth } from "../apis/apiFunctions.js";
 export function SpotifyConnectBtn() {

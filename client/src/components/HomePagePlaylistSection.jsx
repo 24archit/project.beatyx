@@ -1,5 +1,4 @@
 // client/src/components/HomePagePlaylistSection.jsx
-import React from "react";
 import "../assets/styles/Section.css";
 import { SectionName } from "./SectionName.jsx";
 import { SectionCard } from "./SectionCard.jsx";
@@ -14,6 +13,7 @@ export default function HomePagePlaylistSection(props) {
         iconId={props.iconId}
         name={props.name}
         sectionName={props.sectionName}
+        button={false}
       />
       
       <div className="material">

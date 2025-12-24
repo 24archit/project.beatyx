@@ -19,7 +19,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const StyledDialogTitle = styled(Button)(({ theme }) => ({
+const StyledDialogTitle = styled(Button)(() => ({
   color: "lightGreen",
   fontFamily: "sans-serif",
   fontSize: "2rem",
@@ -35,7 +35,7 @@ const LogoutButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const CancelButton = styled(Button)(({ theme }) => ({
+const CancelButton = styled(Button)(() => ({
   color: "rgb(5, 4, 28)", // Contrast text based on primary color
   backgroundColor: "rgb(164, 163, 194)", // Reddish color for logout button
   "&:hover": {
@@ -43,7 +43,7 @@ const CancelButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const StyledDialogContentText = styled(DialogContentText)(({ theme }) => ({
+const StyledDialogContentText = styled(DialogContentText)(() => ({
   color: "white",
   fontFamily: "Arial",
   fontWeight: 400,

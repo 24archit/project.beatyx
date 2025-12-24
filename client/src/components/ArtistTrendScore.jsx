@@ -1,6 +1,5 @@
 import { Skeleton } from "@mui/material";
 import "../assets/styles/ArtistTrendScore.css" 
-import { format } from "indian-number-format";
 export function ArtistTrendScore(props) {
     return (
         <>

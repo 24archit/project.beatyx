@@ -1,7 +1,6 @@
-import React from 'react';
 import '../assets/styles/Section.css';
-import { SectionName, SectionNameLoad } from './SectionName.jsx';
-import { SectionCard, SectionCardLoad } from './SectionCard.jsx';
+import { SectionName } from './SectionName.jsx';
+import { SectionCard} from './SectionCard.jsx';
 import ProfilePic from "/profile-pic.webp";
 import Carousel from './Carousel.jsx';
 export default function SearchPageArtistSection(props) {

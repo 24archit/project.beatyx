@@ -16,7 +16,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";

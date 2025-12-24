@@ -32,8 +32,7 @@ export  function ArtistTopTrackPart(props) {
         </div>
     );
 }
-export function ArtistTopTrackPartLoad({
-}) {
+export function ArtistTopTrackPartLoad() {
     return (
         <div className="artist-top-track-container">
             <TrackLineCardLoad />

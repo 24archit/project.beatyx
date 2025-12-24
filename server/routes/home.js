@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const cache = require("../utils/cache");
 // Import ALL the functions we need
 const {
   getTopTracksIndia, 
@@ -16,7 +16,15 @@ const setToken = require("../middlewares/setToken");
 // 1. Top Tracks India
 router.get("/api/getTopTracksIndia", setToken, async (req, res) => {
   try {
+    const cacheKey = "top-tracks-india"; // Unique name for this data
+    // 1. Check if data is already in cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log("Serving Top Tracks India from Cache ⚡");
+      return res.json(cachedData);
+    }
     const topTracks = await getTopTracksIndia(req.session.accessToken);
+    cache.set(cacheKey, topTracks);
     res.json(topTracks);
   } catch (error) {
     res.status(400).json({ error: "Not able to fetch data from Spotify" });
@@ -26,7 +34,15 @@ router.get("/api/getTopTracksIndia", setToken, async (req, res) => {
 // 2. Top Tracks Global
 router.get("/api/getTopTracksGlobal", setToken, async (req, res) => {
   try {
+    const cacheKey = "top-tracks-global"; // Unique name for this data
+    // 1. Check if data is already in cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log("Serving Top Tracks Global from Cache ⚡");
+      return res.json(cachedData);
+    }
     const topTracks = await getTopTracksGlobal(req.session.accessToken);
+    cache.set(cacheKey, topTracks);
     res.json(topTracks);
   } catch (error) {
     res.status(400).json({ error: "Not able to fetch data from Spotify" });
@@ -36,7 +52,15 @@ router.get("/api/getTopTracksGlobal", setToken, async (req, res) => {
 // 3. New Releases
 router.get("/api/getNewReleases", setToken, async (req, res) => {
   try {
+    const cacheKey = "new-releases-india"; // Unique name for this data
+    // 1. Check if data is already in cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log("Serving New Releases from Cache ⚡");
+      return res.json(cachedData);
+    }
     const data = await getNewReleases(req.session.accessToken);
+    cache.set(cacheKey, data);
     res.json(data);
   } catch (error) {
     console.error("New Releases Error:", error.message);
@@ -47,7 +71,17 @@ router.get("/api/getNewReleases", setToken, async (req, res) => {
 // 4. Featured Playlists
 router.get("/api/getFeaturedPlaylists", setToken, async (req, res) => {
   try {
+    const cacheKey = "features-playlists-india"; // Unique name for this data
+    
+    // 1. Check if data is already in cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log("Serving Featured Playlists from Cache ⚡");
+      return res.json(cachedData);
+    }
+
     const data = await getFeaturedPlaylists(req.session.accessToken);
+    cache.set(cacheKey, data);
     res.json(data);
   } catch (error) {
     console.error("Featured Playlists Error:", error.message);

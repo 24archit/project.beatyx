@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import "../assets/styles/Section.css";
 import { SectionName } from "./SectionName.jsx";
 import { SectionCard } from "./SectionCard.jsx";
@@ -32,7 +31,7 @@ export default function HomePagePlaylistTrackSection(props) {
           gap="1rem"
           className="track-carousel"
         >
-          {props.data.map((item, index) => (
+          {props.data.map((item) => (
             <SectionCard
               key={item.track.id}
               imgSrc={

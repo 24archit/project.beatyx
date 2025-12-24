@@ -1,5 +1,4 @@
 // client/src/components/ConnectSpotifySection.jsx
-import React from "react";
 import "../assets/styles/ConnectSpotifySection.css"; // We will create this next
 import { verifyAuth } from "../apis/apiFunctions.js";
 

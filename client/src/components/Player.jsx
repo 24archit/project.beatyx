@@ -1,5 +1,5 @@
 // src/components/Player.jsx
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import prettyMilliseconds from 'pretty-ms';
 import { Link } from 'react-router-dom';
@@ -45,7 +45,6 @@ const Player = () => {
     handlePlay,
     handlePause,
     handleReady,
-    setIsPlayerReady,
   } = useSharedPlayer();
 const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
   return (

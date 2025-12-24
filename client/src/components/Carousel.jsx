@@ -6,8 +6,6 @@ export default function Carousel({
   className = "",
   showArrows = true,
   showDots = true,
-  autoScroll = false,
-  autoScrollInterval = 3000,
   responsive = {
     mobile: 2,
     tablet: 3,
@@ -88,7 +86,6 @@ export default function Carousel({
   // Scroll right by one page or to end
   const scrollRight = () => {
     const container = containerRef.current;
-    const cardW = getCardWidth();
     const maxIdx = totalItems - cardsPerView;
     if (currentIndex + cardsPerView <= maxIdx) {
       scrollToPosition(currentIndex + cardsPerView);
