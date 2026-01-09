@@ -1,5 +1,5 @@
 // src/context/PlayerProvider.jsx
-import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { getNextAudioLink, getPreviousAudioLink } from '../apis/apiFunctions';
 import { getLikedSongs } from "../apis/apiFunctions"; // Import thi
 // Throttle helper
@@ -109,7 +109,7 @@ const toggleLikeLocal = (trackId) => {
   }, []);
 
   // — Track loading & navigation
-  const loadTrack = useCallback(
+ const loadTrack = useCallback(
     (trackUrl, trackDetails) => {
       const internal = getInternalPlayer();
       
@@ -120,18 +120,23 @@ const toggleLikeLocal = (trackId) => {
       setDuration(0);
       setErrorMessage("");
       
+      // Optional: Set buffering true immediately so UI reflects loading start
+      setIsBuffering(true); 
+
       setTimeout(() => {
         const vid = extractVideoId(trackUrl);
         const ip = getInternalPlayer();
         if (vid && ip?.loadVideoById) {
-          // Load and play the new video
+          // Load the new video
           ip.loadVideoById(vid);
           setUrl(trackUrl);
           setTrackInfo(trackDetails);
           
-          // Set playing to true after a short delay to ensure video loads
           setTimeout(() => {
             setPlaying(true);
+            if (ip.playVideo) {
+              ip.playVideo(); 
+            }
           }, 200);
         }
         setIsTransitioning(false);
