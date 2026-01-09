@@ -178,6 +178,7 @@ const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
                   controls: 0,
                   modestbranding: 1,
                   origin: window.location.origin,
+                  playinline: 1,
                   disableRemotePlayback: 1,
                 },
               },
