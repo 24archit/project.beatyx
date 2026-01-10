@@ -27,13 +27,13 @@ export default defineConfig({
 
         icons: [
           {
-            src: 'pwa-192x192.png', // Ensure file exists in /public
+            src: 'icon-192x192.png', // Ensure file exists in /public
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable' // "maskable" looks better on Android/rounded icons
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
