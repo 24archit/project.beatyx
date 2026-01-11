@@ -1,20 +1,13 @@
-# Allow all search engines to index all content
 User-agent: *
+Allow: /
+
+# Disallow private user pages (No SEO value, personal content)
+Disallow: /profile
+Disallow: /liked-songs
+
+# Disallow technical directories (optional but good practice)
 Disallow: /node_modules/
 Disallow: /src/
-Disallow: /assets/media/
-Disallow: /assets/styles/
 
-# Allow indexing of specific pages or sections if needed
-Allow: /index.html
-Allow: /src/pages/HomePage.jsx
-Allow: /src/pages/PlaylistPage.jsx
-Allow: /src/pages/SearchPage.jsx
-Allow: /src/components/
-Allow: /public
-
-# If you are using a specific API, you might want to block indexing of it
-Disallow: /src/apis/
-
-# Sitemap location (optional, add if you have a sitemap)
+# Sitemap location
 Sitemap: https://beatyx.vercel.app/sitemap.xml
