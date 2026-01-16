@@ -1,5 +1,5 @@
 // client/src/pages/TrackPage.jsx
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTrackInfo, getAudioLink } from "../apis/apiFunctions";
@@ -15,13 +15,13 @@ export default function TrackPage() {
   const [isPlayLoading, setIsPlayLoading] = useState(false);
 
   // Access global player state
-  const { 
-    trackInfo: currentTrackInfo, 
-    playing, 
-    togglePlayPause, 
-    setUrl, 
-    setTrackInfo, 
-    setPlaying 
+  const {
+    trackInfo: currentTrackInfo,
+    playing,
+    togglePlayPause,
+    setUrl,
+    setTrackInfo,
+    setPlaying,
   } = useSharedPlayer();
 
   useEffect(() => {
@@ -29,23 +29,18 @@ export default function TrackPage() {
   }, [id]);
 
   // Caching Configuration added here
-  const {
-    data,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["track", id],
     queryFn: () => getTrackInfo(id),
-    retry: 2,                      // Retry twice on failure
-    staleTime: 15 * 60 * 1000,     // Cache data for 15 minutes
-    refetchOnWindowFocus: false,   // Don't refetch when switching tabs
+    retry: 2, // Retry twice on failure
+    staleTime: 15 * 60 * 1000, // Cache data for 15 minutes
+    refetchOnWindowFocus: false, // Don't refetch when switching tabs
   });
 
   const trackData = data?.track;
   const recommendations = data?.recommendations;
 
-  const isCurrentTrackLoaded = currentTrackInfo?.trackName === trackData?.name; 
+  const isCurrentTrackLoaded = currentTrackInfo?.trackName === trackData?.name;
 
   const handlePlayBtn = async () => {
     if (isCurrentTrackLoaded) {
@@ -55,13 +50,13 @@ export default function TrackPage() {
         setIsPlayLoading(true);
         const audioData = await getAudioLink(trackData.id);
         const url = audioData?.url || "";
-        
+
         if (url) {
           const newTrackInfo = {
             id: trackData.id,
             trackName: trackData.name,
             imgSrc: trackData.album.images[0]?.url || defaultProfilePic,
-            artistNames: trackData.artists.map(a => a.name),
+            artistNames: trackData.artists.map((a) => a.name),
           };
 
           setTrackInfo(newTrackInfo);
@@ -85,7 +80,16 @@ export default function TrackPage() {
       <div className="artist-page-bg">
         <h2 style={{ color: "white", textAlign: "center", paddingTop: "2rem" }}>
           Failed to load track.{" "}
-          <button onClick={refetch} style={{ textDecoration: "underline", background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
+          <button
+            onClick={refetch}
+            style={{
+              textDecoration: "underline",
+              background: "none",
+              border: "none",
+              color: "inherit",
+              cursor: "pointer",
+            }}
+          >
             Retry
           </button>
         </h2>
@@ -96,7 +100,45 @@ export default function TrackPage() {
   return (
     <>
       <Helmet>
-        <title>{trackData ? `${trackData.name} | Beatyx` : "Track | Beatyx"}</title>
+        {/* Dynamic Title */}
+        <title>
+          {trackData ? `${trackData.name} | Beatyx` : "Track | Beatyx"}
+        </title>
+
+        {/* SEO Description */}
+        <meta
+          name="description"
+          content={
+            trackData
+              ? `Stream ${trackData.name} by ${trackData.artists
+                  .map((a) => a.name)
+                  .join(", ")} on Beatyx.`
+              : "Listen to music on Beatyx."
+          }
+        />
+
+        {/* Open Graph Tags */}
+        <meta property="og:type" content="music.song" />
+        <meta property="og:title" content={trackData?.name} />
+        <meta
+          property="og:description"
+          content={
+            trackData
+              ? `Song by ${trackData.artists[0].name} • Album: ${trackData.album.name}`
+              : "Listen on Beatyx"
+          }
+        />
+        <meta
+          property="og:image"
+          content={trackData?.album.images[0]?.url || defaultProfilePic}
+        />
+        <meta
+          property="og:audio"
+          content={
+            /* If you have a preview URL, put it here, otherwise remove this line */ ""
+          }
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
 
       <div className="artist-page-bg">
@@ -104,7 +146,7 @@ export default function TrackPage() {
           <>
             <TrackMainInfoLoad />
             <div style={{ marginTop: "2rem" }}>
-               <TrackMainInfoLoad /> 
+              <TrackMainInfoLoad />
             </div>
           </>
         ) : (
@@ -119,33 +161,43 @@ export default function TrackPage() {
 
             {/* Play Button Container */}
             <div className="track-play-container">
-                <button 
-                  className="btn selected" 
-                  onClick={handlePlayBtn}
-                  disabled={isPlayLoading}
-                  style={{
-                    borderRadius: "50%", 
-                    width: "3.5rem", 
-                    height: "3.5rem", 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "center",
-                    padding: 0,
-                    fontSize: "1.2rem"
-                  }}
-                >
-                  {isPlayLoading ? (
-                    <i className="fa-solid fa-spinner fa-spin"></i>
-                  ) : (
-                    <i className={`fa-solid ${isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"}`}></i>
-                  )}
-                </button>
+              <button
+                className="btn selected"
+                onClick={handlePlayBtn}
+                disabled={isPlayLoading}
+                style={{
+                  borderRadius: "50%",
+                  width: "3.5rem",
+                  height: "3.5rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                  fontSize: "1.2rem",
+                }}
+              >
+                {isPlayLoading ? (
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                ) : (
+                  <i
+                    className={`fa-solid ${
+                      isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"
+                    }`}
+                  ></i>
+                )}
+              </button>
             </div>
-            
+
             <div style={{ padding: "0 1rem" }}>
-                <h3 style={{ color: "white", marginTop: "2rem", marginBottom: "1rem" }}>
-                    Recommended Tracks
-                </h3>
+              <h3
+                style={{
+                  color: "white",
+                  marginTop: "2rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                Recommended Tracks
+              </h3>
             </div>
 
             <PlaylistTrackList

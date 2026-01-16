@@ -12,7 +12,7 @@ async function getAudioLink(id) {
     }
 
     const response = await axios({
-      url: `https://api.song.link/v1-alpha.1/links?url=open.spotify.com%2Ftrack%2F${id}`,
+      url: `${process.env.GET_AUDIO_LINK}${id}`,
     });
 
     const links = response.data.linksByPlatform;

@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getPlaylistInfo } from "../apis/apiFunctions";
@@ -46,7 +45,17 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
   return (
     <>
       <Helmet>
-        <title>Playlist | Beatyx</title>
+        <title>
+          {playlistData ? `${playlistData.name} | Beatyx` : "Playlist | Beatyx"}
+        </title>
+        <meta
+          name="description"
+          content={
+            playlistData
+              ? `Listen to ${playlistData.name} on Beatyx. ${playlistData.description}`
+              : "Stream top playlists on Beatyx."
+          }
+        />
       </Helmet>
       {isLoading || !playlistData ? (
         <>

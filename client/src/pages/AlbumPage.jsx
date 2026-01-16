@@ -25,11 +25,27 @@ export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
     staleTime: 15 * 60 * 1000, // Cache for 5 minutes
     retry: 3, // Retry up to 3 times automatically
   });
-
+  const albumImage = albumData?.images?.[0]?.url || defaultProfilePic;
+  const artistName = albumData?.artists?.[0]?.name || "Unknown Artist";
   return (
     <>
       <Helmet>
-        <title>Album | Beatyx</title>
+        {/* Dynamic Title */}
+        <title>{albumData ? `${albumData.name} - Album by ${artistName} | Beatyx` : "Album | Beatyx"}</title>
+        
+        {/* Meta Description */}
+        <meta 
+          name="description" 
+          content={albumData ? `Listen to the album ${albumData.name} by ${artistName} on Beatyx. Stream songs like ${albumData.tracks.items[0]?.name} and more.` : "Listen to top albums on Beatyx."} 
+        />
+
+        {/* Open Graph / Social Media Tags */}
+        <meta property="og:type" content="music.album" />
+        <meta property="og:title" content={albumData ? `${albumData.name} by ${artistName}` : "Album on Beatyx"} />
+        <meta property="og:description" content={albumData ? `Stream ${albumData.name} on Beatyx` : ""} />
+        <meta property="og:image" content={albumImage} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:site_name" content="Beatyx" />
       </Helmet>
 
       {isLoading ? (

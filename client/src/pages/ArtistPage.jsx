@@ -40,7 +40,33 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
     <>
       {artistData && (
         <Helmet>
-          <title>{`${artistData.name} | Beatyx`}</title>
+          {/* Dynamic Title */}
+          <title>
+            {artistData ? `${artistData.name} | Beatyx` : "Artist | Beatyx"}
+          </title>
+
+          {/* SEO Description */}
+          <meta
+            name="description"
+            content={
+              artistData
+                ? `Listen to music by ${artistData.name} on Beatyx. Top tracks, albums, and upcoming concerts.`
+                : "Discover artists on Beatyx."
+            }
+          />
+
+          {/* Open Graph Tags */}
+          <meta property="og:type" content="profile" />
+          <meta property="og:title" content={artistData?.name} />
+          <meta
+            property="og:description"
+            content={`Listen to ${artistData?.name} on Beatyx`}
+          />
+          <meta
+            property="og:image"
+            content={artistData?.images[0]?.url || defaultProfilePic}
+          />
+          <meta property="og:url" content={window.location.href} />
         </Helmet>
       )}
 
