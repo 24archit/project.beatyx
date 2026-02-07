@@ -58,13 +58,19 @@
 /* Glow effect */
 @keyframes glow {
   0% {
-    text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff;
+    text-shadow:
+      0 0 5px #00bfff,
+      0 0 10px #00bfff;
   }
   50% {
-    text-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff;
+    text-shadow:
+      0 0 10px #00bfff,
+      0 0 20px #00bfff;
   }
   100% {
-    text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff;
+    text-shadow:
+      0 0 5px #00bfff,
+      0 0 10px #00bfff;
   }
 }
 
@@ -150,7 +156,9 @@ input[type="range"] {
   outline: none;
   opacity: 0.8;
   width: 10%;
-  transition: opacity 0.2s, background 0.2s;
+  transition:
+    opacity 0.2s,
+    background 0.2s;
   cursor: pointer;
 }
 
@@ -187,7 +195,9 @@ input[type="range"]::-moz-range-thumb {
   outline: none;
   opacity: 0.8;
   width: 10%;
-  transition: opacity 0.2s, background 0.2s;
+  transition:
+    opacity 0.2s,
+    background 0.2s;
   margin-left: 1rem;
   padding: 0;
 }
@@ -216,8 +226,6 @@ input[type="range"]::-moz-range-thumb {
   overflow: hidden;
 }
 
-
-
 .track-name {
   margin-left: 0.5rem;
   max-width: 150px; /* Adjust as needed */
@@ -240,7 +248,9 @@ input[type="range"]::-moz-range-thumb {
   border-top: 5px solid #3b081d;
   border-right: 5px solid #17022d;
   border-radius: 50%;
-  animation: spin 0.3s cubic-bezier(0.65, 0.05, 0.36, 1) infinite, glow 1.5s ease-in-out infinite;
+  animation:
+    spin 0.3s cubic-bezier(0.65, 0.05, 0.36, 1) infinite,
+    glow 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
@@ -254,13 +264,19 @@ input[type="range"]::-moz-range-thumb {
 
 @keyframes glow {
   0% {
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00ff9d;
+    box-shadow:
+      0 0 5px #00eaff,
+      0 0 10px #00ff9d;
   }
   50% {
-    box-shadow: 0 0 15px #00eaff, 0 0 30px #00ff9d;
+    box-shadow:
+      0 0 15px #00eaff,
+      0 0 30px #00ff9d;
   }
   100% {
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00ff9d;
+    box-shadow:
+      0 0 5px #00eaff,
+      0 0 10px #00ff9d;
   }
 }
 
@@ -319,7 +335,8 @@ input[type="range"]::-moz-range-thumb {
     padding-top: 3rem;
     display: none;
   }
-  .volume-icon, .volumeSlider {
+  .volume-icon,
+  .volumeSlider {
     display: none;
   }
   input[type="range"] {
@@ -343,7 +360,9 @@ input[type="range"]::-moz-range-thumb {
     width: 2rem;
     font-size: 1.2rem;
   }
-  .volume-icon, .volumeSlider, #volumeSlider {
+  .volume-icon,
+  .volumeSlider,
+  #volumeSlider {
     display: none;
   }
   input[type="range"] {

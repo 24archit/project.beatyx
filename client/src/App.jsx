@@ -8,8 +8,7 @@ import { Routes, Route, BrowserRouter as Router, Outlet } from "react-router-dom
 import NavBar from "./components/NavBar";
 import Side from "./components/Side";
 import Footer from "./components/Footer";
-import Player from "./components/Player";
-import CurrentTrackButton from "./components/CurrentTrack";
+import { Player, CurrentTrackButton, PlayerProvider } from "@/features/player";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -20,25 +19,19 @@ import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TrackPage from "./pages/TrackPage";
 import CategoryPage from "./pages/CategoryPage";
-import ProfilePage from './pages/ProfilePage';
+import ProfilePage from "./pages/ProfilePage";
 import LikedSongsPage from "./pages/LikedSongsPage";
 
 // Context
-import { PlayerProvider } from "./context/PlayerContext";
-import { verifyAuth } from "./apis/apiFunctions";
+
+import { verifyAuth } from "@/features/auth/authService";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
-function Layout({
-  isAuth,
-  playerMeta,
-  trackInfo,
-  isMobile,
-  isSpotifyConnected,
-}) {
+function Layout({ isAuth, playerMeta, trackInfo, isMobile, isSpotifyConnected }) {
   return (
     <PlayerProvider
       initialUrl={playerMeta}
@@ -82,9 +75,7 @@ function App() {
     const checkMobile = () => {
       const isMobileDevice =
         window.innerWidth <= 768 ||
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        );
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       setIsMobile(isMobileDevice);
     };
 
@@ -124,67 +115,34 @@ function App() {
               />
               <Route
                 path="/artist/:id"
-                element={
-                  <ArtistPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<ArtistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
                 path="/playlist/:id"
-                element={
-                  <PlaylistPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<PlaylistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
                 path="/album/:id"
-                element={
-                  <AlbumPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<AlbumPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
                 path="/category/:id"
-                element={
-                  <CategoryPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<CategoryPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
                 path="/search"
-                element={
-                  <SearchPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<SearchPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
                 path="/track/:id" // CHANGED: Added /:id parameter
-                element={
-                  <TrackPage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                  />
-                }
+                element={<TrackPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
               />
               <Route
-  path="/liked-songs" // Route URL
-  element={
-    <LikedSongsPage
-      setPlayerMeta={setPlayerMeta}
-      setTrackInfo={setTrackInfo}
-    />
-  }
-/>
+                path="/liked-songs" // Route URL
+                element={
+                  <LikedSongsPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
+                }
+              />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />

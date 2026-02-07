@@ -1,14 +1,14 @@
 // client/src/pages/TrackPage.jsx
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getTrackInfo, getAudioLink } from "../apis/apiFunctions";
+import { getTrackInfo, getAudioLink } from "@/features/player/playerService";
 import { TrackMainInfo, TrackMainInfoLoad } from "../components/TrackMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import defaultProfilePic from "/profile-pic.webp";
 import { Helmet } from "react-helmet-async";
 import "../assets/styles/ArtistPage.css";
-import { useSharedPlayer } from "../context/PlayerContext";
+import { useSharedPlayer } from "@/features/player";
 
 export default function TrackPage() {
   const { id } = useParams();
@@ -101,9 +101,7 @@ export default function TrackPage() {
     <>
       <Helmet>
         {/* Dynamic Title */}
-        <title>
-          {trackData ? `${trackData.name} | Beatyx` : "Track | Beatyx"}
-        </title>
+        <title>{trackData ? `${trackData.name} | Beatyx` : "Track | Beatyx"}</title>
 
         {/* SEO Description */}
         <meta
@@ -128,15 +126,10 @@ export default function TrackPage() {
               : "Listen on Beatyx"
           }
         />
-        <meta
-          property="og:image"
-          content={trackData?.album.images[0]?.url || defaultProfilePic}
-        />
+        <meta property="og:image" content={trackData?.album.images[0]?.url || defaultProfilePic} />
         <meta
           property="og:audio"
-          content={
-            /* If you have a preview URL, put it here, otherwise remove this line */ ""
-          }
+          content={/* If you have a preview URL, put it here, otherwise remove this line */ ""}
         />
         <meta property="og:url" content={window.location.href} />
       </Helmet>

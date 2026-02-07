@@ -35,7 +35,7 @@
 
 .category-pill:hover {
   /* Blue Theme Active State */
-  background: #2979ff; 
+  background: #2979ff;
   border-color: #2979ff;
   color: white;
   transform: translateY(-2px);

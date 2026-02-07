@@ -1,5 +1,4 @@
-
-const {getAccessToken} = require("./getAccessToken")
+const { getFreshTokens } = require("./getFreshTokens");
 const axios = require("axios");
 
 const TM_API_KEY = process.env.TM_API_KEY;
@@ -17,12 +16,10 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
     console.error(`Error with API request: ${url}. Status: ${status}`);
 
     if (status === 401) {
-      console.log("Refreshing access tokens...");
       await getFreshTokens();
     }
 
     if (retries > 0) {
-      console.log(`Retrying API request... (${4 - retries + 1}/4)`);
       await new Promise((resolve) => setTimeout(resolve, delay));
       return makeApiRequest(url, method, headers, retries - 1, delay);
     } else {
@@ -32,12 +29,9 @@ async function makeApiRequest(url, method = "GET", headers = {}, retries = 4, de
   }
 }
 async function getAttractionId(artist) {
-  const attrResp = await axios.get(
-    "https://app.ticketmaster.com/discovery/v2/attractions.json",
-    {
-      params: { apikey: TM_API_KEY, keyword: artist },
-    }
-  );
+  const attrResp = await axios.get("https://app.ticketmaster.com/discovery/v2/attractions.json", {
+    params: { apikey: TM_API_KEY, keyword: artist },
+  });
   const attractions = attrResp.data._embedded?.attractions;
   if (!attractions || attractions.length === 0) {
     return null;
@@ -46,18 +40,15 @@ async function getAttractionId(artist) {
 }
 
 async function getDetailedShows(attractionId) {
-  const eventsResp = await axios.get(
-    "https://app.ticketmaster.com/discovery/v2/events.json",
-    {
-      params: {
-        apikey: TM_API_KEY,
-        attractionId,
-        classificationName: "music",
-        size: 20,
-        sort: "date,asc",
-      },
-    }
-  );
+  const eventsResp = await axios.get("https://app.ticketmaster.com/discovery/v2/events.json", {
+    params: {
+      apikey: TM_API_KEY,
+      attractionId,
+      classificationName: "music",
+      size: 20,
+      sort: "date,asc",
+    },
+  });
 
   const events = eventsResp.data._embedded?.events || [];
 
@@ -132,8 +123,8 @@ async function getArtistShows(artistId, rightAccessToken, artistName = "") {
     }
 
     const attractionId = await getAttractionId(artist);
-    if(!attractionId){
-        return {};
+    if (!attractionId) {
+      return {};
     }
     const detailedShows = await getDetailedShows(attractionId);
 
@@ -148,4 +139,4 @@ async function getArtistShows(artistId, rightAccessToken, artistName = "") {
     throw new Error(`Error fetching shows for artist ${artistId}: ${err.message}`);
   }
 }
-module.exports={getArtistShows};
+module.exports = { getArtistShows };

@@ -1,12 +1,12 @@
 // src/components/Player.jsx
-import { Suspense } from 'react';
-import ReactPlayer from 'react-player/youtube';
-import prettyMilliseconds from 'pretty-ms';
-import { Link } from 'react-router-dom';
-import TrackLogo from '/Track-Logo.webp';
-import musicWave from '../assets/media/wave.webm';
-import '../assets/styles/Player.css';
-import { useSharedPlayer } from '../context/PlayerContext';
+import { Suspense } from "react";
+import ReactPlayer from "react-player/youtube";
+import prettyMilliseconds from "pretty-ms";
+import { Link } from "react-router-dom";
+import TrackLogo from "/Track-Logo.webp";
+import musicWave from "../../assets/media/wave.webm";
+import "./Player.css";
+import { useSharedPlayer } from "./useSharedPlayer";
 
 const Player = () => {
   const {
@@ -20,21 +20,21 @@ const Player = () => {
     duration,
     isBuffering,
     errorMessage,
-    
+
     // Refs
     playerRef,
     volumeSliderRef,
-    
+
     // Computed
     volumeIcon,
-    
+
     // Actions
     togglePlayPause,
     handleNext,
     handlePrev,
     handleSeekChange,
     handleVolumeChange,
-    
+
     // ReactPlayer handlers
     handleProgress,
     handleDuration,
@@ -46,41 +46,28 @@ const Player = () => {
     handlePause,
     handleReady,
   } = useSharedPlayer();
-const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
+  const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : "#";
   return (
     <div className="player">
       <h2 className="track-heading">Now Playing</h2>
 
       <Link to={trackLink} className="track-info">
         <div className="thumbnail">
-          <img
-            src={trackInfo.imgSrc || TrackLogo}
-            alt="Track Logo"
-            aria-label="Track Logo"
-          />
+          <img src={trackInfo.imgSrc || TrackLogo} alt="Track Logo" aria-label="Track Logo" />
         </div>
-        <span className="track-name">
-          {trackInfo.trackName || '—'}
-        </span>
+        <span className="track-name">{trackInfo.trackName || "—"}</span>
       </Link>
 
       <button className="other-btn" aria-label="Shuffle">
         <i className="fa-solid fa-shuffle"></i>
       </button>
 
-      <button
-        className="backward-btn"
-        onClick={handlePrev}
-        aria-label="Previous Track"
-      >
+      <button className="backward-btn" onClick={handlePrev} aria-label="Previous Track">
         <i className="fa-solid fa-backward-step"></i>
       </button>
 
       {isBuffering ? (
-        <div
-          className="play-pause-btn buffering-spinner"
-          aria-label="Buffering"
-        >
+        <div className="play-pause-btn buffering-spinner" aria-label="Buffering">
           <span className="spinner" />
         </div>
       ) : (
@@ -88,17 +75,13 @@ const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
           className="play-pause-btn"
           onClick={togglePlayPause}
           disabled={!url}
-          aria-label={playing ? 'Pause' : 'Play'}
+          aria-label={playing ? "Pause" : "Play"}
         >
-          <i className={`fa-solid ${playing ? 'fa-pause' : 'fa-play'}`}></i>
+          <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}></i>
         </button>
       )}
 
-      <button
-        className="backward-btn"
-        onClick={handleNext}
-        aria-label="Next Track"
-      >
+      <button className="backward-btn" onClick={handleNext} aria-label="Next Track">
         <i className="fa-solid fa-forward-step"></i>
       </button>
 
@@ -121,8 +104,8 @@ const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
         {prettyMilliseconds(Math.round(progress * duration) * 1000, {
           colonNotation: true,
           secondsDecimalDigits: 0,
-        })}{' '}
-        |{' '}
+        })}{" "}
+        |{" "}
         {prettyMilliseconds(duration * 1000, {
           colonNotation: true,
           secondsDecimalDigits: 0,
@@ -150,9 +133,7 @@ const trackLink = trackInfo?.id ? `/track/${trackInfo.id}` : '#';
       />
 
       <div className="music-wave">
-        {playing && (
-          <video autoPlay loop muted src={musicWave} aria-label="Music Wave" />
-        )}
+        {playing && <video autoPlay loop muted src={musicWave} aria-label="Music Wave" />}
       </div>
 
       {errorMessage && (

@@ -1,9 +1,8 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useEffect } from "react";
-import { getSearchResult } from "../apis/apiFunctions";
+import { getSearchResult } from "@/services/contentService";
 import SectionLoading from "../components/SectionLoading";
 import SearchPageTrackSection from "../components/SearchPageTrackSection";
 import SearchPageArtistSection from "../components/SearchPageArtistSection";
@@ -39,9 +38,7 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
         };
       } else {
         return {
-          topResult: data[`${type}s`]?.items?.[0]
-            ? [data[`${type}s`].items[0]]
-            : [],
+          topResult: data[`${type}s`]?.items?.[0] ? [data[`${type}s`].items[0]] : [],
           otherResult: data[`${type}s`]?.items?.slice(1) || [],
         };
       }
@@ -128,11 +125,7 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
     case "album":
       return renderSection(SearchPageAlbumSection, "Albums", searchResult);
     case "playlist":
-      return renderSection(
-        SearchPagePlaylistSection,
-        "Playlists",
-        searchResult
-      );
+      return renderSection(SearchPagePlaylistSection, "Playlists", searchResult);
     default:
       return (
         <>

@@ -1,0 +1,45 @@
+{
+  "name": "project.beatyx",
+  "version": "1.0.0",
+  "description": "<p>\r   <strong>Beatyx</strong> is a full-stack web application designed to elevate your music streaming experience. Integrating with the Spotify Web API, Beatyx allows you to explore diverse playlists, discover new tracks, and seamlessly stream your favorite music. Enjoy real-time trending songs, manage your playlists, and effortlessly search for your desired artists, albums, and songs.\r </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:structure": "ls-lint",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/24archit/project.beatyx.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/24archit/project.beatyx/issues"
+  },
+  "homepage": "https://github.com/24archit/project.beatyx#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@ls-lint/ls-lint": "^2.3.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^17.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{css,md,json}": "prettier --write"
+  }
+}

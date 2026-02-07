@@ -5,14 +5,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { styled } from "@mui/material/styles";
-import "../assets/styles/LogoutBtn.css"
+import "./LogoutBtn.css";
 // Define custom styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
   backgroundColor: "transparent", // Transparent to allow gradient effect
   "& .MuiPaper-root": {
-    background:
-      "linear-gradient(#6223a96d, rgba(16, 108, 221, 0.405), #232ca96d, #6223a96d)", // Gradient background
+    background: "linear-gradient(#6223a96d, rgba(16, 108, 221, 0.405), #232ca96d, #6223a96d)", // Gradient background
     borderRadius: 16, // Increased border radius
     padding: theme.spacing(2),
     boxShadow: theme.shadows[5],
@@ -76,11 +75,7 @@ export default function AlertDialog() {
 
   return (
     <div className="logout-btn-container">
-      <button
-        id="logout-btn"
-        className="log-in-out-btns"
-        onClick={handleClickOpen}
-      >
+      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
         <i className="fa-solid fa-right-from-bracket" id="logout-icon"></i>
         &nbsp;Logout
       </button>
@@ -90,9 +85,7 @@ export default function AlertDialog() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <StyledDialogTitle id="alert-dialog-title">
-          {"Logout Confirmation.."}
-        </StyledDialogTitle>
+        <StyledDialogTitle id="alert-dialog-title">{"Logout Confirmation.."}</StyledDialogTitle>
         <DialogContent>
           <StyledDialogContentText id="alert-dialog-description">
             You are about to logout. Are you sure?
@@ -107,7 +100,7 @@ export default function AlertDialog() {
             >
               Spotify Account
             </a>
-          </StyledDialogContentText>  
+          </StyledDialogContentText>
         </DialogContent>
         <DialogActions>
           <CancelButton onClick={handleClose} color="primary">

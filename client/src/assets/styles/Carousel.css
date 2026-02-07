@@ -23,7 +23,7 @@
 }
 
 .carousel-container {
-  -ms-overflow-style: none;  /* IE and Edge */
+  -ms-overflow-style: none; /* IE and Edge */
   /* scrollbar-width: none;  Firefox only, removed for compatibility */
 }
 
@@ -41,16 +41,16 @@
 }
 
 /* Ensure cards are properly sized for small datasets */
-.carousel-container:has(.carousel-card:nth-child(-n+12)) .carousel-card {
+.carousel-container:has(.carousel-card:nth-child(-n + 12)) .carousel-card {
   flex-shrink: 0;
 }
 
 /* For very small datasets (8 or fewer cards), ensure they're evenly distributed */
-.carousel-container:has(.carousel-card:nth-child(-n+8):last-child) {
+.carousel-container:has(.carousel-card:nth-child(-n + 8):last-child) {
   justify-content: flex-start;
 }
 
-.carousel-container:has(.carousel-card:nth-child(-n+8):last-child) .carousel-card {
+.carousel-container:has(.carousel-card:nth-child(-n + 8):last-child) .carousel-card {
   margin-right: auto;
 }
 
@@ -136,17 +136,17 @@
   .carousel-card {
     flex: 0 0 calc(25% - 0.75rem); /* 4 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 45px;
     height: 45px;
     font-size: 1.1rem;
   }
-  
+
   .carousel-arrow-left {
     left: -22px;
   }
-  
+
   .carousel-arrow-right {
     right: -22px;
   }
@@ -156,22 +156,22 @@
   .carousel-card {
     flex: 0 0 calc(33.333% - 0.33rem); /* 3 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 40px;
     height: 40px;
     font-size: 1rem;
     display: none;
   }
-  
+
   .carousel-arrow-left {
     left: -20px;
   }
-  
+
   .carousel-arrow-right {
     right: -20px;
   }
-  
+
   /* Hide dots on mobile */
   .carousel-dots {
     display: none;
@@ -182,17 +182,17 @@
   .carousel-card {
     flex: 0 0 calc(50% - 0.25rem); /* 2 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 35px;
     height: 35px;
     font-size: 0.9rem;
   }
-  
+
   .carousel-arrow-left {
     left: -17px;
   }
-  
+
   .carousel-arrow-right {
     right: -17px;
   }

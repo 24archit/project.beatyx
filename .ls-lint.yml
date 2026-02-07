@@ -1,0 +1,21 @@
+ls:
+  client/src/features:
+    .dir: camelCase | kebab-case
+
+  client/src/features/**:
+    .dir: camelCase | kebab-case
+    .js: camelCase
+    .jsx: PascalCase
+    .css: PascalCase
+
+  client/src/components:
+    .jsx: PascalCase
+    .css: PascalCase
+
+ignore:
+  - .git
+  - node_modules
+  - client/node_modules
+  - server/node_modules
+  - client/dist
+  - client/public

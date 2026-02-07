@@ -7,9 +7,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
-import { getLoggedIn } from "../apis/apiFunctions";
-import "../assets/styles/LoginBtn.css";
-
+import { getLoggedIn } from "@/features/auth/authService";
+import "./LoginBtn.css";
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
@@ -94,7 +93,7 @@ export default function LoginBtn() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [alertMessage, setAlertMessage] = React.useState(null);
-  
+
   // REMOVE: const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleClickOpen = (e) => {
@@ -128,7 +127,7 @@ export default function LoginBtn() {
         window.grecaptcha.enterprise.ready(async () => {
           const t = await window.grecaptcha.enterprise.execute(
             import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: 'LOGIN' }
+            { action: "LOGIN" }
           );
           resolve(t);
         });
@@ -140,10 +139,9 @@ export default function LoginBtn() {
       if (response.status === 401 || response.status === 402) {
         setAlertMessage(response.data.error);
         return;
-      } 
+      }
 
       window.location.href = "/";
-
     } catch (error) {
       console.error("Login failed", error);
       setAlertMessage("Login error, please try again.");
@@ -158,7 +156,7 @@ export default function LoginBtn() {
 
       <StyledDialog open={open} onClose={handleClose}>
         {alertMessage && (
-          <Alert variant="filled" severity="warning" style={{ width: '100%', marginBottom: 16 }}>
+          <Alert variant="filled" severity="warning" style={{ width: "100%", marginBottom: 16 }}>
             {alertMessage}
           </Alert>
         )}

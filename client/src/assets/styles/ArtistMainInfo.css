@@ -1,37 +1,37 @@
 #artist-name {
-    color: rgb(207, 237, 242);
-    font-size: clamp(1rem, 5vw, 3rem); /* Responsive text size */
-    overflow-wrap: break-word;
-    overflow: auto;
-    text-align: center;
-    margin: 0.5rem 0;
+  color: rgb(207, 237, 242);
+  font-size: clamp(1rem, 5vw, 3rem); /* Responsive text size */
+  overflow-wrap: break-word;
+  overflow: auto;
+  text-align: center;
+  margin: 0.5rem 0;
 }
 
 .mainInfo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 15rem;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 1rem;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 15rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 1rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-sizing: border-box;
 }
 
 .name-stat {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 600px;
-    overflow: hidden;
-    text-align: center;
-    padding: 0.5rem;
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  text-align: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 @keyframes slideIn {
   from {
@@ -43,38 +43,38 @@
     transform: translateX(0);
   }
 }
-.mainInfo{
-    animation: slideIn 0.3s ease-out;
+.mainInfo {
+  animation: slideIn 0.3s ease-out;
 }
 
 /* Tablets (portrait and landscape) */
 @media (max-width: 1024px) {
-    .mainInfo {
-        flex-direction: column;
-        padding: 1.5rem;
-    }
+  .mainInfo {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
 
-    #artist-name {
-        font-size: clamp(1.8rem, 4vw, 3.5rem);
-    }
+  #artist-name {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+  }
 
-    .name-stat {
-        width: 90%;
-    }
+  .name-stat {
+    width: 90%;
+  }
 }
 
 /* Mobile (small phones) */
 @media (max-width: 600px) {
-    #artist-name {
-        font-size: clamp(1.5rem, 6vw, 2.5rem);
-    }
+  #artist-name {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
 
-    .name-stat {
-        width: 100%;
-    }
+  .name-stat {
+    width: 100%;
+  }
 
-    .mainInfo {
-        padding: 1rem;
-        gap: 1rem;
-    }
+  .mainInfo {
+    padding: 1rem;
+    gap: 1rem;
+  }
 }

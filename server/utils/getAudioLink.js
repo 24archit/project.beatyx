@@ -30,12 +30,11 @@ async function getAudioLink(id) {
       });
       return links.youtube;
     }
-    
 
     throw new Error("Track is not available on YouTube");
   } catch (error) {
     console.error("Error fetching the audio link:", error.message || error);
-    return null; // Explicitly return null on error
+    return null;
   }
 }
 

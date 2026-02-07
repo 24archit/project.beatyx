@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const axios = require("axios");
 const UniToken = require("../models/uniToken");
@@ -31,15 +30,10 @@ async function getFreshTokens() {
       { accessToken: body.access_token, updationTime: new Date() },
       { upsert: true }
     );
-    console.log(
-      `Access token updated successfully at ${new Date().toLocaleString()}`
-    );
+
     return body.access_token;
   } catch (error) {
-    console.error(
-      "Error fetching tokens:",
-      error.response?.data || error.messageS
-    );
+    console.error("Error fetching tokens:", error.response?.data || error.messageS);
     return null;
     // Consider retrying or logging to handle the error gracefully
   }
@@ -73,20 +67,11 @@ async function getUserFreshTokens(refreshToken, email) {
       updateData.refreshToken = body.refresh_token;
     }
 
-    await User.updateOne(
-      { email: email },
-      { $set: updateData },
-      { upsert: true }
-    );
-    console.log(
-      `Access token updated successfully at ${new Date().toLocaleString()}`
-    );
+    await User.updateOne({ email: email }, { $set: updateData }, { upsert: true });
+
     return body.access_token;
   } catch (error) {
-    console.error(
-      "Error fetching tokens:",
-      error.response?.data || error.messageS
-    );
+    console.error("Error fetching tokens:", error.response?.data || error.messageS);
     return null;
     // Consider retrying or logging to handle the error gracefully
   }

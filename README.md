@@ -12,7 +12,6 @@
   </a>
 </p>
 
-
 <h2>📜 Features</h2>
 
 <ul>
@@ -47,12 +46,10 @@
   <li><strong>MongoDB</strong> - For handling non-relational, document-based data management.</li>
 </ul>
 
-
 <h3>APIs:</h3>
 <ul>
   <li><strong>Spotify Web API</strong> - Provides access to Spotify's vast library of music, allowing Beatyx to fetch and manage track, artist, and playlist data.</li>
 </ul>
-
 
 <hr>
 
@@ -94,7 +91,6 @@
   <li><strong>Enhanced User Analytics:</strong> Provide users with detailed insights into their listening habits, including favorite genres, most-played songs, and listening patterns over time. This feature would offer personalized listening stats and achievements.</li>
 </ul>
 
-
 <hr>
 
 ### 📝 License
@@ -102,7 +98,6 @@
 This project is protected under a **Custom Proprietary License**.  
 Usage, reproduction, modification, or distribution of the code is not permitted without prior written consent from the author.
 For further details, please see the [LICENSE](./LICENSE.txt) file.
-
 
 <hr>
 
@@ -112,4 +107,3 @@ For further details, please see the [LICENSE](./LICENSE.txt) file.
   <li><strong>Spotify</strong> for providing an exceptional Web API.</li>
   <li><strong>Node.js</strong> and <strong>React</strong> communities for their excellent tools and documentation.</li>
 </ul>
-

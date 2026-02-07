@@ -7,8 +7,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
-import { getSignUp } from "../apis/apiFunctions";
-import "../assets/styles/SignUpBtn.css";
+import { getSignUp } from "@/features/auth/authService";
+import "./SignUpBtn.css";
 
 // Load site key from environment
 
@@ -17,8 +17,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   backdropFilter: "blur(8px)",
   backgroundColor: "rgba(0, 0, 0, 0.6)", // Transparent dark overlay
   "& .MuiPaper-root": {
-    background:
-      "linear-gradient(45deg, rgba(7, 15, 105, 0.9), rgba(8, 44, 74, 0.7))", // Blue and black gradient
+    background: "linear-gradient(45deg, rgba(7, 15, 105, 0.9), rgba(8, 44, 74, 0.7))", // Blue and black gradient
     borderRadius: 12,
     width: "480px", // Slightly wider
     padding: theme.spacing(3),
@@ -118,7 +117,7 @@ export default function SignUpBtn() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSignUp = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     if (!formData.displayName || !formData.email || !formData.password) {
       setAlertMessage("Please fill up all the details to join");
@@ -135,14 +134,14 @@ const handleSignUp = async (e) => {
         window.grecaptcha.enterprise.ready(async () => {
           const t = await window.grecaptcha.enterprise.execute(
             import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: 'SIGNUP' }
+            { action: "SIGNUP" }
           );
           resolve(t);
         });
       });
 
       const submissionData = { ...formData, recaptchaToken: token };
-      
+
       // Store the result object returned from the updated API function
       const result = await getSignUp(submissionData);
 
@@ -164,23 +163,15 @@ const handleSignUp = async (e) => {
       console.error("Signup error", error);
       setAlertMessage("An unexpected error occurred.");
     }
-};
+  };
 
   return (
     <div className="signup-btn-container">
-      <button
-        id="logout-btn"
-        className="log-in-out-btns"
-        onClick={handleClickOpen}
-      >
+      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
         Sign Up
       </button>
 
-      <StyledDialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="signup-dialog-title"
-      >
+      <StyledDialog open={open} onClose={handleClose} aria-labelledby="signup-dialog-title">
         {alertMessage && (
           <Alert
             variant="filled"
@@ -195,9 +186,7 @@ const handleSignUp = async (e) => {
           </Alert>
         )}
 
-        <StyledDialogTitle id="signup-dialog-title">
-          Welcome to Beatyx..
-        </StyledDialogTitle>
+        <StyledDialogTitle id="signup-dialog-title">Welcome to Beatyx..</StyledDialogTitle>
         <DialogContent>
           <StyledTextField
             label="Display Name To Show In Your Profile"
@@ -248,4 +237,3 @@ const handleSignUp = async (e) => {
     </div>
   );
 }
-

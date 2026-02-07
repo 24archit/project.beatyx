@@ -3,16 +3,16 @@ const mongoose = require("mongoose");
 const trackSchema = new mongoose.Schema({
   spotifyId: {
     type: String,
-    unique: true, // Ensures spotifyId is unique
-    required: true, // Ensures spotifyId is mandatory
+    unique: true,
+    required: true,
   },
   youtubeLink: {
     type: String,
   },
-isError:{
+  isError: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 
 const TrackDb = mongoose.model("Track", trackSchema);

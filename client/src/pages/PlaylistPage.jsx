@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getPlaylistInfo } from "../apis/apiFunctions";
+import { getPlaylistInfo } from "@/services/contentService";
 import { PlaylistMainInfo } from "../components/PlaylistMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
@@ -45,9 +45,7 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
   return (
     <>
       <Helmet>
-        <title>
-          {playlistData ? `${playlistData.name} | Beatyx` : "Playlist | Beatyx"}
-        </title>
+        <title>{playlistData ? `${playlistData.name} | Beatyx` : "Playlist | Beatyx"}</title>
         <meta
           name="description"
           content={

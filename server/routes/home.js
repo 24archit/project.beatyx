@@ -1,62 +1,64 @@
 const express = require("express");
 const router = express.Router();
 const cache = require("../utils/cache");
-// Import ALL the functions we need
 const {
-  getTopTracksIndia, 
+  getTopTracksIndia,
   getTopTracksGlobal,
   getNewReleases,
   getFeaturedPlaylists,
   getCategories,
-  getCategoryPlaylists
+  getCategoryPlaylists,
 } = require("../utils/spotifyApis");
 
 const setToken = require("../middlewares/setToken");
 
-// 1. Top Tracks India
+/**
+ * Fetches top tracks in India, serving from cache if available.
+ * @route GET /api/getTopTracksIndia
+ */
 router.get("/api/getTopTracksIndia", setToken, async (req, res) => {
   try {
-    const cacheKey = "top-tracks-india"; // Unique name for this data
-    // 1. Check if data is already in cache
+    const cacheKey = "top-tracks-india";
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
-      console.log("Serving Top Tracks India from Cache ⚡");
       return res.json(cachedData);
     }
     const topTracks = await getTopTracksIndia(req.session.accessToken);
     cache.set(cacheKey, topTracks);
     res.json(topTracks);
-  } catch (error) {
+  } catch {
     res.status(400).json({ error: "Not able to fetch data from Spotify" });
   }
 });
 
-// 2. Top Tracks Global
+/**
+ * Fetches top tracks globally, serving from cache if available.
+ * @route GET /api/getTopTracksGlobal
+ */
 router.get("/api/getTopTracksGlobal", setToken, async (req, res) => {
   try {
-    const cacheKey = "top-tracks-global"; // Unique name for this data
-    // 1. Check if data is already in cache
+    const cacheKey = "top-tracks-global";
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
-      console.log("Serving Top Tracks Global from Cache ⚡");
       return res.json(cachedData);
     }
     const topTracks = await getTopTracksGlobal(req.session.accessToken);
     cache.set(cacheKey, topTracks);
     res.json(topTracks);
-  } catch (error) {
+  } catch {
     res.status(400).json({ error: "Not able to fetch data from Spotify" });
   }
 });
 
-// 3. New Releases
+/**
+ * Fetches new releases, serving from cache if available.
+ * @route GET /api/getNewReleases
+ */
 router.get("/api/getNewReleases", setToken, async (req, res) => {
   try {
-    const cacheKey = "new-releases-india"; // Unique name for this data
-    // 1. Check if data is already in cache
+    const cacheKey = "new-releases-india";
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
-      console.log("Serving New Releases from Cache ⚡");
       return res.json(cachedData);
     }
     const data = await getNewReleases(req.session.accessToken);
@@ -68,15 +70,15 @@ router.get("/api/getNewReleases", setToken, async (req, res) => {
   }
 });
 
-// 4. Featured Playlists
+/**
+ * Fetches featured playlists, serving from cache if available.
+ * @route GET /api/getFeaturedPlaylists
+ */
 router.get("/api/getFeaturedPlaylists", setToken, async (req, res) => {
   try {
-    const cacheKey = "features-playlists-india"; // Unique name for this data
-    
-    // 1. Check if data is already in cache
+    const cacheKey = "features-playlists-india";
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
-      console.log("Serving Featured Playlists from Cache ⚡");
       return res.json(cachedData);
     }
 
@@ -89,7 +91,10 @@ router.get("/api/getFeaturedPlaylists", setToken, async (req, res) => {
   }
 });
 
-// 5. Categories
+/**
+ * Fetches browsing categories.
+ * @route GET /api/getCategories
+ */
 router.get("/api/getCategories", setToken, async (req, res) => {
   try {
     const data = await getCategories(req.session.accessToken);
@@ -100,7 +105,10 @@ router.get("/api/getCategories", setToken, async (req, res) => {
   }
 });
 
-// 6. Category Playlists
+/**
+ * Fetches playlists for a specific category.
+ * @route GET /api/getCategoryPlaylists/:id
+ */
 router.get("/api/getCategoryPlaylists/:id", setToken, async (req, res) => {
   try {
     const { id } = req.params;

@@ -3,6 +3,10 @@ const { getPlaylist } = require("../utils/spotifyApis");
 const currPlaylist = require("../models/currPlaylist");
 const setToken = require("../middlewares/setToken");
 
+/**
+ * Fetches playlist information and updates the current playlist state.
+ * @route GET /api/getPlaylistInfo/:playlistId
+ */
 router.get("/api/getPlaylistInfo/:playlistId", setToken, async (req, res) => {
   try {
     const playlistId = req.params.playlistId;
@@ -13,14 +17,12 @@ router.get("/api/getPlaylistInfo/:playlistId", setToken, async (req, res) => {
     }
 
     const result = await currPlaylist.findOneAndUpdate(
-      { playlistId }, // Ensure one document per playlist
+      { playlistId },
       { tracks: playlist.tracks.items },
-      { upsert: true, new: true } // Insert if not exists, update if exists
+      { upsert: true, new: true }
     );
 
-    console.log("Created/Updated playlist entry:", result._id); // Debugging log
     res.json({ playlist, currPlaylistId: result._id });
-
   } catch (error) {
     console.error("Error fetching playlist:", error.message);
     res.status(400).json({ error: "Not able to fetch playlist" });

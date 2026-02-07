@@ -1,20 +1,20 @@
 // client/src/components/CardBtn.jsx
 import "../assets/styles/CardBtn.css";
-import { getAudioLink } from "../apis/apiFunctions";
+import { getAudioLink } from "@/features/player/playerService";
 import { useNavigate } from "react-router-dom";
-import { useSharedPlayer } from "../context/PlayerContext";
+import { useSharedPlayer } from "@/features/player";
 import { useState } from "react";
 export function CardBtn({
-  iconId, 
-  logoClass, 
-  logoId, 
-  cardType, 
-  cardId, 
-  setPlayerMeta, 
-  setTrackInfo, 
-  cardName, 
-  imgSrc, 
-  artistNames 
+  iconId,
+  logoClass,
+  logoId,
+  cardType,
+  cardId,
+  setPlayerMeta,
+  setTrackInfo,
+  cardName,
+  imgSrc,
+  artistNames,
 }) {
   const navigate = useNavigate();
   const { trackInfo: currentTrack, playing, togglePlayPause } = useSharedPlayer();
@@ -41,7 +41,7 @@ export function CardBtn({
       setIsPlayLoading(true);
       const data = await getAudioLink(cardId);
       const url = data != null ? data.url : "";
-      
+
       const newTrackInfo = {
         id: cardId,
         trackName: cardName,
@@ -75,15 +75,17 @@ export function CardBtn({
 
   return (
     <button
-      className={`play-btn india-track-play-btn ${isPlayingThis ? 'playing-active' : ''}`}
+      className={`play-btn india-track-play-btn ${isPlayingThis ? "playing-active" : ""}`}
       onClick={handelOnClick}
       name={iconId === "link-btn" ? "Go To Page" : "Play Track"}
       title={hoverTitle} // Added Dynamic Label
-    >   {isPlayLoading ? (
-                    <i className="fa-solid fa-spinner fa-spin" id="play-btn"></i>
-                  ) : (
-                    <i className={displayIcon} id={logoId}></i>
-                  )}
+    >
+      {" "}
+      {isPlayLoading ? (
+        <i className="fa-solid fa-spinner fa-spin" id="play-btn"></i>
+      ) : (
+        <i className={displayIcon} id={logoId}></i>
+      )}
     </button>
   );
 }

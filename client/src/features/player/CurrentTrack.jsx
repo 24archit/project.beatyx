@@ -1,9 +1,9 @@
-import  { useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import ReactPlayer from "react-player/youtube";
 import prettyMilliseconds from "pretty-ms";
 import TrackLogo from "/Track-Logo.webp";
-import { useSharedPlayer } from "../context/PlayerContext";
-import "../assets/styles/CurrentTrackButton.css";
+import { useSharedPlayer } from "./useSharedPlayer";
+import "./CurrentTrackButton.css";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 const CurrentTrackButton = () => {
@@ -85,21 +85,16 @@ const CurrentTrackButton = () => {
   };
 
   const handleLoop = (e) => {
-    console.log("Loop toggled:", !isLoopEnabled);
     setIsLoopEnabled(!isLoopEnabled);
     removeFocus(e);
   };
 
   const handleShuffle = (e) => {
-    console.log("Shuffle toggled:", !isShuffleEnabled);
     setIsShuffleEnabled(!isShuffleEnabled);
     removeFocus(e);
   };
 
   const handleShare = (e) => {
-    console.log("Share button clicked for track:", trackInfo.trackName);
-    console.log("Track URL:", url);
-    console.log("Artist:", trackInfo.artistNames?.map(artist => artist.name).join(", "));
     removeFocus(e);
   };
 
@@ -142,10 +137,7 @@ const CurrentTrackButton = () => {
       </Suspense>
 
       {/* Floating FAB */}
-      <div
-        className={`ctb-fab ${playing ? "ctb-playing" : ""}`}
-        onClick={toggleDrawer}
-      >
+      <div className={`ctb-fab ${playing ? "ctb-playing" : ""}`} onClick={toggleDrawer}>
         <MusicNoteIcon sx={{ fontSize: 30, color: "white" }} />
       </div>
 
@@ -170,9 +162,7 @@ const CurrentTrackButton = () => {
 
           {/* Track Details */}
           <div className="track-details">
-            <h1 className="track-title">
-              {trackInfo.trackName || "No track selected"}
-            </h1>
+            <h1 className="track-title">{trackInfo.trackName || "No track selected"}</h1>
             <p className="artist-title">
               {trackInfo.artistNames && trackInfo.artistNames.length > 0
                 ? trackInfo.artistNames.map((item) => item.name).join(", ")
@@ -221,9 +211,7 @@ const CurrentTrackButton = () => {
                   <div className="spinner-ring"></div>
                 </div>
               ) : (
-                <i
-                  className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}
-                ></i>
+                <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}></i>
               )}
             </button>
 
@@ -270,9 +258,7 @@ const CurrentTrackButton = () => {
       </div>
 
       {/* Backdrop */}
-      {isDrawerOpen && (
-        <div className="drawer-backdrop" onClick={toggleDrawer}></div>
-      )}
+      {isDrawerOpen && <div className="drawer-backdrop" onClick={toggleDrawer}></div>}
 
       {/* Error Message */}
       {errorMessage && (

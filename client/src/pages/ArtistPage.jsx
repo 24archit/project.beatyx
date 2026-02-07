@@ -2,20 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import {
-  ArtistMainInfo,
-  ArtistMainInfoLoad,
-} from "../components/ArtistMainInfo.jsx";
-import {
-  ArtistTopTrackPart,
-  ArtistTopTrackPartLoad,
-} from "../components/ArtistTopTrackPart.jsx";
+import { ArtistMainInfo, ArtistMainInfoLoad } from "../components/ArtistMainInfo.jsx";
+import { ArtistTopTrackPart, ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart.jsx";
 import { SectionCard, SectionCardLoad } from "../components/SectionCard.jsx";
 import Carousel from "../components/Carousel.jsx";
 import UpcomingConcerts from "../components/UpcomingConcerts.jsx";
 import defaultProfilePic from "/profile-pic.webp";
 import { Skeleton } from "@mui/material";
-import { getArtistInfo } from "../apis/apiFunctions.js";
+import { getArtistInfo } from "@/services/contentService";
 import "../assets/styles/ArtistPage.css";
 
 export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
@@ -41,9 +35,7 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
       {artistData && (
         <Helmet>
           {/* Dynamic Title */}
-          <title>
-            {artistData ? `${artistData.name} | Beatyx` : "Artist | Beatyx"}
-          </title>
+          <title>{artistData ? `${artistData.name} | Beatyx` : "Artist | Beatyx"}</title>
 
           {/* SEO Description */}
           <meta
@@ -58,14 +50,8 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
           {/* Open Graph Tags */}
           <meta property="og:type" content="profile" />
           <meta property="og:title" content={artistData?.name} />
-          <meta
-            property="og:description"
-            content={`Listen to ${artistData?.name} on Beatyx`}
-          />
-          <meta
-            property="og:image"
-            content={artistData?.images[0]?.url || defaultProfilePic}
-          />
+          <meta property="og:description" content={`Listen to ${artistData?.name} on Beatyx`} />
+          <meta property="og:image" content={artistData?.images[0]?.url || defaultProfilePic} />
           <meta property="og:url" content={window.location.href} />
         </Helmet>
       )}
@@ -105,11 +91,7 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
               artistName={artistData.name}
               followers={artistData.followers.total}
               trendScore={artistData.popularity}
-              img={
-                artistData.images.length > 0
-                  ? artistData.images[0].url
-                  : defaultProfilePic
-              }
+              img={artistData.images.length > 0 ? artistData.images[0].url : defaultProfilePic}
             />
 
             <div className="buttons-container">
@@ -195,10 +177,7 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
                       <>
                         {item.artists.map((artist, idx) => (
                           <span key={artist.id}>
-                            <Link
-                              to={`/artist/${artist.id}`}
-                              className="card-stat-links"
-                            >
+                            <Link to={`/artist/${artist.id}`} className="card-stat-links">
                               {artist.name}
                             </Link>
                             {idx < item.artists.length - 1 ? ", " : ""}

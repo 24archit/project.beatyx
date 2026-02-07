@@ -3,7 +3,6 @@
   text-decoration: none;
   padding: 6px;
   transition: none !important;
-
 }
 
 .logo-symbol img {
@@ -11,7 +10,7 @@
   height: auto;
   display: block;
 }
-@media (max-width: 768px){
+@media (max-width: 768px) {
   .logo-symbol img {
     width: 150px; /* Adjusted size for smaller screens */
   }

@@ -1,6 +1,6 @@
 // client/src/components/Side.jsx
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -10,7 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Tooltip from "@mui/material/Tooltip"; 
+import Tooltip from "@mui/material/Tooltip";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,10 +20,9 @@ import HeartIcon from "@mui/icons-material/Favorite";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
 import AlbumIcon from "@mui/icons-material/Album";
-import HistoryIcon from "@mui/icons-material/History";
 import LeftArrowIcon from "@mui/icons-material/ArrowBack";
-import RightArrowIcon from "@mui/icons-material/ArrowForward"
-import { useNavigate } from 'react-router-dom';
+import RightArrowIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -74,7 +73,6 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar() {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const drawerRef = React.useRef(null);
   const navigate = useNavigate();
@@ -115,15 +113,15 @@ export default function Sidebar() {
   const menuItems = [
     {
       text: "Go Back",
-      icon: <LeftArrowIcon/>,
-      onClick: ()=>navigate(-1),
-      link: "#"
+      icon: <LeftArrowIcon />,
+      onClick: () => navigate(-1),
+      link: "#",
     },
     {
       text: "Go Forward",
-      icon: <RightArrowIcon/>,
-      onClick: ()=>navigate(1),
-      link: "#"
+      icon: <RightArrowIcon />,
+      onClick: () => navigate(1),
+      link: "#",
     },
     {
       text: "Profile",
@@ -131,7 +129,7 @@ export default function Sidebar() {
       onClick: () => setOpen(false),
       link: "/profile",
       authRequired: true,
-      alertMsg: "Please sign up or login to view your Profile!"
+      alertMsg: "Please sign up or login to view your Profile!",
     },
     {
       text: "Home",
@@ -145,16 +143,16 @@ export default function Sidebar() {
       onClick: () => setOpen(false),
       link: "/liked-songs",
       authRequired: true,
-      alertMsg: "Please sign up or login to access your Liked Songs!"
+      alertMsg: "Please sign up or login to access your Liked Songs!",
     },
-   
+
     {
       text: "Playlists",
       icon: <LibraryMusicIcon />,
       onClick: () => setOpen(false),
       link: "/#",
       authRequired: true,
-      alertMsg: "Please sign up or login to access Playlists!"
+      alertMsg: "Please sign up or login to access Playlists!",
     },
     {
       text: "Albums",
@@ -162,9 +160,9 @@ export default function Sidebar() {
       onClick: () => setOpen(false),
       link: "/#",
       authRequired: true,
-      alertMsg: "Please sign up or login to save and view Albums!"
+      alertMsg: "Please sign up or login to save and view Albums!",
     },
-    
+
     // {
     //   text: "Listening History",
     //   icon: <HistoryIcon />,
@@ -173,11 +171,11 @@ export default function Sidebar() {
     //   authRequired: true,
     //   alertMsg: "Please sign up or login to view your Listening History!"
     // },
-    { 
-        text: "Logout", 
-        icon: <ExitToAppIcon />, 
-        onClick: handleLogoutClick,
-        visibleOnlyAuth: true // Flag to show only when logged in
+    {
+      text: "Logout",
+      icon: <ExitToAppIcon />,
+      onClick: handleLogoutClick,
+      visibleOnlyAuth: true, // Flag to show only when logged in
     },
   ];
 
@@ -220,41 +218,41 @@ export default function Sidebar() {
             const isRestricted = item.authRequired && !authToken;
 
             const handleRestrictedClick = () => {
-                alert(item.alertMsg || "Please login first!");
+              alert(item.alertMsg || "Please login first!");
             };
 
             const ButtonContent = (
-               <Tooltip title={open ? "" : item.text} placement="right">
+              <Tooltip title={open ? "" : item.text} placement="right">
                 <ListItemButton
-                    // If restricted, use the alert handler, otherwise use the item's onClick
-                    onClick={isRestricted ? handleRestrictedClick : item.onClick}
-                    sx={{
+                  // If restricted, use the alert handler, otherwise use the item's onClick
+                  onClick={isRestricted ? handleRestrictedClick : item.onClick}
+                  sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
                     px: 2.5,
                     color: "white",
                     "&:focus, &:focus-visible": {
-                        outline: "none",
-                        boxShadow: "none",
+                      outline: "none",
+                      boxShadow: "none",
                     },
-                    }}
+                  }}
                 >
-                    <ListItemIcon
+                  <ListItemIcon
                     sx={{
-                        minWidth: 0,
-                        justifyContent: "center",
-                        mr: open ? 3 : "auto",
-                        color: "white",
+                      minWidth: 0,
+                      justifyContent: "center",
+                      mr: open ? 3 : "auto",
+                      color: "white",
                     }}
-                    >
+                  >
                     {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
+                  </ListItemIcon>
+                  <ListItemText
                     primary={item.text}
                     sx={{ opacity: open ? 1 : 0, color: "white" }}
-                    />
+                  />
                 </ListItemButton>
-               </Tooltip>
+              </Tooltip>
             );
 
             return (
@@ -264,10 +262,7 @@ export default function Sidebar() {
                    Otherwise (restricted), we render just the button so clicking triggers the alert, not navigation.
                 */}
                 {item.link && !isRestricted ? (
-                  <Link
-                    to={item.link}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
+                  <Link to={item.link} style={{ textDecoration: "none", color: "inherit" }}>
                     {ButtonContent}
                   </Link>
                 ) : (

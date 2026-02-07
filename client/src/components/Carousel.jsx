@@ -11,11 +11,11 @@ export default function Carousel({
     tablet: 3,
     medium: 4,
     large: 5,
-    desktop: 6
+    desktop: 6,
   },
   gap = "1rem",
   arrowStyle = {},
-  dotStyle = {}
+  dotStyle = {},
 }) {
   const containerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,8 +36,8 @@ export default function Carousel({
       else setCardsPerView(responsive.desktop);
     };
     update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, [responsive]);
 
   // Compute card width + gap
@@ -64,8 +64,8 @@ export default function Carousel({
     updateArrows();
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('scroll', updateArrows);
-      return () => container.removeEventListener('scroll', updateArrows);
+      container.addEventListener("scroll", updateArrows);
+      return () => container.removeEventListener("scroll", updateArrows);
     }
   }, [cardsPerView, totalItems]);
 
@@ -73,7 +73,7 @@ export default function Carousel({
   const scrollToPosition = (idx) => {
     const container = containerRef.current;
     const cardW = getCardWidth();
-    container.scrollTo({ left: idx * cardW, behavior: 'smooth' });
+    container.scrollTo({ left: idx * cardW, behavior: "smooth" });
     setCurrentIndex(idx);
   };
 
@@ -92,7 +92,7 @@ export default function Carousel({
     } else {
       // final scroll to show remaining cards
       const remainingScroll = container.scrollWidth - container.clientWidth - container.scrollLeft;
-      container.scrollBy({ left: remainingScroll, behavior: 'smooth' });
+      container.scrollBy({ left: remainingScroll, behavior: "smooth" });
       setCurrentIndex(maxIdx + 1); // mark as beyond full pages
     }
   };
@@ -109,19 +109,31 @@ export default function Carousel({
   return (
     <div className={`carousel-wrapper ${className}`}>
       {showNav && showArrows && canScrollLeft && (
-        <button className="carousel-arrow carousel-arrow-left" onClick={scrollLeft} style={arrowStyle} aria-label="Scroll left">
+        <button
+          className="carousel-arrow carousel-arrow-left"
+          onClick={scrollLeft}
+          style={arrowStyle}
+          aria-label="Scroll left"
+        >
           <i className="fa-solid fa-chevron-left" />
         </button>
       )}
 
       <div className="carousel-container" ref={containerRef} style={{ gap }}>
         {React.Children.map(children, (child, i) => (
-          <div key={i} className="carousel-card">{child}</div>
+          <div key={i} className="carousel-card">
+            {child}
+          </div>
         ))}
       </div>
 
       {showNav && showArrows && canScrollRight && (
-        <button className="carousel-arrow carousel-arrow-right" onClick={scrollRight} style={arrowStyle} aria-label="Scroll right">
+        <button
+          className="carousel-arrow carousel-arrow-right"
+          onClick={scrollRight}
+          style={arrowStyle}
+          aria-label="Scroll right"
+        >
           <i className="fa-solid fa-chevron-right" />
         </button>
       )}
@@ -131,7 +143,7 @@ export default function Carousel({
           {Array.from({ length: totalPages }).map((_, p) => (
             <button
               key={p}
-              className={`carousel-dot ${currentPage === p ? 'active' : ''}`}
+              className={`carousel-dot ${currentPage === p ? "active" : ""}`}
               onClick={() => scrollToPage(p)}
               style={dotStyle}
               aria-label={`Go to page ${p + 1}`}

@@ -1,27 +1,25 @@
-import '../assets/styles/ArtistProfilePic.css';
-import { Skeleton } from '@mui/material';
-import defaultProfilePic from '/profile-pic.webp';
+import "../assets/styles/ArtistProfilePic.css";
+import { Skeleton } from "@mui/material";
+import defaultProfilePic from "/profile-pic.webp";
 
 export function ArtistProfilePic({ imgSrc = defaultProfilePic }) {
-    return (
-        <img src={imgSrc} alt="artist-profile-pic" id='artist-pic' loading="lazy" />
-    );
+  return <img src={imgSrc} alt="artist-profile-pic" id="artist-pic" loading="lazy" />;
 }
 
 export function ArtistProfilePicLoad() {
-    return (
-        <Skeleton
-            variant="rectangular"
-            width={200}
-            height={200}
-            sx={{
-                marginLeft: '1rem',
-                marginRight: '1rem',
-                marginTop: '4rem',
-                bgcolor: 'rgba(71, 164, 211, 0.261)',
-                borderRadius: '1rem'
-            }}
-            animation="wave"
-        />
-    );
+  return (
+    <Skeleton
+      variant="rectangular"
+      width={200}
+      height={200}
+      sx={{
+        marginLeft: "1rem",
+        marginRight: "1rem",
+        marginTop: "4rem",
+        bgcolor: "rgba(71, 164, 211, 0.261)",
+        borderRadius: "1rem",
+      }}
+      animation="wave"
+    />
+  );
 }

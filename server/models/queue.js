@@ -21,7 +21,7 @@ const queueSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 259200, // Document auto-deletes after 1 hour (3600 seconds)
+      expires: 259200,
     },
   },
   { timestamps: true }

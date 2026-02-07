@@ -2,12 +2,6 @@ import "../assets/styles/SearchBar.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export const makeSearchBarFocused = () => {
-  const searchInput = document.getElementById("nav-input-bar");
-  if (searchInput) {
-    searchInput.focus();
-  }
-};
 export default function SearchBar() {
   const navigate = useNavigate();
   // Create a ref for the input field
@@ -24,7 +18,7 @@ export default function SearchBar() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate(`/search?q=${searchParams.query}&type=${searchParams.type}`,  { replace: false });
+    navigate(`/search?q=${searchParams.query}&type=${searchParams.type}`, { replace: false });
     const searchInput = document.getElementById("nav-input-bar");
     if (searchInput) {
       searchInput.blur();
@@ -40,10 +34,7 @@ export default function SearchBar() {
           onChange={handelInputChange}
           value={searchParams.type}
         >
-          <option
-            className="type"
-            value="track,artist,album,playlist,show,episode"
-          >
+          <option className="type" value="track,artist,album,playlist,show,episode">
             All Categories
           </option>
           <option className="type" value="track">

@@ -1,16 +1,16 @@
 #playlist-pic {
-border: 0.12rem solid rgb(0, 242, 255);
-border-radius: 2rem;
-height: 15rem;
-width: 15rem;
-margin-left: 1rem;
-margin-right: 1rem;
+  border: 0.12rem solid rgb(0, 242, 255);
+  border-radius: 2rem;
+  height: 15rem;
+  width: 15rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 @media (max-width: 768px) {
-#playlist-pic {
-  height: 10rem;
-  width: 10rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
+  #playlist-pic {
+    height: 10rem;
+    width: 10rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
 }

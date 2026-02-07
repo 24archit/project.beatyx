@@ -1,18 +1,24 @@
 import { Skeleton } from "@mui/material";
-import "../assets/styles/ArtistFollowerCount.css" 
+import "../assets/styles/ArtistFollowerCount.css";
 import { format } from "indian-number-format";
 export function ArtistFollowersCount(props) {
-    return (
-        <>
-            <h4 id="artist-followers-count">{`Followers: ${format(props.count)}`}</h4>
-        </>
-    );
+  return (
+    <>
+      <h4 id="artist-followers-count">{`Followers: ${format(props.count)}`}</h4>
+    </>
+  );
 }
-export  function ArtistFollowersCountLoad() {
-    return (
-        <>
-            <h1 style={{display:"flex"}}><Skeleton width='15rem' sx={{bgcolor: 'rgba(71, 164, 211, 0.261)', marginRight:'4rem'}} animation='wave' /> <Skeleton width='15rem' sx={{bgcolor: 'rgba(71, 164, 211, 0.261)'}} /></h1>
-            
-        </>
-    );
+export function ArtistFollowersCountLoad() {
+  return (
+    <>
+      <h1 style={{ display: "flex" }}>
+        <Skeleton
+          width="15rem"
+          sx={{ bgcolor: "rgba(71, 164, 211, 0.261)", marginRight: "4rem" }}
+          animation="wave"
+        />{" "}
+        <Skeleton width="15rem" sx={{ bgcolor: "rgba(71, 164, 211, 0.261)" }} />
+      </h1>
+    </>
+  );
 }

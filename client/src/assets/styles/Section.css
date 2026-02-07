@@ -1,6 +1,6 @@
 /* Section styles */
 .section {
-  padding-top: 0.6rem; 
+  padding-top: 0.6rem;
   background: transparent;
   position: relative;
 }
@@ -44,7 +44,7 @@
 }
 
 .material .carousel-container {
-  -ms-overflow-style: none;  /* IE and Edge */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 /* Individual carousel cards */
@@ -143,17 +143,17 @@
   .carousel-card {
     flex: 0 0 calc(25% - 0.75rem); /* 4 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 45px;
     height: 45px;
     font-size: 1.1rem;
   }
-  
+
   .carousel-arrow-left {
     left: -22px;
   }
-  
+
   .carousel-arrow-right {
     right: -22px;
   }
@@ -164,31 +164,31 @@
     margin-top: 6rem;
     margin-left: 8px;
   }
-  
+
   .material.carousel-container {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     gap: 0.5rem;
   }
-  
+
   .carousel-card {
     flex: 0 0 calc(33.333% - 0.33rem); /* 3 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 40px;
     height: 40px;
     font-size: 1rem;
   }
-  
+
   .carousel-arrow-left {
     left: -20px;
   }
-  
+
   .carousel-arrow-right {
     right: -20px;
   }
-  
+
   /* Hide dots on mobile */
   .carousel-dots {
     display: none;
@@ -199,21 +199,21 @@
   .carousel-card {
     flex: 0 0 calc(50% - 0.25rem); /* 2 cards per view */
   }
-  
+
   .carousel-arrow {
     width: 35px;
     height: 35px;
     font-size: 0.9rem;
   }
-  
+
   .carousel-arrow-left {
     left: -17px;
   }
-  
+
   .carousel-arrow-right {
     right: -17px;
   }
-  
+
   .material.carousel-container {
     gap: 0.3rem;
   }
@@ -250,7 +250,7 @@
   .carousel-arrow {
     display: none;
   }
-  
+
   .carousel-dots {
     margin-top: 0.5rem;
   }

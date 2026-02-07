@@ -1,7 +1,6 @@
-import React from "react";
 import "../assets/styles/Section.css";
-import { SectionName, SectionNameLoad } from "./SectionName.jsx";
-import { SectionCard, SectionCardLoad } from "./SectionCard.jsx";
+import { SectionName } from "./SectionName.jsx";
+import { SectionCard } from "./SectionCard.jsx";
 import { Link } from "react-router-dom";
 import TrackLogo from "/Track-Logo.webp";
 import Carousel from "./Carousel.jsx";
@@ -25,7 +24,7 @@ export default function SearchPageTrackSection(props) {
             tablet: 3,
             medium: 4,
             large: 5,
-            desktop: 6
+            desktop: 6,
           }}
           gap="1rem"
           className="track-carousel"
@@ -35,37 +34,34 @@ export default function SearchPageTrackSection(props) {
               key={item.id}
               imgSrc={
                 item.album && item.album.images && item.album.images.length > 0
-                ? item.album.images[0].url
-                : TrackLogo
-            }
-            iconClass="fa-solid fa-play"
-            iconId="play-btn"
-            cardName={item.name}
-            cardStat={
-              <React.Fragment>
-                {item.artists &&
-                  item.artists.length > 0 &&
-                  item.artists.map((artist, idx) => (
-                    <span key={artist.id}>
-                      <Link
-                        to={`/artist/${artist.id}`}
-                        className="card-stat-links"
-                      >
-                        {artist.name}
-                      </Link>
-                      {idx < item.artists.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
-              </React.Fragment>
-            }
-            cardType="track"
-            cardId={item.id}
-            setPlayerMeta={props.setPlayerMeta}
-            setTrackInfo={props.setTrackInfo}
-            spotifyUrl={item.external_urls.spotify}
-            artistNames={item.artists}
-          />
-        ))}
+                  ? item.album.images[0].url
+                  : TrackLogo
+              }
+              iconClass="fa-solid fa-play"
+              iconId="play-btn"
+              cardName={item.name}
+              cardStat={
+                <>
+                  {item.artists &&
+                    item.artists.length > 0 &&
+                    item.artists.map((artist, idx) => (
+                      <span key={artist.id}>
+                        <Link to={`/artist/${artist.id}`} className="card-stat-links">
+                          {artist.name}
+                        </Link>
+                        {idx < item.artists.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                </>
+              }
+              cardType="track"
+              cardId={item.id}
+              setPlayerMeta={props.setPlayerMeta}
+              setTrackInfo={props.setTrackInfo}
+              spotifyUrl={item.external_urls.spotify}
+              artistNames={item.artists}
+            />
+          ))}
         </Carousel>
       </div>
     </section>

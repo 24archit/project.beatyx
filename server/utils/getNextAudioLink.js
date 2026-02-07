@@ -17,7 +17,7 @@ async function getNextAudioLink(queueId) {
     if (currTrack + 1 >= queue.queue.length) {
       const lastTrack = queue.queue[currTrack];
       const lastTrackId = lastTrack.track.id;
-      
+
       // Fetch audio
       audioLink = await getAudioLink(lastTrackId);
 
@@ -27,9 +27,9 @@ async function getNextAudioLink(queueId) {
           trackName: lastTrack.track.name || "Unknown Track",
           imgSrc: lastTrack.track.album.images[0]?.url || "",
           audioLink: audioLink, // Nested here correctly
-          artistNames: lastTrack.track.artists 
-            ? lastTrack.track.artists.map(a => a.name) 
-            : ["Unknown Artist"]
+          artistNames: lastTrack.track.artists
+            ? lastTrack.track.artists.map((a) => a.name)
+            : ["Unknown Artist"],
         };
       }
       return null;
@@ -43,10 +43,7 @@ async function getNextAudioLink(queueId) {
       }
 
       // Update Database pointer
-      await QueueDb.updateOne(
-        { _id: queueId },
-        { $inc: { currTrack: 1 } }
-      ).exec();
+      await QueueDb.updateOne({ _id: queueId }, { $inc: { currTrack: 1 } }).exec();
       currTrack++;
 
       const nextTrackId = nextTrack.track.id;
@@ -62,9 +59,9 @@ async function getNextAudioLink(queueId) {
           trackName: trackName,
           imgSrc: trackImg,
           audioLink: audioLink,
-          artistNames: nextTrack.track.artists 
-            ? nextTrack.track.artists.map(a => a.name) 
-            : ["Unknown Artist"]
+          artistNames: nextTrack.track.artists
+            ? nextTrack.track.artists.map((a) => a.name)
+            : ["Unknown Artist"],
         };
       }
 
@@ -76,10 +73,7 @@ async function getNextAudioLink(queueId) {
 
     throw new Error("Failed to fetch a valid audio link after 6 attempts");
   } catch (error) {
-    console.error(
-      "Error fetching the next audio link:",
-      error.message || error
-    );
+    console.error("Error fetching the next audio link:", error.message || error);
     return null;
   }
 }

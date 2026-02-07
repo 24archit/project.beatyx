@@ -1,5 +1,5 @@
 import "../assets/styles/SpotifyConnectBtn.css";
-import { verifyAuth } from "../apis/apiFunctions.js";
+import { verifyAuth } from "@/features/auth/authService";
 export function SpotifyConnectBtn() {
   const handleClickOpen = async () => {
     try {
@@ -13,7 +13,6 @@ export function SpotifyConnectBtn() {
       const response = await verifyAuth(authToken);
 
       if (response.isVerified) {
-        
         const form = document.createElement("form");
         form.method = "POST";
         form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
@@ -25,7 +24,6 @@ export function SpotifyConnectBtn() {
         form.appendChild(input);
         document.body.appendChild(form);
         form.submit();
-
       } else {
         alert(
           "🎵 You're just one step away! Log in or sign up to connect your Spotify and start the vibe."
@@ -33,19 +31,13 @@ export function SpotifyConnectBtn() {
       }
     } catch (error) {
       console.error("Error while verifying auth or connecting Spotify:", error);
-      alert(
-        "⚠️ Something went wrong. Please try again later or check your network connection."
-      );
+      alert("⚠️ Something went wrong. Please try again later or check your network connection.");
       window.open("/");
     }
   };
   return (
     <div className="spotify-connect-btn-container">
-      <button
-        id="logout-btn"
-        className="log-in-out-btns"
-        onClick={handleClickOpen}
-      >
+      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
         <i className="fa-solid fa-link" style={{ marginRight: "5px" }}></i>
         Connect With Spotify
       </button>

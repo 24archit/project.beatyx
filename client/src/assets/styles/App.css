@@ -4,5 +4,5 @@ body {
   user-select: none;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll from animations */
+  overflow-x: hidden;
 }

@@ -26,15 +26,13 @@ export default function CategoryPills({ categories }) {
     <div className="category-pills-wrapper">
       <div className="category-pills-container">
         {dataToDisplay.map((cat) => (
-          <Link 
-            key={cat.id} 
+          <Link
+            key={cat.id}
             to={`/category/${cat.id}`}
-            state={{ categoryName: cat.name }} 
+            state={{ categoryName: cat.name }}
             className="category-pill-link"
           >
-            <div className="category-pill">
-               {cat.name}
-            </div>
+            <div className="category-pill">{cat.name}</div>
           </Link>
         ))}
       </div>

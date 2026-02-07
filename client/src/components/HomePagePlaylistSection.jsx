@@ -15,7 +15,7 @@ export default function HomePagePlaylistSection(props) {
         sectionName={props.sectionName}
         button={false}
       />
-      
+
       <div className="material">
         <Carousel
           showArrows={true}
@@ -37,10 +37,20 @@ export default function HomePagePlaylistSection(props) {
               setPlayerMeta={props.setPlayerMeta}
               setTrackInfo={props.setTrackInfo}
               cardStat={
-                <span 
-                  className="card-stat-text" 
-                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: '0.8rem', color: '#b3b3b3', textDecoration: 'none' }}
-                  dangerouslySetInnerHTML={{ __html: item.description || `By ${item.owner.display_name}` }} 
+                <span
+                  className="card-stat-text"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    fontSize: "0.8rem",
+                    color: "#b3b3b3",
+                    textDecoration: "none",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: item.description || `By ${item.owner.display_name}`,
+                  }}
                 />
               }
               spotifyUrl={item.external_urls.spotify}

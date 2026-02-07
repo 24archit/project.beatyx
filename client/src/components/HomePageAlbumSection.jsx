@@ -17,7 +17,7 @@ export default function HomePageAlbumSection(props) {
         sectionName={props.sectionName}
         button={props.button}
       />
-      
+
       <div className="material">
         <Carousel
           showArrows={true}
@@ -28,7 +28,7 @@ export default function HomePageAlbumSection(props) {
             tablet: 3,
             medium: 4,
             large: 5,
-            desktop: 6
+            desktop: 6,
           }}
           gap="1rem"
           className="track-carousel"
@@ -36,11 +36,7 @@ export default function HomePageAlbumSection(props) {
           {props.data.map((item) => (
             <SectionCard
               key={item.id}
-              imgSrc={
-                item.images && item.images.length > 0
-                  ? item.images[0].url
-                  : TrackLogo
-              }
+              imgSrc={item.images && item.images.length > 0 ? item.images[0].url : TrackLogo}
               iconClass={"fa-solid fa-link"}
               iconId={"play-btn"}
               cardName={item.name}
@@ -53,10 +49,7 @@ export default function HomePageAlbumSection(props) {
                 <>
                   {item.artists.map((artist, idx) => (
                     <span key={artist.id}>
-                      <Link
-                        to={`/artist/${artist.id}`}
-                        className={"card-stat-links"}
-                      >
+                      <Link to={`/artist/${artist.id}`} className={"card-stat-links"}>
                         {artist.name}
                       </Link>
                       {idx < item.artists.length - 1 ? ", " : ""}

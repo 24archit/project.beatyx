@@ -1,53 +1,56 @@
-*{
-    text-decoration: none;
-    font-weight: normal;
-    
+* {
+  text-decoration: none;
+  font-weight: normal;
 }
-.card-container{
-    height: 22rem; /* Reduced height */
-    width: 14rem; /* Reduced width */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 1.5rem; /* Slightly smaller rounding */
-    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
-    margin-top: 0.8rem;
-    margin-bottom: 0.8rem;
-    margin-left: 0.8rem;
-    margin-right: 0.8rem;
+.card-container {
+  height: 22rem; /* Reduced height */
+  width: 14rem; /* Reduced width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem; /* Slightly smaller rounding */
+  transition:
+    box-shadow 0.2s ease-in-out,
+    transform 0.1s ease-in-out;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+  margin-left: 0.8rem;
+  margin-right: 0.8rem;
 }
-#kebab-menu-icon{
-    color: white;
-    font-size: 1.2rem; /* Reduced size */
-    cursor: pointer;
+#kebab-menu-icon {
+  color: white;
+  font-size: 1.2rem; /* Reduced size */
+  cursor: pointer;
 }
 .card-menu {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 2;
-  }
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
 .card {
-    flex: 1;
-    background: linear-gradient(#010d2bcb, #0000009b, #010d2dbc, rgba(255, 255, 255, 0.145));
-    height: 100%;
-    width:100%;
-    padding-top: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-top-right-radius: 1.5rem; /* Slightly smaller rounding */
-    border-top-left-radius: 1.5rem; /* Slightly smaller rounding */
-    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
-    position: relative;
+  flex: 1;
+  background: linear-gradient(#010d2bcb, #0000009b, #010d2dbc, rgba(255, 255, 255, 0.145));
+  height: 100%;
+  width: 100%;
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 1.5rem; /* Slightly smaller rounding */
+  border-top-left-radius: 1.5rem; /* Slightly smaller rounding */
+  transition:
+    box-shadow 0.2s ease-in-out,
+    transform 0.1s ease-in-out;
+  position: relative;
 }
 .card-img {
- display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin: 0.6rem auto;
@@ -66,101 +69,101 @@
   width: 100%;
   border-radius: 0.8rem;
 }
-.card-stat-container{
-    height: 3rem;
-    width: 100%;
+.card-stat-container {
+  height: 3rem;
+  width: 100%;
 }
-.card-name-container{
-    height: 3rem;
-    width: 100%;
+.card-name-container {
+  height: 3rem;
+  width: 100%;
 }
 
 .card-name {
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 500;
-    color: white;
-    font-size: 1rem; /* Reduced font size */
-    letter-spacing: 0.08rem; /* Slightly tighter spacing */
-    text-align: center;
-    margin-top: 0.4rem;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  color: white;
+  font-size: 1rem; /* Reduced font size */
+  letter-spacing: 0.08rem; /* Slightly tighter spacing */
+  text-align: center;
+  margin-top: 0.4rem;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
 }
 
 .card-header {
-    display: flex;
-   
-    width: 100%;
-    height: 100%;
+  display: flex;
+
+  width: 100%;
+  height: 100%;
 }
 
 .card-stat,
 .card-stat-2,
 .card-stat-3 {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8rem; /* Reduced font size */
-    color: rgba(189, 110, 0, 0.806);
-    margin: 0.2rem 0; /* Tighter margins */
-    text-align: center;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8rem; /* Reduced font size */
+  color: rgba(189, 110, 0, 0.806);
+  margin: 0.2rem 0; /* Tighter margins */
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
 }
 .card-details {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Important for centering horizontally */
+  align-items: center; /* Important for centering horizontally */
   justify-content: center; /* Helps vertically align elements inside */
   width: 100%;
 }
 
 .card-stat-links {
-    color: #e4a81dbb;
-    text-decoration: none;
+  color: #e4a81dbb;
+  text-decoration: none;
 }
 
 .card-stat-links:hover {
-    text-decoration: underline;
-    color: #d6e1e282;
+  text-decoration: underline;
+  color: #d6e1e282;
 }
 
 .spotify-logo {
-    height: 1.5rem; /* Reduced size */
-    width: 1.5rem; /* Reduced size */
-    border-radius: 50%;
-    opacity: 0.6;
-    margin-top: 0.8rem;
-    padding: 0.5rem;    /* Adds spacing between the logo and content */
-    display: flex;
-    margin-bottom: 0.4rem; /* Adds spacing below the logo */
+  height: 1.5rem; /* Reduced size */
+  width: 1.5rem; /* Reduced size */
+  border-radius: 50%;
+  opacity: 0.6;
+  margin-top: 0.8rem;
+  padding: 0.5rem; /* Adds spacing between the logo and content */
+  display: flex;
+  margin-bottom: 0.4rem; /* Adds spacing below the logo */
 }
 
 .spotify-logo a {
-    display: block;
-    height: 100%;
-    width: 100%;
-    margin-bottom: 2rem;
+  display: block;
+  height: 100%;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .spotify-logo img {
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
 }
 
 .spotify-logo:hover {
-    opacity: 1;
+  opacity: 1;
 }
 .card-stat-text,
 .card-stat-text a,
@@ -199,10 +202,22 @@
   animation: cardWave 1s ease-in-out infinite;
 }
 
-.card-music-wave .bar:nth-child(1) { animation-duration: 1.0s; height: 60%; }
-.card-music-wave .bar:nth-child(2) { animation-duration: 1.1s; height: 100%; }
-.card-music-wave .bar:nth-child(3) { animation-duration: 1.2s; height: 50%; }
-.card-music-wave .bar:nth-child(4) { animation-duration: 1.3s; height: 80%; }
+.card-music-wave .bar:nth-child(1) {
+  animation-duration: 1s;
+  height: 60%;
+}
+.card-music-wave .bar:nth-child(2) {
+  animation-duration: 1.1s;
+  height: 100%;
+}
+.card-music-wave .bar:nth-child(3) {
+  animation-duration: 1.2s;
+  height: 50%;
+}
+.card-music-wave .bar:nth-child(4) {
+  animation-duration: 1.3s;
+  height: 80%;
+}
 .card-stat-row {
   display: flex;
   flex-direction: row;
@@ -225,50 +240,56 @@
 
 /* Specific adjustment if card-stat was centered */
 .card-stat-container .card-stat {
-    margin: 0;
-    text-align: center; 
-    /* If you want it left-aligned because of the heart, change to 'left' */
+  margin: 0;
+  text-align: center;
+  /* If you want it left-aligned because of the heart, change to 'left' */
 }
 
 .like-icon-section {
-    cursor: pointer;
-    margin-left: 10px; /* Space between artist name and heart */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.1s ease;
+  cursor: pointer;
+  margin-left: 10px; /* Space between artist name and heart */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
 }
 
 .like-icon-section:active {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 @keyframes cardWave {
-  0%, 100% { height: 40%; }
-  50% { height: 100%; }
+  0%,
+  100% {
+    height: 40%;
+  }
+  50% {
+    height: 100%;
+  }
 }
-@media(max-width: 768px) {
-    .card-container {
-        height: 19rem; /* Adjusted for smaller screens */
-        width: 11rem; /* Adjusted for smaller screens */
-    }
-    .spotify-logo{
-        height: 1.2rem;
-        width: 1.2rem; /* Adjusted size for smaller screens */
-        margin-top: 0.3rem;     }
-    .card-menu {
-        top: 5px; /* Adjusted position for smaller screens */
-        right: 5px; /* Adjusted position for smaller screens */
-    }
-    .card-img {
-        height: 8rem; /* Adjusted for smaller screens */
-        width: 8rem; /* Adjusted for smaller screens */
-    }
-    .card-name {
-        font-size: 0.9rem; /* Slightly smaller font size */
-    }
-    .card-stat,
-    .card-stat-2,
-    .card-stat-3 {
-        font-size: 0.7rem; /* Slightly smaller font size */
-    }
+@media (max-width: 768px) {
+  .card-container {
+    height: 19rem; /* Adjusted for smaller screens */
+    width: 11rem; /* Adjusted for smaller screens */
+  }
+  .spotify-logo {
+    height: 1.2rem;
+    width: 1.2rem; /* Adjusted size for smaller screens */
+    margin-top: 0.3rem;
+  }
+  .card-menu {
+    top: 5px; /* Adjusted position for smaller screens */
+    right: 5px; /* Adjusted position for smaller screens */
+  }
+  .card-img {
+    height: 8rem; /* Adjusted for smaller screens */
+    width: 8rem; /* Adjusted for smaller screens */
+  }
+  .card-name {
+    font-size: 0.9rem; /* Slightly smaller font size */
+  }
+  .card-stat,
+  .card-stat-2,
+  .card-stat-3 {
+    font-size: 0.7rem; /* Slightly smaller font size */
+  }
 }

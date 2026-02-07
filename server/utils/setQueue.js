@@ -3,7 +3,6 @@ const queueDb = require("../models/queue");
 
 async function updatePlayerQueue(index, currPlaylistId, queueId = null) {
   try {
-    // Fetch the playlist using findById (faster lookup)
     const playlist = await currPlaylist.findById(currPlaylistId).lean();
 
     if (!playlist) {
@@ -11,10 +10,9 @@ async function updatePlayerQueue(index, currPlaylistId, queueId = null) {
     }
 
     const tracks = playlist.tracks;
-    const queue = [...tracks.slice(index), ...tracks.slice(0, index)]; // Optimized queue rotation
+    const queue = [...tracks.slice(index), ...tracks.slice(0, index)];
 
     if (queueId) {
-      // If queueId is provided, update the existing queue
       const updatedQueue = await queueDb.findByIdAndUpdate(
         queueId,
         { queue, currTrack: 0 },
@@ -27,7 +25,6 @@ async function updatePlayerQueue(index, currPlaylistId, queueId = null) {
 
       return updatedQueue._id;
     } else {
-      // Create a new queue if queueId is not provided
       const newQueue = await queueDb.create({ queue, currTrack: 0 });
       return newQueue._id;
     }

@@ -83,7 +83,7 @@
   margin: 0;
   line-height: 1;
   letter-spacing: -2px;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   text-transform: capitalize;
 }
 
@@ -112,13 +112,23 @@
 
 /* --- ANIMATIONS --- */
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* --- RESPONSIVE DESIGN --- */
@@ -149,7 +159,7 @@
     padding: 4rem 1.5rem 2rem 1.5rem; /* Top padding for back button */
     justify-content: center;
   }
-  
+
   .back-btn {
     top: 1.5rem;
     left: 1.5rem;
@@ -173,8 +183,7 @@
 
   .grid-container {
     /* 2 Columns on Mobile */
-    grid-template-columns: repeat(1, 1fr); 
+    grid-template-columns: repeat(1, 1fr);
     gap: 0.1rem;
-
   }
 }

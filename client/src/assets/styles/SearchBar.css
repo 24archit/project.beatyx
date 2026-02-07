@@ -1,4 +1,4 @@
-.search-bar-container{
+.search-bar-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,7 +108,6 @@
     margin: auto;
     margin-bottom: 0.5rem;
     border: none;
-    
   }
 
   #nav-select-category {

@@ -10,15 +10,12 @@ export function SectionName({
   name = "",
   button = true,
   sectionName,
-}){
-
+}) {
   const navigate = useNavigate();
 
   const handleOnClick = () => {
-    if (sectionName === "top-tracks-india")
-      navigate("/playlist/37i9dQZEVXbLZ52XmnySJg");
-    else if (sectionName === "top-tracks-global")
-      navigate("/playlist/37i9dQZEVXbMDoHDwVN2tF");
+    if (sectionName === "top-tracks-india") navigate("/playlist/37i9dQZEVXbLZ52XmnySJg");
+    else if (sectionName === "top-tracks-global") navigate("/playlist/37i9dQZEVXbMDoHDwVN2tF");
   };
 
   return (
@@ -38,7 +35,6 @@ export function SectionName({
   );
 }
 
-
 export function SectionNameLoad() {
   const theme = useTheme();
 
@@ -46,7 +42,6 @@ export function SectionNameLoad() {
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const isMd = useMediaQuery(theme.breakpoints.between("md", "lg"));
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
 
   let width;
   if (isXs) width = "90%";
@@ -62,9 +57,9 @@ export function SectionNameLoad() {
       sx={{
         marginTop: {
           xs: "2.7rem", // On small devices
-          sm: "2rem",   // Slightly less on tablets
-          md: "0rem",   // Reduced on small laptops
-          lg: "0rem",   // No margin on large screens
+          sm: "2rem", // Slightly less on tablets
+          md: "0rem", // Reduced on small laptops
+          lg: "0rem", // No margin on large screens
         },
         marginLeft: "1rem",
         marginRight: "1rem",
@@ -75,5 +70,3 @@ export function SectionNameLoad() {
     />
   );
 }
-
-

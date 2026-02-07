@@ -1,20 +1,23 @@
 // src/context/PlayerProvider.jsx
-import { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
-import { getNextAudioLink, getPreviousAudioLink } from '../apis/apiFunctions';
-import { getLikedSongs } from "../apis/apiFunctions"; // Import thi
+import { useState, useRef, useEffect, useCallback } from "react";
+import { getNextAudioLink, getPreviousAudioLink } from "./playerService";
+import { getLikedSongs } from "@/services/userService";
 // Throttle helper
 function useThrottle(callback, delay) {
   const lastCallRef = useRef(0);
-  return useCallback((...args) => {
-    const now = Date.now();
-    if (now - lastCallRef.current >= delay) {
-      lastCallRef.current = now;
-      callback(...args);
-    }
-  }, [callback, delay]);
+  return useCallback(
+    (...args) => {
+      const now = Date.now();
+      if (now - lastCallRef.current >= delay) {
+        lastCallRef.current = now;
+        callback(...args);
+      }
+    },
+    [callback, delay]
+  );
 }
 
-const PlayerContext = createContext();
+import { PlayerContext } from "./playerContextDefinition";
 
 export const PlayerProvider = ({
   children,
@@ -41,12 +44,10 @@ export const PlayerProvider = ({
   const [isPrefetching, setIsPrefetching] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [skipNextEnded, setSkipNextEnded] = useState(false);
-  const [isSeeking, setIsSeeking] = useState(false);
 
   // — References
   const playerRef = useRef(null);
   const volumeSliderRef = useRef(null);
-
 
   const [likedSongs, setLikedSongs] = useState([]);
   const fetchLikedSongs = async () => {
@@ -60,15 +61,13 @@ export const PlayerProvider = ({
     fetchLikedSongs();
   }, []); // Runs once on app load
 
-
-const toggleLikeLocal = (trackId) => {
+  const toggleLikeLocal = (trackId) => {
     if (likedSongs.includes(trackId)) {
-      setLikedSongs(prev => prev.filter(id => id !== trackId));
+      setLikedSongs((prev) => prev.filter((id) => id !== trackId));
     } else {
-      setLikedSongs(prev => [...prev, trackId]);
+      setLikedSongs((prev) => [...prev, trackId]);
     }
   };
-
 
   // — Helpers
   const extractVideoId = useCallback((videoUrl) => {
@@ -109,19 +108,19 @@ const toggleLikeLocal = (trackId) => {
   }, []);
 
   // — Track loading & navigation
- const loadTrack = useCallback(
+  const loadTrack = useCallback(
     (trackUrl, trackDetails) => {
       const internal = getInternalPlayer();
-      
+
       // Stop current track and reset state
       internal?.stopVideo?.();
       setPlaying(false);
       setProgress(0);
       setDuration(0);
       setErrorMessage("");
-      
+
       // Optional: Set buffering true immediately so UI reflects loading start
-      setIsBuffering(true); 
+      setIsBuffering(true);
 
       setTimeout(() => {
         const vid = extractVideoId(trackUrl);
@@ -131,11 +130,11 @@ const toggleLikeLocal = (trackId) => {
           ip.loadVideoById(vid);
           setUrl(trackUrl);
           setTrackInfo(trackDetails);
-          
+
           setTimeout(() => {
             setPlaying(true);
             if (ip.playVideo) {
-              ip.playVideo(); 
+              ip.playVideo();
             }
           }, 200);
         }
@@ -173,12 +172,12 @@ const toggleLikeLocal = (trackId) => {
     }
 
     let nextUrl = nextTrackInfo?.audioLink?.url;
-  let details = nextTrackInfo
-      ? { 
+    let details = nextTrackInfo
+      ? {
           id: nextTrackInfo.id, // <--- ADD THIS LINE
-          trackName: nextTrackInfo.trackName, 
+          trackName: nextTrackInfo.trackName,
           imgSrc: nextTrackInfo.imgSrc,
-          artistNames: nextTrackInfo.artistNames || ["Unknown Artist"]
+          artistNames: nextTrackInfo.artistNames || ["Unknown Artist"],
         }
       : null;
 
@@ -196,7 +195,8 @@ const toggleLikeLocal = (trackId) => {
             imgSrc: nxt.imgSrc,
             artistNames: nxt.artistNames || ["Unknown Artist"],
           };
-        }} catch (e) {
+        }
+      } catch (e) {
         console.error("playNextTrack fetch error", e);
         setIsTransitioning(false);
         return;
@@ -219,7 +219,7 @@ const toggleLikeLocal = (trackId) => {
     if (!q) return setIsTransitioning(false);
 
     try {
-     const prev = await getPreviousAudioLink(q);
+      const prev = await getPreviousAudioLink(q);
       const urlToPlay = prev?.audioLink?.url;
       const details = {
         id: prev.id, // <--- ADD THIS LINE
@@ -263,10 +263,10 @@ const toggleLikeLocal = (trackId) => {
   const togglePlayPause = useCallback(
     (e) => {
       if (!url) return;
-      
+
       const newPlayingState = !playing;
       setPlaying(newPlayingState);
-      
+
       const ip = getInternalPlayer();
       if (ip) {
         if (newPlayingState) {
@@ -302,21 +302,16 @@ const toggleLikeLocal = (trackId) => {
 
   const handleProgress = useCallback(
     (pd) => {
-      if (duration > 0 && !isSeeking && pd.played !== undefined) {
+      if (duration > 0 && pd.played !== undefined) {
         throttledSetProgress(pd.played);
       }
-      if (
-        pd.played >= 0.85 &&
-        !nextTrackInfo &&
-        !isPrefetching &&
-        !isTransitioning
-      ) {
+      if (pd.played >= 0.85 && !nextTrackInfo && !isPrefetching && !isTransitioning) {
         prefetchNextTrack();
       }
     },
     [
       duration,
-      isSeeking,
+
       nextTrackInfo,
       isPrefetching,
       isTransitioning,
@@ -399,59 +394,59 @@ const toggleLikeLocal = (trackId) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Ignore if user is typing in an input field
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+      if (
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "TEXTAREA" ||
+        e.target.isContentEditable
+      ) {
         return;
       }
 
       switch (e.code) {
-        case 'Space':
+        case "Space":
           e.preventDefault();
           if (url) {
             togglePlayPause();
           }
           break;
-        
-        case 'ArrowLeft':
+
+        case "ArrowLeft":
           e.preventDefault();
           if (url && duration > 0) {
-            const newTime = Math.max(0, (progress * duration) - 5);
+            const newTime = Math.max(0, progress * duration - 5);
             const newProgress = newTime / duration;
             setProgress(newProgress);
             playerRef.current?.seekTo(newTime, "seconds");
           }
           break;
-        
-        case 'ArrowRight':
+
+        case "ArrowRight":
           e.preventDefault();
           if (url && duration > 0) {
-            const newTime = Math.min(duration, (progress * duration) + 5);
+            const newTime = Math.min(duration, progress * duration + 5);
             const newProgress = newTime / duration;
             setProgress(newProgress);
             playerRef.current?.seekTo(newTime, "seconds");
           }
           break;
-        
+
         default:
           break;
       }
     };
 
     // Add event listener
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     // Cleanup
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [url, duration, progress, togglePlayPause]);
 
   // Volume icon
   const volumeIcon =
-    volume === 0
-      ? "fa-volume-xmark"
-      : volume <= 0.5
-      ? "fa-volume-low"
-      : "fa-volume-high";
+    volume === 0 ? "fa-volume-xmark" : volume <= 0.5 ? "fa-volume-low" : "fa-volume-high";
 
   const contextValue = {
     // state & refs
@@ -493,23 +488,11 @@ const toggleLikeLocal = (trackId) => {
     handlePause,
     handleReady,
 
-    likedSongs,         // Export state
-        setLikedSongs,      // Export setter
-        fetchLikedSongs,    // Export fetcher
-        toggleLikeLocal
+    likedSongs, // Export state
+    setLikedSongs, // Export setter
+    fetchLikedSongs, // Export fetcher
+    toggleLikeLocal,
   };
 
-  return (
-    <PlayerContext.Provider value={contextValue}>
-      {children}
-    </PlayerContext.Provider>
-  );
-};
-
-export const useSharedPlayer = () => {
-  const context = useContext(PlayerContext);
-  if (!context) {
-    throw new Error("useSharedPlayer must be used within a PlayerProvider");
-  }
-  return context;
+  return <PlayerContext.Provider value={contextValue}>{children}</PlayerContext.Provider>;
 };

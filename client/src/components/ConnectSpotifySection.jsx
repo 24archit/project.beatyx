@@ -1,9 +1,8 @@
 // client/src/components/ConnectSpotifySection.jsx
 import "../assets/styles/ConnectSpotifySection.css"; // We will create this next
-import { verifyAuth } from "../apis/apiFunctions.js";
+import { verifyAuth } from "@/features/auth/authService";
 
 export default function ConnectSpotifySection() {
-  
   const handleConnect = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -22,12 +21,12 @@ export default function ConnectSpotifySection() {
         form.method = "POST";
         form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
         form.target = "_self"; // Opens in same tab
-        
+
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = "authToken";
         input.value = authToken;
-        
+
         form.appendChild(input);
         document.body.appendChild(form);
         form.submit();
@@ -46,8 +45,8 @@ export default function ConnectSpotifySection() {
         <div className="connect-spotify-text">
           <h2>Unlock the Full Experience</h2>
           <p>
-            Connect your Spotify account to get personalized recommendations, 
-            access your "Made For You" mixes, and sync your listening history.
+            Connect your Spotify account to get personalized recommendations, access your &quot;Made
+            For You&quot; mixes, and sync your listening history.
           </p>
         </div>
         <button onClick={handleConnect} className="connect-spotify-cta-btn">

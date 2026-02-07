@@ -1,6 +1,5 @@
 // server/models/user.js
 const mongoose = require("mongoose");
-const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
   displayName: {
@@ -15,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   spotifyId: {
     type: String,
-    default: ""
+    default: "",
   },
   profilePic: {
     type: String,
@@ -25,15 +24,15 @@ const userSchema = new mongoose.Schema({
   },
   followers: {
     type: Number,
-    default: 0
+    default: 0,
   },
   accessToken: {
     type: String,
-    default:""
+    default: "",
   },
   refreshToken: {
     type: String,
-    default: ""
+    default: "",
   },
   email: {
     type: String,
@@ -41,17 +40,16 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   updationTime: {
-    type: Date
+    type: Date,
   },
   password: {
     type: String,
     required: true,
   },
-  // ADD THIS NEW FIELD
   likedSongs: {
-    type: [String], // Array of Track IDs
-    default: []
-  }
+    type: [String],
+    default: [],
+  },
 });
 
 const User = mongoose.model("User", userSchema);

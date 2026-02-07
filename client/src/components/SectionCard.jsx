@@ -1,13 +1,13 @@
 // client/src/components/SectionCard.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import "../assets/styles/Card.css";
 import TrackLogo from "/Track-Logo.webp";
 import { Skeleton, Menu, MenuItem, IconButton } from "@mui/material";
 import { format } from "indian-number-format";
 import spotifyLogo from "/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
-import { useSharedPlayer } from "../context/PlayerContext"; 
-import { addLikedSong, removeLikedSong } from "../apis/apiFunctions";
+import { useSharedPlayer } from "@/features/player";
+import { addLikedSong, removeLikedSong } from "@/services/userService";
 import { Link } from "react-router-dom"; // Changed to Link for specific element wrapping
 
 export function SectionCard({
@@ -35,11 +35,16 @@ export function SectionCard({
   // Helper to determine the link path
   const getNavPath = () => {
     switch (cardType) {
-      case "album": return `/album/${cardId}`;
-      case "playlist": return `/playlist/${cardId}`;
-      case "track": return `/track/${cardId}`;
-      case "artist": return `/artist/${cardId}`;
-      default: return "#";
+      case "album":
+        return `/album/${cardId}`;
+      case "playlist":
+        return `/playlist/${cardId}`;
+      case "track":
+        return `/track/${cardId}`;
+      case "artist":
+        return `/artist/${cardId}`;
+      default:
+        return "#";
     }
   };
 
@@ -54,9 +59,9 @@ export function SectionCard({
   };
 
   const handleLikeClick = async (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     const token = window.localStorage.getItem("authToken");
-    
+
     if (!token) {
       alert("Login Required\n\nYou must be logged in to save songs to your library.");
       return;
@@ -103,10 +108,7 @@ export function SectionCard({
 
         {/* Card Details */}
         <div className="card-details">
-          <div
-            className="card-img"
-            style={cardType === "artist" ? { borderRadius: "50%" } : {}}
-          >
+          <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
             {/* 1. LINK ADDED TO IMAGE */}
             <Link to={navPath}>
               <img
@@ -132,45 +134,55 @@ export function SectionCard({
           </div>
 
           <div className="card-name-container">
-             {/* 2. LINK ADDED TO NAME */}
-            <Link to={navPath} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <p className="card-name" style={isPlayingThis ? { color: "#1db954" } : {}} title={cardName}>
+            {/* 2. LINK ADDED TO NAME */}
+            <Link to={navPath} style={{ textDecoration: "none", color: "inherit" }}>
+              <p
+                className="card-name"
+                style={isPlayingThis ? { color: "#1db954" } : {}}
+                title={cardName}
+              >
                 {cardName}
-                </p>
+              </p>
             </Link>
           </div>
 
           {albumType && (
-            <span className="card-stat-3"><p>{albumType === "album" ? "Album" : "Single"}</p></span>
+            <span className="card-stat-3">
+              <p>{albumType === "album" ? "Album" : "Single"}</p>
+            </span>
           )}
           {followers && (
-            <span className="card-stat-3"><p>{`${format(followers)} Followers`}</p></span>
+            <span className="card-stat-3">
+              <p>{`${format(followers)} Followers`}</p>
+            </span>
           )}
 
           <div className="card-stat-row">
             <div className="card-stat-container">
-               <p className="card-stat" title={cardStat}>{cardStat}</p>
+              <p className="card-stat" title={cardStat}>
+                {cardStat}
+              </p>
             </div>
-            
+
             {isTrackCard && (
-               <div 
-                  className="like-icon-section" 
-                  onClick={handleLikeClick} 
-                  title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"} 
-               >
-                  <i 
-                     className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
-                     style={{ 
-                       color: isLiked ? "#fb064fff" : "#b3b3b3", 
-                       fontSize: "1.1rem" 
-                     }}
-                  ></i>
-               </div>
+              <div
+                className="like-icon-section"
+                onClick={handleLikeClick}
+                title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"}
+              >
+                <i
+                  className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
+                  style={{
+                    color: isLiked ? "#fb064fff" : "#b3b3b3",
+                    fontSize: "1.1rem",
+                  }}
+                ></i>
+              </div>
             )}
           </div>
         </div>
       </div>
-      
+
       <CardBtn
         iconId={iconId}
         logoClass={iconClass}
@@ -189,11 +201,46 @@ export function SectionCard({
 
 // SectionCardLoad remains unchanged...
 export function SectionCardLoad() {
-    return (
+  return (
     <div className="card-container">
-      <Skeleton variant="rectangular" width={200} height={200} sx={{ marginLeft: "1rem", marginRight: "1rem", bgcolor: "rgba(71, 164, 211, 0.261)", borderRadius: "1rem" }} animation="wave" />
-      <Skeleton variant="rectangular" width={200} height={20} sx={{ marginLeft: "1rem", marginRight: "1rem", marginTop: "0.7rem", bgcolor: "rgba(71, 164, 211, 0.261)", borderRadius: "1rem" }} animation="wave" />
-      <Skeleton variant="rectangular" width={150} height={10} sx={{ marginLeft: "1rem", marginRight: "1rem", marginTop: "0.7rem", bgcolor: "rgba(71, 164, 211, 0.261)", borderRadius: "1rem", alignSelf: "flex-start" }} />
+      <Skeleton
+        variant="rectangular"
+        width={200}
+        height={200}
+        sx={{
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          bgcolor: "rgba(71, 164, 211, 0.261)",
+          borderRadius: "1rem",
+        }}
+        animation="wave"
+      />
+      <Skeleton
+        variant="rectangular"
+        width={200}
+        height={20}
+        sx={{
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          marginTop: "0.7rem",
+          bgcolor: "rgba(71, 164, 211, 0.261)",
+          borderRadius: "1rem",
+        }}
+        animation="wave"
+      />
+      <Skeleton
+        variant="rectangular"
+        width={150}
+        height={10}
+        sx={{
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          marginTop: "0.7rem",
+          bgcolor: "rgba(71, 164, 211, 0.261)",
+          borderRadius: "1rem",
+          alignSelf: "flex-start",
+        }}
+      />
     </div>
   );
 }
