@@ -36,7 +36,7 @@ export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueI
  * @returns {Promise<Object>} Updated queue data.
  * @throws {Error} If update fails.
  */
-export async function updatePlayerQueue(index, currPlaylistId, queueId) {
+async function updatePlayerQueue(index, currPlaylistId, queueId) {
   try {
     const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/updatePlayerQueue`,

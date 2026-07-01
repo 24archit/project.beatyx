@@ -7,17 +7,3 @@ export function ArtistTrendScore(props) {
     </>
   );
 }
-export function ArtistTrendScoreLoad() {
-  return (
-    <>
-      <h1 style={{ display: "flex" }}>
-        <Skeleton
-          width="15rem"
-          sx={{ bgcolor: "rgba(71, 164, 211, 0.261)", marginRight: "4rem" }}
-          animation="wave"
-        />{" "}
-        <Skeleton width="15rem" sx={{ bgcolor: "rgba(71, 164, 211, 0.261)" }} />
-      </h1>
-    </>
-  );
-}

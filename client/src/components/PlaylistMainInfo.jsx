@@ -16,18 +16,3 @@ export function PlaylistMainInfo({ PlaylistName, description, img }) {
     </div>
   );
 }
-
-export function PlaylistMainInfoLoad() {
-  return (
-    <div className="mainInfo">
-      <div className="name-stat">
-        <p>
-          <Skeleton sx={{ bgcolor: "rgba(71, 164, 211, 0.261)", fontSize: "5rem" }} />
-        </p>
-        <ArtistFollowersCountLoad />
-        <FollowBtnLoad />
-      </div>
-      <ArtistProfilePicLoad />
-    </div>
-  );
-}
