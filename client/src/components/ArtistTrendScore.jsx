@@ -1,4 +1,3 @@
-import { Skeleton } from "@mui/material";
 import "../assets/styles/ArtistTrendScore.css";
 export function ArtistTrendScore(props) {
   return (
