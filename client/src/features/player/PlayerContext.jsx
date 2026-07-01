@@ -113,38 +113,18 @@ export const PlayerProvider = ({
   // — Track loading & navigation
   const loadTrack = useCallback(
     (trackUrl, trackDetails) => {
-      const internal = getInternalPlayer();
-
-      // Stop current track and reset state
-      internal?.stopVideo?.();
-      setPlaying(false);
+      // Just update React state, let react-player handle the media transitions internally.
+      // Manually calling internal player methods + setTimeout loses the mobile user-gesture token.
+      setUrl(trackUrl);
+      setTrackInfo(trackDetails);
+      setPlaying(true);
       setProgress(0);
       setDuration(0);
       setErrorMessage("");
-
-      // Optional: Set buffering true immediately so UI reflects loading start
       setIsBuffering(true);
-
-      setTimeout(() => {
-        const vid = extractVideoId(trackUrl);
-        const ip = getInternalPlayer();
-        if (vid && ip?.loadVideoById) {
-          // Load the new video
-          ip.loadVideoById(vid);
-          setUrl(trackUrl);
-          setTrackInfo(trackDetails);
-
-          setTimeout(() => {
-            setPlaying(true);
-            if (ip.playVideo) {
-              ip.playVideo();
-            }
-          }, 200);
-        }
-        setIsTransitioning(false);
-      }, 100);
+      setIsTransitioning(false);
     },
-    [extractVideoId, getInternalPlayer]
+    []
   );
 
   const prefetchNextTrack = useCallback(async () => {

@@ -1,278 +1,268 @@
 // client/src/components/Side.jsx
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Tooltip from "@mui/material/Tooltip";
-import { Link } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import HomeIcon from "@mui/icons-material/Home";
-import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
-import HeartIcon from "@mui/icons-material/Favorite";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import PersonIcon from "@mui/icons-material/Person";
-import AlbumIcon from "@mui/icons-material/Album";
-import LeftArrowIcon from "@mui/icons-material/ArrowBack";
-import RightArrowIcon from "@mui/icons-material/ArrowForward";
-import { useNavigate } from "react-router-dom";
+// Hamburger menu that opens a slide-in overlay drawer (pure CSS, no MUI permanent sidebar)
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "./Logo";
+import "../assets/styles/Side.css";
 
-const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
-export default function Sidebar() {
-  const [open, setOpen] = React.useState(false);
-  const drawerRef = React.useRef(null);
+export default function Side({ isAuth, isSpotifyConnected }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const drawerRef = useRef(null);
   const navigate = useNavigate();
 
-  // 1. Get Auth Token
   const authToken = window.localStorage.getItem("authToken");
 
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
+  const toggleDrawer = () => setIsOpen((prev) => !prev);
+  const closeDrawer = () => setIsOpen(false);
 
-  React.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
-        setOpen(false);
+  // Close drawer on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (drawerRef.current && !drawerRef.current.contains(e.target)) {
+        closeDrawer();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      // Prevent body scroll when drawer is open
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "";
     };
+  }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "Escape") closeDrawer();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
-  const handleLogoutClick = async (e) => {
-    const logoutConfirmed = window.confirm("Are you sure you want to logout?");
-    if (!logoutConfirmed) return;
-    e.preventDefault();
-    try {
-      window.localStorage.clear();
-      window.location.href = "/";
-      e.target.blur();
-    } catch (error) {
-      console.error(error);
-    }
+  const handleLogout = () => {
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    if (!confirmed) return;
+    window.localStorage.clear();
+    window.location.href = "/";
   };
 
-  // 2. Define Menu Items with Auth requirements and Alerts
   const menuItems = [
     {
-      text: "Go Back",
-      icon: <LeftArrowIcon />,
-      onClick: () => navigate(-1),
-      link: "#",
+      label: "Home",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </svg>
+      ),
+      to: "/",
+      public: true,
     },
+
     {
-      text: "Go Forward",
-      icon: <RightArrowIcon />,
-      onClick: () => navigate(1),
-      link: "#",
-    },
-    {
-      text: "Profile",
-      icon: <PersonIcon />,
-      onClick: () => setOpen(false),
-      link: "/profile",
+      label: "Profile",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+      ),
+      to: "/profile",
       authRequired: true,
       alertMsg: "Please sign up or login to view your Profile!",
     },
     {
-      text: "Home",
-      icon: <HomeIcon />,
-      onClick: () => setOpen(false),
-      link: "/",
-    },
-    {
-      text: "Liked Songs",
-      icon: <HeartIcon />,
-      onClick: () => setOpen(false),
-      link: "/liked-songs",
+      label: "Liked Songs",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      ),
+      to: "/liked-songs",
       authRequired: true,
       alertMsg: "Please sign up or login to access your Liked Songs!",
     },
-
-    {
-      text: "Playlists",
-      icon: <LibraryMusicIcon />,
-      onClick: () => setOpen(false),
-      link: "/#",
-      authRequired: true,
-      alertMsg: "Please sign up or login to access Playlists!",
-    },
-    {
-      text: "Albums",
-      icon: <AlbumIcon />,
-      onClick: () => setOpen(false),
-      link: "/#",
-      authRequired: true,
-      alertMsg: "Please sign up or login to save and view Albums!",
-    },
-
-    // {
-    //   text: "Listening History",
-    //   icon: <HistoryIcon />,
-    //   onClick: () => setOpen(false),
-    //   link: "/listening-history",
-    //   authRequired: true,
-    //   alertMsg: "Please sign up or login to view your Listening History!"
-    // },
-    {
-      text: "Logout",
-      icon: <ExitToAppIcon />,
-      onClick: handleLogoutClick,
-      visibleOnlyAuth: true, // Flag to show only when logged in
-    },
   ];
 
+  const handleAlert = (msg) => {
+    alert(msg || "Please login first!");
+    closeDrawer();
+  };
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <Drawer
-        ref={drawerRef}
-        variant="permanent"
-        open={open}
-        sx={{
-          "& .MuiPaper-root": {
-            backgroundColor: "rgba(4, 3, 40, 0.79)",
-            color: "white",
-          },
-        }}
+    <>
+      {/* Hamburger Trigger Button */}
+      <button
+        className="nav-hamburger"
+        onClick={toggleDrawer}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isOpen}
       >
-        <DrawerHeader>
-          <Tooltip title={open ? "Close Sidebar" : "Open Sidebar"} placement="right">
-            <IconButton
-              onClick={toggleDrawer}
-              sx={{
-                color: "white",
-                "&:focus, &:focus-visible": {
-                  outline: "none",
-                  boxShadow: "none",
-                },
-              }}
-            >
-              {open ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
-          </Tooltip>
-        </DrawerHeader>
-        <Divider sx={{ backgroundColor: "white" }} />
-        <List>
-          {menuItems.map((item) => {
-            // 3. Logic to hide items (Logout if no token)
-            if (item.visibleOnlyAuth && !authToken) return null;
+        {isOpen ? (
+          /* X icon */
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        ) : (
+          /* Hamburger icon */
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        )}
+      </button>
 
-            // 4. Logic to restrict access
-            const isRestricted = item.authRequired && !authToken;
+      {/* Portal the drawer to the body so it escapes the NavBar stacking context */}
+      {createPortal(
+        <>
+          {/* Backdrop */}
+          <div
+            className={`drawer-backdrop ${isOpen ? "drawer-backdrop--open" : ""}`}
+            onClick={closeDrawer}
+            aria-hidden="true"
+          />
 
-            const handleRestrictedClick = () => {
-              alert(item.alertMsg || "Please login first!");
-            };
+          {/* Slide Drawer */}
+          <aside
+            ref={drawerRef}
+            className={`side-drawer ${isOpen ? "side-drawer--open" : ""}`}
+            aria-label="Navigation menu"
+          >
+            {/* Drawer Header */}
+            <div className="drawer-header">
+              <Logo />
+              <button className="drawer-close-btn" onClick={closeDrawer} aria-label="Close menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
 
-            const ButtonContent = (
-              <Tooltip title={open ? "" : item.text} placement="right">
-                <ListItemButton
-                  // If restricted, use the alert handler, otherwise use the item's onClick
-                  onClick={isRestricted ? handleRestrictedClick : item.onClick}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    color: "white",
-                    "&:focus, &:focus-visible": {
-                      outline: "none",
-                      boxShadow: "none",
-                    },
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      justifyContent: "center",
-                      mr: open ? 3 : "auto",
-                      color: "white",
+            {/* Nav Links */}
+            <nav className="drawer-nav">
+              {menuItems.map((item) => {
+                const isRestricted = item.authRequired && !authToken;
+
+                if (isRestricted) {
+                  return (
+                    <button
+                      key={item.label}
+                      className="drawer-nav-item drawer-nav-item--restricted"
+                      onClick={() => handleAlert(item.alertMsg)}
+                    >
+                      <span className="drawer-nav-icon">{item.icon}</span>
+                      <span className="drawer-nav-label">{item.label}</span>
+                      <span className="drawer-nav-lock">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                        </svg>
+                      </span>
+                    </button>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    className="drawer-nav-item"
+                    onClick={closeDrawer}
+                  >
+                    <span className="drawer-nav-icon">{item.icon}</span>
+                    <span className="drawer-nav-label">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Auth section inside drawer (shown on mobile) */}
+            <div className="drawer-auth-section">
+              {!isAuth ? (
+                <>
+                  <p className="drawer-auth-label">Join the music</p>
+                  <div className="drawer-auth-buttons">
+                    <Link
+                      to="#"
+                      className="drawer-auth-btn drawer-auth-btn--login"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        closeDrawer();
+                        // trigger LoginBtn programmatically — use a custom event
+                        document.dispatchEvent(new CustomEvent("openLoginDialog"));
+                      }}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="#"
+                      className="drawer-auth-btn drawer-auth-btn--signup"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        closeDrawer();
+                        document.dispatchEvent(new CustomEvent("openSignupDialog"));
+                      }}
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                  <button
+                    className="drawer-spotify-btn"
+                    onClick={() => {
+                      closeDrawer();
+                      document.dispatchEvent(new CustomEvent("connectSpotify"));
                     }}
                   >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ opacity: open ? 1 : 0, color: "white" }}
-                  />
-                </ListItemButton>
-              </Tooltip>
-            );
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                    </svg>
+                    Connect Spotify
+                  </button>
+                </>
+              ) : !isSpotifyConnected ? (
+                <button
+                  className="drawer-spotify-btn"
+                  onClick={() => {
+                    closeDrawer();
+                    document.dispatchEvent(new CustomEvent("connectSpotify"));
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                  </svg>
+                  Connect Spotify
+                </button>
+              ) : (
+                <div className="drawer-spotify-connected">
+                  <svg viewBox="0 0 24 24" fill="#1db954" width="16" height="16">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                  </svg>
+                  <span>Spotify Connected</span>
+                </div>
+              )}
+            </div>
 
-            return (
-              <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-                {/* If the item has a link AND the user is allowed (auth present OR not required),
-                   we wrap in <Link>.
-                   Otherwise (restricted), we render just the button so clicking triggers the alert, not navigation.
-                */}
-                {item.link && !isRestricted ? (
-                  <Link to={item.link} style={{ textDecoration: "none", color: "inherit" }}>
-                    {ButtonContent}
-                  </Link>
-                ) : (
-                  ButtonContent
-                )}
-              </ListItem>
-            );
-          })}
-        </List>
-      </Drawer>
-    </Box>
+            {/* Logout button (only when logged in) */}
+            {authToken && (
+              <div className="drawer-footer">
+                <button className="drawer-logout-btn" onClick={handleLogout}>
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            )}
+          </aside>
+        </>,
+        document.body
+      )}
+    </>
   );
 }

@@ -75,7 +75,7 @@ export default function AlertDialog() {
 
   return (
     <div className="logout-btn-container">
-      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
+      <button id="logout-btn" className="logout-trigger-btn" onClick={handleClickOpen}>
         <i className="fa-solid fa-right-from-bracket" id="logout-icon"></i>
         &nbsp;Logout
       </button>

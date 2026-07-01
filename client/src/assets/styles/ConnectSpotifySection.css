@@ -1,17 +1,17 @@
 /* client/src/assets/styles/ConnectSpotifySection.css */
 .connect-spotify-section {
   position: relative;
-  width: 96%;
-  margin: 2rem auto;
-  background: linear-gradient(135deg, #0b4f25 0%, #191414 100%); /* Spotify Green to Black */
-  border-radius: 1rem;
-  padding: 2.5rem 3rem;
+  width: 100%;
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.12) 0%, rgba(14, 8, 25, 0.85) 100%);
+  border-radius: var(--radius-lg, 20px);
+  padding: 2rem 2.5rem;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(29, 185, 84, 0.2);
 }
 
 .connect-spotify-content {
@@ -25,18 +25,21 @@
 }
 
 .connect-spotify-text h2 {
-  font-size: 2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.75rem;
   font-weight: 800;
-  color: #fff;
-  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #f1eeff);
+  margin: 0 0 0.4rem 0;
 }
 
 .connect-spotify-text p {
-  font-size: 1rem;
-  color: #b3b3b3;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #a89ec4);
   margin: 0;
   max-width: 500px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .connect-spotify-cta-btn {

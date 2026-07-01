@@ -79,13 +79,84 @@ export function SectionCard({
 
   return (
     <div className="card-container">
-      {/* Removed onClick from main card div */}
-      <div className="card">
-        {/* Card Header */}
-        <div className="card-header">
-          <div className="card-menu">
-            <IconButton onClick={handleMenuClick} aria-label="more options" title="More options">
-              <i className="fa-solid fa-ellipsis-v" id="kebab-menu-icon"></i>
+      {/* 1. Image Wrapper (Aspect Ratio 1:1) */}
+      <div className="card-img-wrapper">
+        <Link to={navPath}>
+          <img
+            className="card-photo"
+            src={imgSrc}
+            alt={cardName}
+            loading="lazy"
+            draggable="true"
+            style={cardType === "artist" ? { borderRadius: "50%" } : {}}
+          />
+        </Link>
+
+        {/* Wave Overlay if Playing */}
+        {isPlayingThis && (
+          <div className="card-wave-overlay" title="Now Playing">
+            <div className="card-music-wave">
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Spotify Logo Overlay */}
+        {spotifyUrl && (
+          <a href={spotifyUrl} target="_blank" rel="noopener noreferrer" title="Open in Spotify" className="card-overlay-spotify">
+            <img src={spotifyLogo} alt="Spotify" />
+          </a>
+        )}
+
+        {/* Play Button Overlay (FAB style) */}
+        <div className="card-overlay-play">
+          <CardBtn
+            iconId={iconId}
+            logoClass={iconClass}
+            logoId={iconId}
+            cardId={cardId}
+            cardType={cardType}
+            setPlayerMeta={setPlayerMeta}
+            setTrackInfo={setTrackInfo}
+            cardName={cardName}
+            imgSrc={imgSrc}
+            artistNames={artistNames}
+          />
+        </div>
+
+        {/* Like Button Overlay (Top Right) */}
+        {isTrackCard && (
+          <div className="card-overlay-like" onClick={handleLikeClick} title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"}>
+            <i className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"} style={{ color: isLiked ? "#1db954" : "#fff", fontSize: "1.1rem" }}></i>
+          </div>
+        )}
+      </div>
+
+      {/* 2. Text Content */}
+      <div className="card-text-content">
+        <div className="card-title-row">
+          <Link to={navPath} className="card-title-link">
+            <p className="card-name" style={isPlayingThis ? { color: "#1db954" } : {}} title={cardName}>
+              {cardName}
+            </p>
+          </Link>
+        </div>
+
+        <div className="card-subtitle-row">
+          {cardType !== "playlist" && (
+            <p className="card-subtitle" title={cardStat}>
+              {albumType && <span className="tag">{albumType === "album" ? "Album • " : "Single • "}</span>}
+              {cardStat}
+            </p>
+          )}
+
+          {/* Kebab Menu */}
+          <div className="card-menu-wrapper">
+            <IconButton onClick={handleMenuClick} aria-label="more options" title="More options" size="small" sx={{ color: "var(--text-secondary)", padding: "2px" }}>
+              <i className="fa-solid fa-ellipsis-v" style={{ fontSize: "1rem" }}></i>
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -93,108 +164,15 @@ export function SectionCard({
               onClose={handleMenuClose}
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
+              PaperProps={{ sx: { bgcolor: "var(--bg-surface-2)", color: "#fff" } }}
             >
-              <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Share</MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Edit</MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Delete</MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Share</MenuItem>
             </Menu>
-          </div>
-          <div className="spotify-logo">
-            <a href={spotifyUrl} target="_blank" rel="noopener noreferrer" title="Open in Spotify">
-              <img src={spotifyLogo} alt="Spotify" style={{ width: "22px", height: "22px" }} />
-            </a>
-          </div>
-        </div>
-
-        {/* Card Details */}
-        <div className="card-details">
-          <div className="card-img" style={cardType === "artist" ? { borderRadius: "50%" } : {}}>
-            {/* 1. LINK ADDED TO IMAGE */}
-            <Link to={navPath}>
-              <img
-                className="card-photo"
-                src={imgSrc}
-                alt={cardName}
-                loading="lazy"
-                draggable="true"
-                style={cardType === "artist" ? { borderRadius: "50%" } : {}}
-              />
-            </Link>
-
-            {isPlayingThis && (
-              <div className="card-wave-overlay" title="Now Playing">
-                <div className="card-music-wave">
-                  <div className="bar"></div>
-                  <div className="bar"></div>
-                  <div className="bar"></div>
-                  <div className="bar"></div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="card-name-container">
-            {/* 2. LINK ADDED TO NAME */}
-            <Link to={navPath} style={{ textDecoration: "none", color: "inherit" }}>
-              <p
-                className="card-name"
-                style={isPlayingThis ? { color: "#1db954" } : {}}
-                title={cardName}
-              >
-                {cardName}
-              </p>
-            </Link>
-          </div>
-
-          {albumType && (
-            <span className="card-stat-3">
-              <p>{albumType === "album" ? "Album" : "Single"}</p>
-            </span>
-          )}
-          {followers && (
-            <span className="card-stat-3">
-              <p>{`${format(followers)} Followers`}</p>
-            </span>
-          )}
-
-          <div className="card-stat-row">
-            <div className="card-stat-container">
-              <p className="card-stat" title={cardStat}>
-                {cardStat}
-              </p>
-            </div>
-
-            {isTrackCard && (
-              <div
-                className="like-icon-section"
-                onClick={handleLikeClick}
-                title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"}
-              >
-                <i
-                  className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
-                  style={{
-                    color: isLiked ? "#fb064fff" : "#b3b3b3",
-                    fontSize: "1.1rem",
-                  }}
-                ></i>
-              </div>
-            )}
           </div>
         </div>
       </div>
-
-      <CardBtn
-        iconId={iconId}
-        logoClass={iconClass}
-        logoId={iconId}
-        cardId={cardId}
-        cardType={cardType}
-        setPlayerMeta={setPlayerMeta}
-        setTrackInfo={setTrackInfo}
-        cardName={cardName}
-        imgSrc={imgSrc}
-        artistNames={artistNames}
-      />
     </div>
   );
 }

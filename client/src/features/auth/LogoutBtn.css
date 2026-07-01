@@ -3,7 +3,7 @@
   align-items: center;
   width: 30%;
 }
-.log-in-out-btns {
+.logout-trigger-btn {
   margin-left: 2rem;
   height: 2.3rem;
   background: rgba(255, 255, 255, 0.1); /* Glass effect with a lighter touch */
@@ -25,7 +25,7 @@
 }
 
 /* Hover effect */
-.log-in-out-btns:hover {
+.logout-trigger-btn:hover {
   background-color: rgba(5, 101, 102, 0.5); /* Blueish tint on hover */
   border-radius: 50px;
   outline: none; /* Remove default outline */
@@ -35,14 +35,14 @@
 }
 
 /* Active state effect */
-.log-in-out-btns:active {
+.logout-trigger-btn:active {
   background-color: rgba(25, 25, 83, 0.8); /* Darker blue when active */
   color: white;
   transform: scale(0.98); /* Slight shrinking effect */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
 }
 @media (max-width: 768px) {
-  .log-in-out-btns {
+  .logout-trigger-btn {
     margin-left: 0;
     width: 30%;
     text-align: center;

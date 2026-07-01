@@ -32,8 +32,10 @@ export default function HeroSection({ data, isLoading }) {
 
   return (
     <div className="hero-container">
-      {/* Background with Blur */}
-      <div className="hero-background" style={{ backgroundImage: `url(${image})` }}></div>
+      {/* Dedicated clip wrapper — prevents blur from bleeding outside rounded container */}
+      <div className="hero-bg-clip">
+        <div className="hero-background" style={{ backgroundImage: `url(${image})` }}></div>
+      </div>
 
       <div className="hero-content">
         <div className="hero-image-wrapper">

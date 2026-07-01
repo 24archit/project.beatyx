@@ -1,129 +1,181 @@
+/* ============================================================
+   BEATYX — NavBar Styles (Mobile-First)
+   ============================================================ */
+
 .nav-bar {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
   position: fixed;
   top: 0;
   left: 0;
-  background: linear-gradient(to bottom, #080044, #00151ff6 80%, transparent 100%);
-  width: 100%;
+  right: 0;
+  height: var(--nav-height, 4rem);
   z-index: 1000;
-  padding-left: 1rem;
-  padding-top: 0.2rem;
-  padding-bottom: 0.3rem;
-  box-sizing: border-box;
-  gap: 0.5rem;
-  padding-right: 1rem;
+  padding: 0 1.25rem;
+  gap: 0.75rem;
+
+  /* Solid navbar */
+  background: var(--bg-surface-1, #0e0819);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
+/* --- Logo area (always left) --- */
+.nav-logo-area {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.75rem;
+}
+
+/* --- Search (grows in middle) --- */
+.nav-search-area {
+  flex: 1;
+  max-width: 480px;
+  min-width: 0;
+}
+
+/* --- Right area: auth buttons or hamburger --- */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Auth buttons on desktop */
 .auth-buttons {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
+  gap: 0.5rem;
 }
 
+/* Spotify Connected badge */
 .auth-status {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
 }
 
-.spotify-connected {
+.spotify-connected-badge {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  background: rgba(29, 185, 84, 0.1);
-  border: 1px solid #1db954;
-  border-radius: 20px;
-  padding: 0.3rem 0.8rem;
+  gap: 0.4rem;
+  background: var(--spotify-green-dim, rgba(29, 185, 84, 0.15));
+  border: 1px solid rgba(29, 185, 84, 0.35);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.85rem;
   color: #1db954;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.spotify-logo {
-  width: 16px;
-  height: 16px;
-  fill: #1db954;
-}
-
-.connected-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
-/* Adjustments for mobile and tablet screens */
-@media (max-width: 768px) {
-  .nav-bar {
-    flex-direction: column;
-    padding-left: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;
-    gap: 0.0001rem; /* Reduce gap on small screens */
-    margin-bottom: 1rem;
-  }
+.spotify-badge-icon {
+  width: 15px;
+  height: 15px;
+  fill: #1db954;
+  flex-shrink: 0;
+}
 
-  .nav-bar > * {
-    width: 100%;
-    text-align: center;
-  }
+/* --- Hamburger Button --- */
+.nav-hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--border-mid);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-hamburger:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--accent-border);
+  color: var(--accent-primary);
+}
+
+.nav-hamburger svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* ============================================================
+   DESKTOP (> 768px): show auth buttons, hide hamburger
+   ============================================================ */
+@media (min-width: 769px) {
+  /* Hamburger is now always visible */
 
   .auth-buttons {
-    margin-top: 0.6rem;
-    margin-left: 3rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    justify-self: space-evenly;
-    gap: 0.2rem;
+    display: flex;
   }
 
-  .auth-status {
-    margin-top: 0.6rem;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-left: 2rem;
-  }
-
-  .spotify-btn {
-    width: 100%; /* Ensure the Spotify button takes full width */
-  }
-
-  .spotify-connected {
-    padding: 0.25rem 0.6rem;
-    font-size: 0.4rem;
-  }
-
-  .spotify-logo {
-    width: 14px;
-    height: 14px;
+  .nav-search-area {
+    display: block;
   }
 }
 
-/* Adjustments for even smaller screens */
+/* ============================================================
+   MOBILE (<= 768px): hide auth buttons, show hamburger
+   ============================================================ */
+@media (max-width: 768px) {
+  .nav-bar {
+    padding: 0.75rem 1rem;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Hide desktop auth buttons — they live inside the drawer on mobile */
+  .auth-buttons,
+  .auth-status {
+    display: none;
+  }
+
+  /* Hamburger at top left (it lives inside nav-logo-area) */
+  .nav-hamburger {
+    display: flex;
+    position: absolute;
+    top: 0.75rem;
+    left: 1rem;
+    margin: 0;
+  }
+
+  .nav-right {
+    display: none;
+  }
+
+  /* Logo top center */
+  .nav-logo-area {
+    width: 100%;
+    height: 2.4rem; /* match hamburger height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  /* Search bar full width below */
+  .nav-search-area {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
 @media (max-width: 480px) {
   .nav-bar {
-    padding-left: 0.5rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    background: linear-gradient(to bottom, #080044, #00151ff6 80%);
+    padding: 0.75rem;
   }
-
-  .nav-bar > * {
-    font-size: 1.2rem; /* Adjust font size */
-  }
-
-  .auth-buttons {
-    gap: 0.5rem;
-  }
-  .auth-status {
-    margin-top: 0;
-  }
-  .spotify-connected {
-    padding: 0.1rem 0.5rem;
-    font-size: 0.7rem;
-  }
-
-  .spotify-logo {
-    width: 18px;
-    height: 18px;
+  .nav-hamburger {
+    left: 0.75rem;
   }
 }

@@ -22,8 +22,16 @@ const { connectToDb } = require("./utils/connectToDb");
 const session = require("express-session");
 const MongoStore = require("connect-mongo").default || require("connect-mongo");
 const corsOptions = {
-  origin: `${process.env.CLIENT_LINK}`,
+  origin: [
+    `${process.env.CLIENT_LINK}`,
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost",
+    "capacitor://localhost",
+    "http://10.112.92.110:5173"
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
 };
 app.use(morgan("combined"));
 app.use(helmet());

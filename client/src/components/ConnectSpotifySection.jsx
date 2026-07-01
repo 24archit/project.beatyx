@@ -16,20 +16,26 @@ export default function ConnectSpotifySection() {
       const response = await verifyAuth(authToken);
 
       if (response.isVerified) {
-        // Standard form submission logic you provided
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
-        form.target = "_self"; // Opens in same tab
+        const { Capacitor } = await import("@capacitor/core");
+        if (Capacitor.isNativePlatform()) {
+          const { Browser } = await import("@capacitor/browser");
+          const url = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify?authToken=${authToken}&appRedirect=beatyx://callback`;
+          await Browser.open({ url });
+        } else {
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
+          form.target = "_self"; // Opens in same tab
 
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "authToken";
-        input.value = authToken;
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "authToken";
+          input.value = authToken;
 
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+        }
       } else {
         alert("🎵 Please log in first to connect your Spotify account.");
       }

@@ -19,9 +19,8 @@ export default function SearchBar() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     navigate(`/search?q=${searchParams.query}&type=${searchParams.type}`, { replace: false });
-    const searchInput = document.getElementById("nav-input-bar");
-    if (searchInput) {
-      searchInput.blur();
+    if (document.activeElement) {
+      document.activeElement.blur();
     }
   };
 

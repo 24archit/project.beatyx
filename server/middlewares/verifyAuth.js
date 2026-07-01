@@ -6,7 +6,7 @@ const User = require("../models/user");
 const { getUserAccessToken } = require("../utils/getAccessToken");
 
 async function verifyAuth(req, res, next) {
-  const authToken = req.headers.authorization?.split(" ")[1] || req.body.authToken;
+  const authToken = req.headers.authorization?.split(" ")[1] || req.body.authToken || req.query.authToken;
 
   if (!authToken || authToken === "null" || authToken === "undefined") {
     return res.status(401).json({ message: "Token missing or invalid" });

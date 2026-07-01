@@ -1,24 +1,25 @@
+/* ============================================================
+   BEATYX — Section Name / Header Styles
+   ============================================================ */
+
 .section-name {
-  color: aliceblue;
-  font-family:
-    "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.09rem;
-  font-size: 1.5rem;
+  color: var(--text-primary, #f1eeff);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  padding-left: 1.1rem;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  background: linear-gradient(0.25turn, #5d76c86d, #4c060600, rgba(0, 0, 0, 0.015));
-  border-top-left-radius: 2rem;
-  border-bottom-left-radius: 2rem;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  border-radius: var(--radius-md, 14px);
 }
 
 .section-name li {
-  margin-bottom: 2px;
+  margin-bottom: 0;
   list-style: none;
 }
 
@@ -26,84 +27,64 @@
   cursor: default;
 }
 
+/* "More" / "See All" button */
 .more-btn-home {
-  font-size: 1rem;
-  height: 1.7rem; /* Increased height for better appearance */
-  width: 4.5rem; /* Slightly increased width */
-  border-radius: 20px; /* Softer rounded corners */
-  margin-left: 0.4rem;
-  display: flex;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 1.75rem;
+  padding: 0 0.85rem;
+  border-radius: var(--radius-full, 9999px);
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  color: #fff; /* Pure white for text */
-  background-color: rgba(96, 147, 163, 0.8); /* Light blue background */
+  color: var(--text-secondary, #a89ec4);
+  background: var(--glass-bg, rgba(255,255,255,0.05));
+  border: 1px solid var(--border-mid, rgba(255,255,255,0.12));
   outline: none;
-  border: none;
-  transition:
-    background-color 0.3s ease,
-    transform 0.3s ease; /* Added smooth transition for hover and active states */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 .more-btn-home:hover {
-  background-color: #87ebd4; /* Brighter light blue on hover */
-  color: rgb(14, 24, 137);
-  cursor: pointer;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Increased shadow on hover for effect */
-  transform: scale(1.05); /* Subtle zoom effect */
+  background: var(--accent-dim, rgba(168,85,247,0.15));
+  border-color: var(--accent-border, rgba(168,85,247,0.3));
+  color: var(--accent-glow, #c084fc);
+  transform: translateY(-1px);
 }
 
 .more-btn-home:active {
-  background-color: #4682b4; /* Darker blue on click */
-  transform: scale(0.95); /* Shrink slightly when clicked */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+  transform: scale(0.96);
 }
 
-/* Media Queries for Responsiveness */
-@media (max-width: 1200px) {
-  .section-name {
-    font-size: 1.3rem; /* Slightly smaller font for medium screens */
-    padding-left: 0.8rem; /* Reduced padding */
-    margin-top: 5rem;
-  }
-
-  .more-btn-home {
-    font-size: 0.9rem; /* Smaller font size for the button */
-    height: 1.5rem; /* Adjusted height */
-    width: 4rem; /* Adjusted width */
-  }
+/* Icon accent color in section heading */
+.section-name i,
+.section-name svg {
+  color: var(--accent-primary, #a855f7);
 }
 
+/* --- Responsive --- */
 @media (max-width: 768px) {
   .section-name {
-    font-size: 0.3rem; /* Smaller font for smaller screens */
-    padding-left: 0.5rem; /* Further reduced padding */
-    padding-top: 0.2rem; /* Adjusted padding */
-    padding-bottom: 0.2rem; /* Adjusted padding */
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
   }
-
   .more-btn-home {
-    font-size: 0.8rem; /* Even smaller font size */
-    height: 1.3rem; /* Further adjusted height */
-    width: 3.5rem; /* Further adjusted width */
-    margin-left: 0.2rem; /* Adjusted margin */
+    font-size: 0.7rem;
+    height: 1.5rem;
+    padding: 0 0.65rem;
   }
 }
 
 @media (max-width: 480px) {
   .section-name {
-    font-size: 1rem; /* Base font size for mobile */
-    padding-left: 0.3rem; /* Minimal padding */
+    font-size: 0.95rem;
   }
-  .section-name li {
-    font-size: 0.8rem; /* Base font size for mobile */
-    padding-left: 0.3rem; /* Minimal padding */
-  }
-
   .more-btn-home {
-    font-size: 0.5rem; /* Smallest font size for buttons */
-    height: 1rem; /* Minimal height */
-    width: 2rem; /* Minimal width */
-    margin-left: 0.1rem; /* Minimal margin */
+    font-size: 0.68rem;
+    height: 1.4rem;
+    padding: 0 0.55rem;
   }
 }

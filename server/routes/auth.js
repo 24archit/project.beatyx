@@ -102,11 +102,14 @@ router.get("/verifyauth", verifyAuth, async (req, res) => {
  * Initiates the Spotify connection process.
  * @route POST /api/connectSpotify
  */
-router.post("/api/connectSpotify", verifyAuth, (req, res) => {
+router.all("/api/connectSpotify", verifyAuth, (req, res) => {
   try {
     const state = crypto.randomBytes(16).toString("hex");
     req.session.email = req.user.user.email;
     req.session.oauthState = state;
+    if (req.query.appRedirect) {
+      req.session.appRedirect = req.query.appRedirect;
+    }
 
     const scope = [
       "user-read-private",
@@ -197,10 +200,12 @@ router.get("/callback", async (req, res) => {
       return res.status(404).send("User not found.");
     }
 
+    const redirectUrl = req.session.appRedirect || process.env.CLIENT_LINK;
     delete req.session.email;
     delete req.session.oauthState;
+    delete req.session.appRedirect;
 
-    res.redirect(process.env.CLIENT_LINK);
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error(
       "Error during Spotify callback:",

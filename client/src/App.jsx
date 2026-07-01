@@ -6,7 +6,6 @@ import { Routes, Route, BrowserRouter as Router, Outlet } from "react-router-dom
 
 // Components
 import NavBar from "./components/NavBar";
-import Side from "./components/Side";
 import Footer from "./components/Footer";
 import { Player, CurrentTrackButton, PlayerProvider } from "@/features/player";
 
@@ -21,6 +20,8 @@ import TrackPage from "./pages/TrackPage";
 import CategoryPage from "./pages/CategoryPage";
 import ProfilePage from "./pages/ProfilePage";
 import LikedSongsPage from "./pages/LikedSongsPage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 
 // Context
 
@@ -46,7 +47,6 @@ function Layout({ isAuth, playerMeta, trackInfo, isMobile, isSpotifyConnected })
       initialIsAuth={isAuth}
       initialIsSpotifyConnected={isSpotifyConnected}
     >
-      <Side />
       <NavBar />
       <div className="content">
         <main>
@@ -76,6 +76,29 @@ function App() {
       }
     };
     verifyToken();
+
+    // Listen for deep links (e.g. from Spotify auth callback)
+    const setupListener = async () => {
+      try {
+        const { Capacitor } = await import("@capacitor/core");
+        if (Capacitor.isNativePlatform()) {
+          const { App: CapApp } = await import("@capacitor/app");
+          const { Browser } = await import("@capacitor/browser");
+          CapApp.addListener('appUrlOpen', (data) => {
+            if (data.url.includes('beatyx://callback')) {
+              Browser.close();
+              window.location.reload(); // Reload to fetch updated connection status
+            }
+          });
+        }
+        if (Capacitor.isNativePlatform()) {
+          // TODO: Native audio implementation will go here
+        }
+      } catch (e) {
+        console.error("Capacitor setup failed:", e);
+      }
+    };
+    setupListener();
   }, []);
 
   useEffect(() => {
@@ -152,6 +175,11 @@ function App() {
               />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
+            
+            {/* Auth Pages (Outside Layout for clean full-screen view) */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>

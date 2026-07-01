@@ -1,69 +1,72 @@
+/* ============================================================
+   BEATYX — Category Pills
+   ============================================================ */
+
 .category-pills-wrapper {
   position: relative;
-  width: 96%;
-  margin: 0.5rem auto 0.5rem auto;
+  width: 100%;
+  margin: 0.25rem 0 0.5rem 0;
 }
 
 .category-pills-container {
   display: flex;
-  gap: 0.8rem;
+  gap: 0.6rem;
   overflow-x: auto;
-  padding: 1rem 0.2rem;
-  scrollbar-width: none; /* Firefox */
+  padding: 0.75rem 0.25rem;
+  scrollbar-width: none;
   scroll-behavior: smooth;
 }
 
 .category-pills-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .category-pill {
-  /* Glassy Background */
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e0e0e0;
+  background: var(--glass-bg, rgba(255,255,255,0.05));
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+  color: var(--text-secondary, #a89ec4);
   display: inline-block;
-  padding: 0.6rem 1.4rem;
-  border-radius: 2rem;
-  font-size: 0.9rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-full, 9999px);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  backdrop-filter: blur(5px);
+  letter-spacing: 0.01em;
 }
 
 .category-pill:hover {
-  /* Blue Theme Active State */
-  background: #2979ff;
-  border-color: #2979ff;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(41, 121, 255, 0.4);
+  background: var(--accent-dim, rgba(168,85,247,0.15));
+  border-color: var(--accent-border, rgba(168,85,247,0.3));
+  color: var(--accent-glow, #c084fc);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
 }
 
-/* Fade effect to show there's more to scroll */
-.category-fade-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 50px;
-  background: linear-gradient(90deg, transparent, rgba(10, 15, 30, 0.9));
-  pointer-events: none;
-}
 .category-pill-link {
   text-decoration: none;
   display: inline-block;
 }
+
+/* Fade right edge to indicate more content */
+.category-fade-right {
+  position: absolute;
+  top: 0; right: 0;
+  height: 100%;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, var(--bg-base, #07000f));
+  pointer-events: none;
+}
+
 @media (max-width: 768px) {
   .category-pills-wrapper {
     width: 100%;
-    padding-left: 1rem;
-    padding-top: 1.2rem;
+    padding-left: 0;
   }
   .category-pill {
-    padding: 0.5rem 1.2rem;
-    font-size: 0.85rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.78rem;
   }
 }

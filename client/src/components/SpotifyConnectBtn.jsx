@@ -1,5 +1,7 @@
 import "../assets/styles/SpotifyConnectBtn.css";
 import { verifyAuth } from "@/features/auth/authService";
+import { useEffect } from "react";
+
 export function SpotifyConnectBtn() {
   const handleClickOpen = async () => {
     try {
@@ -13,17 +15,24 @@ export function SpotifyConnectBtn() {
       const response = await verifyAuth(authToken);
 
       if (response.isVerified) {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
-        form.target = "_self";
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "authToken";
-        input.value = authToken;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+        const { Capacitor } = await import("@capacitor/core");
+        if (Capacitor.isNativePlatform()) {
+          const { Browser } = await import("@capacitor/browser");
+          const url = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify?authToken=${authToken}&appRedirect=beatyx://callback`;
+          await Browser.open({ url });
+        } else {
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = `${import.meta.env.VITE_SERVER_LINK}/auth/api/connectSpotify`;
+          form.target = "_self";
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "authToken";
+          input.value = authToken;
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+        }
       } else {
         alert(
           "🎵 You're just one step away! Log in or sign up to connect your Spotify and start the vibe."
@@ -35,10 +44,16 @@ export function SpotifyConnectBtn() {
       window.open("/");
     }
   };
+
+  // Listen for custom event from hamburger drawer
+  useEffect(() => {
+    document.addEventListener("connectSpotify", handleClickOpen);
+    return () => document.removeEventListener("connectSpotify", handleClickOpen);
+  }, []);
   return (
     <div className="spotify-connect-btn-container">
-      <button id="logout-btn" className="log-in-out-btns" onClick={handleClickOpen}>
-        <i className="fa-solid fa-link" style={{ marginRight: "5px" }}></i>
+      <button className="spotify-trigger-btn" onClick={handleClickOpen}>
+        <i className="fa-solid fa-link" style={{ marginRight: "0.2rem" }}></i>
         Connect With Spotify
       </button>
     </div>

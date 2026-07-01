@@ -1,5 +1,6 @@
+/* App.css — Body base styles */
 body {
-  background-color: #000000;
+  background-color: var(--bg-base, #07000f);
   -webkit-user-select: none;
   user-select: none;
   margin: 0;

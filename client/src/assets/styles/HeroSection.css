@@ -1,29 +1,45 @@
-/* client/src/assets/styles/HeroSection.css */
+/* ============================================================
+   BEATYX — HeroSection Styles
+   ============================================================ */
+
 .hero-container {
   position: relative;
-  width: 96%;
-  margin: 1rem auto 2rem auto;
-  height: 350px;
-  border-radius: 1rem;
+  width: 98%;
+  margin: 0.5rem auto 1.5rem auto;
+  height: 320px;
+  border-radius: var(--radius-lg, 20px);
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  /* contain:paint is the most reliable way to clip filter:blur() children */
+  contain: paint;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Dedicated clipping wrapper for the blurred background.
+   This nested overflow:hidden is the cross-browser fix for
+   filter:blur() bleeding outside a rounded border-radius parent. */
+.hero-bg-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 1;
 }
 
 .hero-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: -20px;
   background-size: cover;
   background-position: center;
-  /* Darker blur for better text contrast on blue theme */
-  filter: blur(50px) brightness(0.5);
-  z-index: 1;
-  transform: scale(1.1);
+  filter: blur(45px) brightness(0.4);
+  /* No need for scale() since inset:-20px already gives buffer for blur edges */
+  border-radius: inherit;
 }
 
 .hero-content {
@@ -32,28 +48,30 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 3rem;
+  padding: 2rem 2.5rem;
   width: 100%;
-  gap: 2.5rem;
-  /* Blue-tinted dark gradient */
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(10, 25, 47, 0.6) 100%);
+  gap: 2rem;
+  background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(7, 0, 15, 0.65) 100%);
 }
 
 .hero-image-wrapper {
   flex-shrink: 0;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-  border-radius: 0.8rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-md, 14px);
   transition: transform 0.3s ease;
   overflow: hidden;
+  border: 1px solid var(--accent-border, rgba(168, 85, 247, 0.2));
 }
 
 .hero-image-wrapper:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .hero-img {
-  width: 260px;
-  height: 260px;
+  width: 230px;
+  height: 230px;
   object-fit: cover;
   display: block;
 }
@@ -63,27 +81,27 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 650px;
+  max-width: 600px;
 }
 
 .hero-label {
-  font-size: 0.85rem;
-  letter-spacing: 2px;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  /* BLUE THEME UPDATE */
-  color: #2979ff;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 0 10px rgba(41, 121, 255, 0.3);
+  color: var(--accent-primary, #a855f7);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .hero-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  margin: 0 0 1rem 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
   line-height: 1.1;
-  letter-spacing: -1px;
-  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -91,9 +109,10 @@
 }
 
 .hero-description {
-  font-size: 1.1rem;
-  color: #e0e6ed; /* Cool gray for better readability on blue */
-  margin-bottom: 2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--text-secondary, #a89ec4);
+  margin-bottom: 1.5rem;
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -105,92 +124,99 @@
 
 .hero-buttons {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
 .hero-play-btn {
-  /* BLUE THEME UPDATE */
-  background-color: #2979ff;
+  background: linear-gradient(135deg, var(--accent-primary, #a855f7), var(--accent-secondary, #6366f1));
   color: white;
-  padding: 14px 38px;
-  border-radius: 2rem;
+  padding: 12px 32px;
+  border-radius: var(--radius-full, 9999px);
   text-decoration: none;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.6rem;
   transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 4px 15px rgba(41, 121, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);
   border: none;
   cursor: pointer;
+  letter-spacing: 0.01em;
 }
 
 .hero-play-btn:hover {
-  background-color: #448aff; /* Lighter Blue */
+  filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(41, 121, 255, 0.5);
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.5);
 }
 
-/* --- RESPONSIVE DESIGN --- */
+.hero-play-btn:active {
+  transform: scale(0.97);
+}
 
-/* Tablet & Smaller Laptops */
+/* --- Responsive --- */
 @media (max-width: 1024px) {
   .hero-container {
     height: auto;
-    min-height: 320px;
+    min-height: 280px;
   }
+
   .hero-content {
-    padding: 2rem;
+    padding: 1.75rem;
   }
+
   .hero-img {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
   }
+
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 }
 
-/* Mobile Devices */
 @media (max-width: 768px) {
   .hero-container {
     flex-direction: column;
     height: auto;
-    margin: 1rem 0.5rem; /* Less margin on mobile */
-    width: auto;
+    margin: 0.5rem 0;
+    width: 100%;
+    border-radius: var(--radius-md, 14px);
   }
 
   .hero-content {
     flex-direction: column;
     text-align: center;
-    padding: 2rem 1.5rem;
-    /* Gradient direction change for vertical stack */
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(10, 25, 47, 0.9) 100%);
+    padding: 1.5rem 1.25rem;
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.55) 0%,
+        rgba(7, 0, 15, 0.92) 100%);
+    gap: 1.25rem;
   }
 
   .hero-image-wrapper {
-    margin-bottom: 1rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   }
 
   .hero-img {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
   }
 
   .hero-details {
-    align-items: center; /* Center align text flex items */
+    align-items: center;
   }
 
   .hero-title {
-    font-size: 2rem; /* Smaller font for mobile */
-    margin-bottom: 0.8rem;
+    font-size: 1.7rem;
+    margin-bottom: 0.5rem;
   }
 
   .hero-description {
-    font-size: 0.95rem;
-    margin: 0 auto 1.5rem auto;
+    font-size: 0.9rem;
+    margin: 0 auto 1.25rem auto;
     -webkit-line-clamp: 3;
     max-width: 100%;
   }
@@ -201,18 +227,18 @@
   }
 
   .hero-play-btn {
-    padding: 12px 24px; /* Slightly smaller buttons */
-    font-size: 0.9rem;
+    padding: 11px 22px;
+    font-size: 0.85rem;
   }
 }
 
-/* Very Small Screens (e.g. iPhone SE) */
 @media (max-width: 380px) {
   .hero-img {
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
   }
+
   .hero-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 }

@@ -1,40 +1,57 @@
 /* client/src/assets/styles/CardBtn.css */
 
 .play-btn {
-  height: 2rem;
-  width: 100%;
-  background: linear-gradient(135deg, #1e8fff8a, #07e2c15c);
-  color: #00ffaa;
-  padding: 0.8rem;
-  border-bottom-left-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--accent-primary, #1db954);
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  transition: background-color 0.08s ease-out;
+  font-size: 1.2rem;
   border: none;
   cursor: pointer;
+  box-shadow: 0 8px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0;
+}
+
+.play-btn i {
+  margin-left: 4px; /* visually center the play icon */
+}
+
+.play-btn i.fa-pause {
+  margin-left: 0; /* pause icon is already centered */
 }
 
 .play-btn:hover {
-  background: linear-gradient(rgba(89, 18, 196, 0.888), rgba(16, 16, 134, 0.61));
-  color: #a4a8c6;
-  font-weight: bold;
+  background-color: #1ed760; /* slightly brighter on hover */
+  transform: scale(1.05);
+  box-shadow: 0 12px 12px rgba(0,0,0,0.4);
 }
 
-/* NEW: Active Playing State */
+.play-btn:active {
+  transform: scale(0.95);
+  background-color: #1aa34a;
+}
+
+/* Active Playing State (Optional different style) */
 .play-btn.playing-active {
-  background: linear-gradient(
-    rgba(89, 18, 196, 0.888),
-    rgba(16, 16, 134, 0.61)
-  ); /* Spotify Green */
-  color: white;
-  font-weight: bold;
+  background-color: var(--accent-primary, #1db954);
+  color: #000;
 }
 
 .play-btn:focus {
   outline: none;
   border: none;
-  box-shadow: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
 }

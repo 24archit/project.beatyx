@@ -1,6 +1,9 @@
 #artist-name {
-  color: rgb(207, 237, 242);
-  font-size: clamp(1rem, 5vw, 3rem); /* Responsive text size */
+  color: var(--text-primary, #f1eeff);
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   overflow-wrap: break-word;
   overflow: auto;
   text-align: center;
@@ -14,8 +17,10 @@
   justify-content: center;
   width: 100%;
   min-height: 15rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
+  background: var(--glass-bg, rgba(255,255,255,0.04));
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-md, 14px);
+  border: 1px solid var(--border-subtle);
   padding: 1rem;
   flex-wrap: wrap;
   gap: 1.5rem;

@@ -1,38 +1,34 @@
+/* Logo.css */
 .logo {
-  display: block;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  padding: 6px;
-  transition: none !important;
+  padding: 4px;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+.logo:hover {
+  opacity: 0.85;
 }
 
 .logo-symbol img {
-  width: 200px; /* Adjust the size as per the logo image dimensions */
+  width: 130px;
   height: auto;
   display: block;
+  object-fit: contain;
 }
+
 @media (max-width: 768px) {
   .logo-symbol img {
-    width: 150px; /* Adjusted size for smaller screens */
+    width: 115px;
   }
   .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px; /* Reduced padding for smaller screens */
+    padding: 2px;
   }
-  .logo-symbol {
-    margin-left: 0.5rem; /* Adjusted margin for smaller screens */
-  }
-  .logo-text {
-    font-size: 1.2rem; /* Slightly smaller font size for smaller screens */
-  }
-  .logo-text span {
-    font-size: 0.8rem; /* Smaller text for smaller screens */
-  }
-  .logo-text span:nth-child(2) {
-    font-size: 0.7rem; /* Even smaller text for smaller screens */
-  }
-  .logo-text span:nth-child(3) {
-    font-size: 0.6rem; /* Smallest text for smaller screens */
+}
+
+@media (max-width: 400px) {
+  .logo-symbol img {
+    width: 105px;
   }
 }

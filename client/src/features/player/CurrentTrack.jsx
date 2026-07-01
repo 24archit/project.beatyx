@@ -1,4 +1,4 @@
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import ReactPlayer from "react-player/youtube";
 import prettyMilliseconds from "pretty-ms";
 import TrackLogo from "/Track-Logo.webp";
@@ -64,9 +64,31 @@ const CurrentTrackButton = () => {
   const totalTime = Math.round(duration) || 0;
 
   const toggleDrawer = (e) => {
-    setIsDrawerOpen(!isDrawerOpen);
-    removeFocus(e);
+    if (e) removeFocus(e);
+    
+    if (!isDrawerOpen) {
+      window.history.pushState({ drawer: "open" }, "");
+      setIsDrawerOpen(true);
+    } else {
+      if (window.history.state?.drawer === "open") {
+        window.history.back();
+      } else {
+        setIsDrawerOpen(false);
+      }
+    }
   };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isDrawerOpen) {
+        setIsDrawerOpen(false);
+      }
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isDrawerOpen]);
 
   // Enhanced handlers with focus removal
   const handlePlayPauseClick = (e) => {
@@ -101,44 +123,73 @@ const CurrentTrackButton = () => {
   return (
     <>
       {/* Hidden ReactPlayer */}
-      <Suspense fallback={null}>
-        {url && (
-          <ReactPlayer
-            key={url}
-            ref={playerRef}
-            url={url}
-            playing={playing}
-            volume={volume}
-            width="0"
-            height="0"
-            pip
-            config={{
-              youtube: {
-                playerVars: {
-                  autoplay: 1,
-                  controls: 0,
-                  modestbranding: 1,
-                  origin: window.location.origin,
-                  disableRemotePlayback: 1,
+      <div style={{ position: "fixed", bottom: 0, right: 0, width: "10px", height: "10px", zIndex: -10, pointerEvents: "none", overflow: "hidden", opacity: 0.01 }}>
+        <Suspense fallback={null}>
+          {url && (
+            <ReactPlayer
+              ref={playerRef}
+              url={url}
+              playing={playing}
+              volume={volume}
+              width="100%"
+              height="100%"
+              pip={true}
+              playsinline={true}
+              config={{
+                youtube: {
+                  playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    modestbranding: 1,
+                    origin: window.location.origin,
+                    disableRemotePlayback: 1,
+                    playsinline: 1,
+                    background: 1,
+                  },
                 },
-              },
-            }}
-            onReady={handleReady}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onDuration={handleDuration}
-            onEnded={handleEnded}
-            onError={handleError}
-            onProgress={handleProgress}
-            onBuffer={handleBuffer}
-            onBufferEnd={handleBufferEnd}
-          />
-        )}
-      </Suspense>
+              }}
+              onReady={handleReady}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onDuration={handleDuration}
+              onEnded={handleEnded}
+              onError={handleError}
+              onProgress={handleProgress}
+              onBuffer={handleBuffer}
+              onBufferEnd={handleBufferEnd}
+            />
+          )}
+        </Suspense>
+      </div>
 
-      {/* Floating FAB */}
-      <div className={`ctb-fab ${playing ? "ctb-playing" : ""}`} onClick={toggleDrawer}>
-        <MusicNoteIcon sx={{ fontSize: 30, color: "white" }} />
+      {/* Floating Mini Player */}
+      <div className="ctb-mini-player" onClick={toggleDrawer}>
+        <div className="ctb-mini-left">
+          <img src={trackInfo.imgSrc || TrackLogo} alt="cover" className="ctb-mini-art" />
+          <div className="ctb-mini-info">
+            <div className="ctb-mini-title">{trackInfo.trackName || "No track selected"}</div>
+            <div className="ctb-mini-artist">
+              {trackInfo.artistNames && trackInfo.artistNames.length > 0
+                ? trackInfo.artistNames.map((item) => item?.name || item).join(", ")
+                : "Unknown Artists"}
+            </div>
+          </div>
+        </div>
+        <div className="ctb-mini-right">
+           <button 
+             className="ctb-mini-play-btn" 
+             onClick={(e) => { 
+               e.stopPropagation(); 
+               handlePlayPauseClick(e); 
+             }}
+           >
+              {isBuffering ? (
+                <div className="spinner-ring" style={{ width: 14, height: 14, borderWidth: 2, borderColor: "rgba(0,0,0,0.2)", borderTopColor: "#000" }}></div>
+              ) : (
+                <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}></i>
+              )}
+           </button>
+        </div>
       </div>
 
       {/* Full Screen Drawer */}
@@ -165,7 +216,7 @@ const CurrentTrackButton = () => {
             <h1 className="track-title">{trackInfo.trackName || "No track selected"}</h1>
             <p className="artist-title">
               {trackInfo.artistNames && trackInfo.artistNames.length > 0
-                ? trackInfo.artistNames.map((item) => item.name).join(", ")
+                ? trackInfo.artistNames.map((item) => item?.name || item).join(", ")
                 : "Unknown Artists"}
             </p>
           </div>
@@ -182,6 +233,7 @@ const CurrentTrackButton = () => {
               onChange={handleSeekChange}
               disabled={!url}
               aria-label="Seek"
+              style={{ "--progress": `${(isNaN(progress) ? 0 : progress) * 100}%` }}
             />
             <div className="time-display">
               <span>{formatTime(currentTime)}</span>
@@ -258,7 +310,7 @@ const CurrentTrackButton = () => {
       </div>
 
       {/* Backdrop */}
-      {isDrawerOpen && <div className="drawer-backdrop" onClick={toggleDrawer}></div>}
+      {isDrawerOpen && <div className="ctb-drawer-backdrop" onClick={toggleDrawer}></div>}
 
       {/* Error Message */}
       {errorMessage && (

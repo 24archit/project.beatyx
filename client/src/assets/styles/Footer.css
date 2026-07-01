@@ -1,101 +1,142 @@
+/* ============================================================
+   BEATYX — Footer Styles
+   ============================================================ */
+
 .footer {
-  background-color: #000; /* Black background */
-  color: #808080; /* Grey text */
-  padding: 40px 20px;
-  font-family: "Arial", sans-serif;
+  background: var(--bg-surface-1, #0e0819);
+  color: var(--text-secondary, #a89ec4);
+  padding: 3rem 2rem 0 2rem;
+  font-family: 'Inter', sans-serif;
+  border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
   text-align: left;
 }
 
-.footer-section h2,
-.footer-section h3 {
-  color: #fff;
-  margin-bottom: 10px;
+.footer-section h2 {
+  color: var(--text-primary, #f1eeff);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-secondary, #6366f1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.footer-section p,
+.footer-section h3 {
+  color: var(--text-primary, #f1eeff);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  opacity: 0.8;
+}
+
+.footer-section p {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
 .footer-section ul {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 14px;
+  font-size: 0.85rem;
   line-height: 1.6;
 }
 
 .footer-section ul li {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .footer-section ul li a {
-  color: #808080;
+  color: var(--text-secondary, #a89ec4);
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.2s ease;
+  font-size: 0.85rem;
 }
 
 .footer-section ul li a:hover {
-  color: #fff; /* White on hover */
-}
-
-.footer-section .social-media {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.footer-section .social-media a {
-  color: #808080;
-  font-size: 18px;
-  transition: color 0.3s;
-}
-
-.footer-section .social-media a:hover {
-  color: #fff; /* White on hover */
+  color: var(--accent-glow, #c084fc);
 }
 
 .footer-section ul {
-  margin-top: 10px;
-  padding-left: 20px;
+  margin-top: 0;
+  padding-left: 0;
 }
 
-.footer-bottom {
-  border-top: 1px solid #404040;
-  margin-top: 30px;
-  padding-top: 15px;
-  text-align: center;
-  font-size: 12px;
-  color: #606060;
-  padding-bottom: 4rem;
+/* Social icons */
+.footer-section .social-media {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
 }
+
+.footer-section .social-media a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--glass-bg, rgba(255,255,255,0.05));
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.footer-section .social-media a:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+/* Footer milestones */
+.footer-section strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 2.5rem;
+  padding: 1.25rem 0 5rem 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted, #5c5278);
+  letter-spacing: 0.02em;
+}
+
+/* --- Responsive --- */
 @media (max-width: 768px) {
+  .footer {
+    padding: 2rem 1.25rem 0 1.25rem;
+  }
   .footer-container {
-    grid-template-columns: 1fr; /* Stack sections on smaller screens */
-    margin-left: 3rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-left: 0;
   }
   .footer-section {
-    text-align: center; /* Center text on smaller screens */
+    text-align: left;
   }
-  .footer-section h2,
-  .footer-section h3 {
-    text-align: center; /* Center headings on smaller screens */
-  }
-  .footer-section ul {
-    padding-left: 0; /* Remove padding for better alignment */
-  }
-  .footer-section .social-media {
-    justify-content: center; /* Center social media icons */
-  }
-  .footer-bottom {
-    text-align: center; /* Center footer text */
-  }
-  .footer {
-    padding: 20px 10px; /* Reduce padding on smaller screens */
-    font-size: 14px; /* Adjust font size for readability */
+}
+
+@media (max-width: 480px) {
+  .footer-container {
+    grid-template-columns: 1fr;
   }
 }
