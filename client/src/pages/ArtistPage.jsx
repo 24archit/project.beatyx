@@ -20,7 +20,6 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
     queryKey: ["artist", id],
     queryFn: () => getArtistInfo(id),
     staleTime: 15 * 60 * 1000,
-    retry: 3,
   });
 
   const artistData = data?.ArtistData;

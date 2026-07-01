@@ -23,7 +23,6 @@ export default function AlbumPage({ setPlayerMeta, setTrackInfo }) {
     queryKey: ["album", id],
     queryFn: () => getAlbumInfo(id),
     staleTime: 15 * 60 * 1000, // Cache for 5 minutes
-    retry: 3, // Retry up to 3 times automatically
   });
   const albumImage = albumData?.images?.[0]?.url || defaultProfilePic;
   const artistName = albumData?.artists?.[0]?.name || "Unknown Artist";

@@ -1,4 +1,5 @@
-import axios from "axios";
+import { apiClient } from "../../services/api";
+
 import { getAuthHeaders } from "@/services/api";
 
 /**
@@ -14,7 +15,7 @@ export async function getSignUp(FormData) {
       data: FormData,
       headers: getAuthHeaders(),
     };
-    const response = await axios(config);
+    const response = await apiClient(config);
     if (response.status == 201) {
       window.localStorage.setItem("authToken", response.data.authToken);
       // Return an object indicating success
@@ -42,7 +43,7 @@ export async function getLoggedIn(FormData) {
       data: FormData,
       headers: getAuthHeaders(),
     };
-    const response = await axios(config);
+    const response = await apiClient(config);
     if (response.status == 200) {
       window.localStorage.setItem("authToken", response.data.authToken);
       return response.data;
@@ -73,7 +74,7 @@ export async function verifyAuth() {
         Authorization: `Bearer ${token}`, // Manually set header here to be safe
       },
     };
-    const response = await axios(config);
+    const response = await apiClient(config);
     return response.data;
   } catch (error) {
     console.error("Auth check failed:", error.response?.data || error.message);

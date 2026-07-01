@@ -44,7 +44,7 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
       }
     },
     enabled: !!query && !!type,
-    retry: 2,
+
     staleTime: 15 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

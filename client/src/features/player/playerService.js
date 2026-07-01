@@ -1,4 +1,5 @@
-import axios from "axios";
+import { apiClient } from "../../services/api";
+
 import { getAuthHeaders } from "@/services/api";
 
 /**
@@ -16,7 +17,7 @@ export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueI
     if (isPlaylist) {
       await updatePlayerQueue(index, currPlaylistId, queueId);
     }
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getAudioLink/${id}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -37,7 +38,7 @@ export async function getAudioLink(id, isPlaylist, index, currPlaylistId, queueI
  */
 export async function updatePlayerQueue(index, currPlaylistId, queueId) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/updatePlayerQueue`,
       method: "PUT",
       data: {
@@ -62,7 +63,7 @@ export async function updatePlayerQueue(index, currPlaylistId, queueId) {
  */
 export async function getNextAudioLink(queueId) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getNextAudioLink/${queueId}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -81,7 +82,7 @@ export async function getNextAudioLink(queueId) {
  */
 export async function getPreviousAudioLink(queueId) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/player/api/getPreviousAudioLink/${queueId}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -100,7 +101,7 @@ export async function getPreviousAudioLink(queueId) {
  */
 export async function getTrackInfo(id) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/track/api/getTrackInfo/${id}`,
       method: "GET",
       headers: getAuthHeaders(),

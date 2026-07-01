@@ -29,7 +29,14 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false, // Let our standard apiClient handle retries
+      refetchOnWindowFocus: false, // Prevent massive request spikes when switching tabs
+    },
+  },
+});
 
 function Layout({ isAuth, playerMeta, trackInfo, isMobile, isSpotifyConnected }) {
   return (

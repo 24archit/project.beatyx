@@ -11,34 +11,11 @@ const { getCurrentUserInfo } = require("../utils/spotifyApis");
 const verifyAuth = require("../middlewares/verifyAuth");
 
 /**
- * Handles user signup with reCAPTCHA verification.
+ * Handles user signup.
  * @route POST /auth/signup
  */
 router.post("/signup", async (req, res) => {
-  const { displayName, email, password, recaptchaToken } = req.body;
-
-  if (!recaptchaToken) {
-    return res.status(400).json({ success: false, error: "reCAPTCHA token is missing." });
-  }
-  try {
-    const secret = process.env.RECAPTCHA_SECRET_KEY;
-    const params = new URLSearchParams();
-    params.append("secret", secret);
-    params.append("response", recaptchaToken);
-
-    const verificationRes = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      params
-    );
-
-    const { success, score } = verificationRes.data;
-    if (!success || score < 0.5) {
-      return res.status(401).json({ success: false, error: "reCAPTCHA failed. Are you a bot?" });
-    }
-  } catch (err) {
-    console.error("reCAPTCHA error:", err);
-    return res.status(500).json({ success: false, error: "reCAPTCHA verification error." });
-  }
+  const { displayName, email, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -79,33 +56,11 @@ router.post("/signup", async (req, res) => {
 });
 
 /**
- * Handles user login with reCAPTCHA verification.
+ * Handles user login.
  * @route POST /auth/login
  */
 router.post("/login", async (req, res) => {
-  const { email, password, recaptchaToken } = req.body;
-  if (!recaptchaToken) {
-    return res.status(400).json({ success: false, error: "reCAPTCHA token is missing." });
-  }
-  try {
-    const secret = process.env.RECAPTCHA_SECRET_KEY;
-    const params = new URLSearchParams();
-    params.append("secret", secret);
-    params.append("response", recaptchaToken);
-
-    const verificationRes = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      params
-    );
-
-    const { success, score } = verificationRes.data;
-    if (!success || score < 0.5) {
-      return res.status(401).json({ success: false, error: "reCAPTCHA failed. Are you a bot?" });
-    }
-  } catch (err) {
-    console.error("reCAPTCHA error:", err);
-    return res.status(500).json({ success: false, error: "reCAPTCHA verification error." });
-  }
+  const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });

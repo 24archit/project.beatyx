@@ -32,7 +32,7 @@ export default function TrackPage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["track", id],
     queryFn: () => getTrackInfo(id),
-    retry: 2, // Retry twice on failure
+
     staleTime: 15 * 60 * 1000, // Cache data for 15 minutes
     refetchOnWindowFocus: false, // Don't refetch when switching tabs
   });

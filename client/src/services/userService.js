@@ -1,5 +1,6 @@
+import { apiClient } from "./api";
 import { getAuthHeaders } from "./api";
-import axios from "axios"; // Using axios directly for now until we migrate everything to apiClient
+// Using axios directly for now until we migrate everything to apiClient
 
 /**
  * Fetches the current user's profile.
@@ -8,7 +9,7 @@ import axios from "axios"; // Using axios directly for now until we migrate ever
  */
 export async function getUserProfile() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/user/profile`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -27,7 +28,7 @@ export async function getUserProfile() {
  */
 export async function addLikedSong(trackId) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/user/addLikedSong`,
       method: "PUT",
       data: { trackId },
@@ -47,7 +48,7 @@ export async function addLikedSong(trackId) {
  */
 export async function removeLikedSong(trackId) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/user/removeLikedSong`,
       method: "PUT",
       data: { trackId },
@@ -68,7 +69,7 @@ export async function getLikedSongs() {
   if (!token) return { likedSongs: [], items: [] };
 
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/user/getLikedSongs`,
       method: "GET",
       headers: getAuthHeaders(),

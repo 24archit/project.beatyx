@@ -102,7 +102,6 @@ export default function SignUpBtn() {
     email: "",
     password: "",
     confirmPassword: "",
-    recaptchaToken: "",
   });
   const handleClickOpen = () => {
     setOpen(true);
@@ -124,23 +123,8 @@ export default function SignUpBtn() {
       return;
     }
 
-    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
-      setAlertMessage("Security check failed. Please refresh.");
-      return;
-    }
-
     try {
-      const token = await new Promise((resolve) => {
-        window.grecaptcha.enterprise.ready(async () => {
-          const t = await window.grecaptcha.enterprise.execute(
-            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: "SIGNUP" }
-          );
-          resolve(t);
-        });
-      });
-
-      const submissionData = { ...formData, recaptchaToken: token };
+      const submissionData = { ...formData };
 
       // Store the result object returned from the updated API function
       const result = await getSignUp(submissionData);

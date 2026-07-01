@@ -23,7 +23,7 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
   } = useQuery({
     queryKey: ["playlist", id],
     queryFn: () => getPlaylistInfo(id).then((res) => res.playlist),
-    retry: 2, // Retries 2 more times after first failure
+
     staleTime: 15 * 60 * 1000, // Cache data for 5 minutes
     refetchOnWindowFocus: false, // Don't refetch when window is focused
   });

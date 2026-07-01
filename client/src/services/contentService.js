@@ -1,4 +1,5 @@
-import axios from "axios";
+import { apiClient } from "./api";
+
 import { getAuthHeaders } from "./api";
 
 /**
@@ -8,7 +9,7 @@ import { getAuthHeaders } from "./api";
  */
 export async function getTopTracksIndia() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTopTracksIndia`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -26,7 +27,7 @@ export async function getTopTracksIndia() {
  */
 export async function getTopTracksGlobal() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTopTracksGlobal`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -45,7 +46,7 @@ export async function getTopTracksGlobal() {
  */
 export async function getArtistInfo(id) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/artist/api/getArtistInfo/${id}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -65,7 +66,7 @@ export async function getArtistInfo(id) {
  */
 export async function getSearchResult(query, type) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/search/api/getSearchResult?q=${query}&type=${type}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -84,7 +85,7 @@ export async function getSearchResult(query, type) {
  */
 export async function getPlaylistInfo(id) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/playlist/api/getPlaylistInfo/${id}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -104,7 +105,7 @@ export async function getPlaylistInfo(id) {
  */
 export async function getAlbumInfo(id) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/album/api/getAlbumInfo/${id}`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -122,7 +123,7 @@ export async function getAlbumInfo(id) {
  */
 export async function getNewReleases() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getNewReleases`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -140,7 +141,7 @@ export async function getNewReleases() {
  */
 export async function getFeaturedPlaylists() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getFeaturedPlaylists`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -157,7 +158,7 @@ export async function getFeaturedPlaylists() {
  */
 export async function getCategories() {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getCategories`,
       method: "GET",
       headers: getAuthHeaders(),
@@ -177,7 +178,7 @@ export async function getCategories() {
  */
 export async function getCategoryPlaylists(id) {
   try {
-    const response = await axios({
+    const response = await apiClient({
       url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getCategoryPlaylists/${id}`,
       method: "GET",
       headers: getAuthHeaders(),

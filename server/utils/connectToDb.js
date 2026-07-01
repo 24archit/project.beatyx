@@ -21,6 +21,8 @@ async function connectToDb() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     isConnected = true;
+    // eslint-disable-next-line no-console
+    console.log("MongoDB connected successfully! ⚡");
   } catch (error) {
     console.error("Database connection error:", error);
   }

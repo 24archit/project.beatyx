@@ -28,33 +28,51 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
     enabled: !!isSpotifyConnected,
   });
 
-  const { data: featuredPlaylists, isLoading: loadingFeatured } = useQuery({
+  const {
+    data: featuredPlaylists,
+    isLoading: loadingFeatured,
+    isError: errorFeatured,
+  } = useQuery({
     queryKey: ["featuredPlaylists"],
     queryFn: getFeaturedPlaylists,
     select: (data) => data.playlists.items,
     staleTime: 45 * 60 * 1000,
   });
 
-  const { data: newReleases, isLoading: loadingNewReleases } = useQuery({
+  const {
+    data: newReleases,
+    isLoading: loadingNewReleases,
+    isError: errorNewReleases,
+  } = useQuery({
     queryKey: ["newReleases"],
     queryFn: getNewReleases,
     select: (data) => data.albums.items,
     staleTime: 30 * 60 * 1000,
   });
 
-  const { data: topIndiaTracks, isLoading: loadingIndia } = useQuery({
+  const {
+    data: topIndiaTracks,
+    isLoading: loadingIndia,
+    isError: errorIndia,
+  } = useQuery({
     queryKey: ["topIndiaTracks"],
     queryFn: getTopTracksIndia,
     select: (data) => data.tracks.items,
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: topGlobalTracks, isLoading: loadingGlobal } = useQuery({
+  const {
+    data: topGlobalTracks,
+    isLoading: loadingGlobal,
+    isError: errorGlobal,
+  } = useQuery({
     queryKey: ["topGlobalTracks"],
     queryFn: getTopTracksGlobal,
     select: (data) => data.tracks.items,
     staleTime: 15 * 60 * 1000,
   });
+
+  const isServerDown = errorFeatured || errorNewReleases || errorIndia || errorGlobal;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -66,76 +84,94 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
         <title>Beatyx - Play Music</title>
       </Helmet>
 
-      {/* 1. Category Pills */}
-      <CategoryPills categories={categories} />
-
-      {/* 2. Hero Section */}
-      <HeroSection data={featuredPlaylists} isLoading={loadingFeatured} />
-
-      {/* 3. CONNECT SPOTIFY BANNER (Only if NOT connected) */}
-      {!isSpotifyConnected && <ConnectSpotifySection />}
-      {/* 5. Featured Playlists */}
-      {!loadingFeatured && featuredPlaylists ? (
-        <HomePagePlaylistSection
-          iconClass="fa-solid fa-star"
-          iconId="trend-icon"
-          name=" Featured Playlists"
-          data={featuredPlaylists.slice(1)}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-          sectionName="featured-playlists"
-        />
+      {isServerDown ? (
+        <div
+          style={{ textAlign: "center", paddingTop: "5rem", paddingBottom: "5rem", color: "white" }}
+        >
+          <i
+            className="fa-solid fa-server"
+            style={{ fontSize: "4rem", marginBottom: "1.5rem", color: "#A4A3C2" }}
+          ></i>
+          <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Server Under Maintenance</h2>
+          <p style={{ color: "#A4A3C2", fontSize: "1.2rem", maxWidth: "500px", margin: "0 auto" }}>
+            We are currently experiencing technical difficulties or performing scheduled
+            maintenance. Please try again later.
+          </p>
+        </div>
       ) : (
-        <SectionLoading name=" Featured Playlists" />
-      )}
+        <>
+          {/* 1. Category Pills */}
+          <CategoryPills categories={categories} />
 
-      {/* 6. Top Tracks India */}
-      {!loadingIndia && topIndiaTracks ? (
-        <HomePagePlaylistTrackSection
-          iconClass="fa-solid fa-arrow-trend-up"
-          iconId="trend-icon"
-          name=" Top Tracks: India"
-          data={topIndiaTracks.slice(0, 10)}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-          showMore={topIndiaTracks.length > 45}
-          sectionName="top-tracks-india"
-          routeTo="/playlist/37i9dQZEVXbLZ52XmnySJg"
-        />
-      ) : (
-        <SectionLoading name=" Top Tracks: India" />
-      )}
+          {/* 2. Hero Section */}
+          <HeroSection data={featuredPlaylists} isLoading={loadingFeatured} />
 
-      {/* 7. Global Tracks */}
-      {!loadingGlobal && topGlobalTracks ? (
-        <HomePagePlaylistTrackSection
-          iconClass="fa-solid fa-globe"
-          iconId="trend-icon"
-          name=" Global Top Tracks"
-          data={topGlobalTracks.slice(0, 10)}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-          showMore={topGlobalTracks.length > 45}
-          sectionName="top-tracks-global"
-          routeTo="/playlist/37i9dQZEVXbMDoHDwVN2tF"
-        />
-      ) : (
-        <SectionLoading name=" Global Top Tracks" />
-      )}
-      {/* 4. New Releases */}
-      {!loadingNewReleases && newReleases ? (
-        <HomePageAlbumSection
-          iconClass="fa-solid fa-compact-disc"
-          iconId="trend-icon"
-          name=" New Releases"
-          data={newReleases}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-          sectionName="new-releases"
-          button={false}
-        />
-      ) : (
-        <SectionLoading name=" New Releases" />
+          {/* 3. CONNECT SPOTIFY BANNER (Only if NOT connected) */}
+          {!isSpotifyConnected && <ConnectSpotifySection />}
+          {/* 5. Featured Playlists */}
+          {!loadingFeatured && featuredPlaylists ? (
+            <HomePagePlaylistSection
+              iconClass="fa-solid fa-star"
+              iconId="trend-icon"
+              name=" Featured Playlists"
+              data={featuredPlaylists.slice(1)}
+              setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
+              sectionName="featured-playlists"
+            />
+          ) : (
+            <SectionLoading name=" Featured Playlists" />
+          )}
+
+          {/* 6. Top Tracks India */}
+          {!loadingIndia && topIndiaTracks ? (
+            <HomePagePlaylistTrackSection
+              iconClass="fa-solid fa-arrow-trend-up"
+              iconId="trend-icon"
+              name=" Top Tracks: India"
+              data={topIndiaTracks.slice(0, 10)}
+              setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
+              showMore={topIndiaTracks.length > 45}
+              sectionName="top-tracks-india"
+              routeTo="/playlist/37i9dQZEVXbLZ52XmnySJg"
+            />
+          ) : (
+            <SectionLoading name=" Top Tracks: India" />
+          )}
+
+          {/* 7. Global Tracks */}
+          {!loadingGlobal && topGlobalTracks ? (
+            <HomePagePlaylistTrackSection
+              iconClass="fa-solid fa-globe"
+              iconId="trend-icon"
+              name=" Global Top Tracks"
+              data={topGlobalTracks.slice(0, 10)}
+              setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
+              showMore={topGlobalTracks.length > 45}
+              sectionName="top-tracks-global"
+              routeTo="/playlist/37i9dQZEVXbMDoHDwVN2tF"
+            />
+          ) : (
+            <SectionLoading name=" Global Top Tracks" />
+          )}
+          {/* 4. New Releases */}
+          {!loadingNewReleases && newReleases ? (
+            <HomePageAlbumSection
+              iconClass="fa-solid fa-compact-disc"
+              iconId="trend-icon"
+              name=" New Releases"
+              data={newReleases}
+              setPlayerMeta={setPlayerMeta}
+              setTrackInfo={setTrackInfo}
+              sectionName="new-releases"
+              button={false}
+            />
+          ) : (
+            <SectionLoading name=" New Releases" />
+          )}
+        </>
       )}
     </>
   );

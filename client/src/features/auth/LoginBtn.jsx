@@ -114,26 +114,8 @@ export default function LoginBtn() {
       return;
     }
 
-    // CHECK IF ENTERPRISE SCRIPT LOADED
-    if (!window.grecaptcha || !window.grecaptcha.enterprise) {
-      setAlertMessage("Security check failed to load. Please refresh.");
-      return;
-    }
-
     try {
-      // EXECUTE ENTERPRISE TOKEN GENERATION
-      // Wrap in Promise because .ready() callback is async
-      const token = await new Promise((resolve) => {
-        window.grecaptcha.enterprise.ready(async () => {
-          const t = await window.grecaptcha.enterprise.execute(
-            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-            { action: "LOGIN" }
-          );
-          resolve(t);
-        });
-      });
-
-      const formData = { email, password, recaptchaToken: token };
+      const formData = { email, password };
       const response = await getLoggedIn(formData);
 
       if (response.status === 401 || response.status === 402) {

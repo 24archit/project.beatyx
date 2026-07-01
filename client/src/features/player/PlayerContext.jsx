@@ -45,6 +45,9 @@ export const PlayerProvider = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [skipNextEnded, setSkipNextEnded] = useState(false);
 
+  const prefetchedForUrlRef = useRef(null);
+  const consecutiveErrorsRef = useRef(0);
+
   // — References
   const playerRef = useRef(null);
   const volumeSliderRef = useRef(null);
@@ -147,6 +150,7 @@ export const PlayerProvider = ({
   const prefetchNextTrack = useCallback(async () => {
     if (isPrefetching || isTransitioning) return;
     setIsPrefetching(true);
+    prefetchedForUrlRef.current = url;
     const q = getQueueId();
     if (!q) {
       setIsPrefetching(false);
@@ -161,7 +165,7 @@ export const PlayerProvider = ({
       console.error("prefetchNextTrack error", e);
     }
     setIsPrefetching(false);
-  }, [getQueueId, isPrefetching, isTransitioning]);
+  }, [getQueueId, isPrefetching, isTransitioning, url]);
 
   const playNextTrack = useCallback(async () => {
     if (isTransitioning) return;
@@ -305,18 +309,24 @@ export const PlayerProvider = ({
       if (duration > 0 && pd.played !== undefined) {
         throttledSetProgress(pd.played);
       }
-      if (pd.played >= 0.85 && !nextTrackInfo && !isPrefetching && !isTransitioning) {
+      if (
+        pd.played >= 0.85 &&
+        !nextTrackInfo &&
+        !isPrefetching &&
+        !isTransitioning &&
+        prefetchedForUrlRef.current !== url
+      ) {
         prefetchNextTrack();
       }
     },
     [
       duration,
-
       nextTrackInfo,
       isPrefetching,
       isTransitioning,
       prefetchNextTrack,
       throttledSetProgress,
+      url,
     ]
   );
 
@@ -336,6 +346,7 @@ export const PlayerProvider = ({
   const handlePlay = useCallback(() => {
     setPlaying(true);
     setIsBuffering(false);
+    consecutiveErrorsRef.current = 0; // Reset error circuit breaker on successful play
   }, []);
 
   const handlePause = useCallback(() => {
@@ -354,7 +365,14 @@ export const PlayerProvider = ({
       setProgress(0);
       setDuration(0);
       setSkipNextEnded(true);
-      alert("Error playing this track due to copyright. Skipping.");
+
+      consecutiveErrorsRef.current += 1;
+      if (consecutiveErrorsRef.current > 3) {
+        alert("Too many playback errors. Playback paused.");
+        return; // Circuit breaker: don't automatically skip anymore
+      }
+
+      alert("Error playing this track. Skipping.");
       if (!isTransitioning) await playNextTrack();
     },
     [isTransitioning, playNextTrack]
