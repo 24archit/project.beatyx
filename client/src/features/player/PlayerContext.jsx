@@ -30,7 +30,7 @@ export const PlayerProvider = ({
   // — Core playback state
   const [url, setUrl] = useState(() => {
     try {
-      const stored = window.sessionStorage.getItem("beatyx_track_url");
+      const stored = window.localStorage.getItem("beatyx_track_url");
       return stored && stored !== "undefined" ? stored : initialUrl;
     } catch {
       return initialUrl;
@@ -40,7 +40,7 @@ export const PlayerProvider = ({
   const [trackInfo, setTrackInfo] = useState(() => {
     let parsed = null;
     try {
-      const stored = window.sessionStorage.getItem("beatyx_track_info");
+      const stored = window.localStorage.getItem("beatyx_track_info");
       parsed = stored && stored !== "undefined" ? JSON.parse(stored) : null;
     } catch {
       // Ignore initial parse error
@@ -48,8 +48,8 @@ export const PlayerProvider = ({
 
     if (!parsed || Object.keys(parsed).length === 0) {
       try {
-        const storedQueue = window.sessionStorage.getItem("beatyx_queue");
-        const storedIndex = window.sessionStorage.getItem("beatyx_queue_index");
+        const storedQueue = window.localStorage.getItem("beatyx_queue");
+        const storedIndex = window.localStorage.getItem("beatyx_queue_index");
         if (storedQueue && storedIndex !== null && storedIndex !== "undefined") {
           const parsedQueue = JSON.parse(storedQueue);
           const parsedIndex = parseInt(storedIndex, 10);
@@ -69,14 +69,25 @@ export const PlayerProvider = ({
   const [duration, setDuration] = useState(0);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
+
+  // Load recently played tracks from localStorage
+  const [recentlyPlayed, setRecentlyPlayed] = useState(() => {
+    try {
+      const stored = localStorage.getItem("recentlyPlayed");
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
   const [errorMessage, setErrorMessage] = useState("");
   const [isAuth, setIsAuth] = useState(initialIsAuth);
   const [isSpotifyConnected, setIsSpotifyConnected] = useState(initialIsSpotifyConnected);
 
-  // — Queue state (Session Persisted)
+  // — Queue state (Local Persisted)
   const [queue, setQueue] = useState(() => {
     try {
-      const stored = window.sessionStorage.getItem("beatyx_queue");
+      const stored = window.localStorage.getItem("beatyx_queue");
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -84,31 +95,31 @@ export const PlayerProvider = ({
   });
   const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
     try {
-      const stored = window.sessionStorage.getItem("beatyx_queue_index");
+      const stored = window.localStorage.getItem("beatyx_queue_index");
       return stored ? parseInt(stored, 10) : -1;
     } catch {
       return -1;
     }
   });
 
-  // Sync queue state to sessionStorage
+  // Sync queue state to localStorage
   useEffect(() => {
-    window.sessionStorage.setItem("beatyx_queue", JSON.stringify(queue));
+    window.localStorage.setItem("beatyx_queue", JSON.stringify(queue));
   }, [queue]);
 
   useEffect(() => {
-    window.sessionStorage.setItem("beatyx_queue_index", currentTrackIndex.toString());
+    window.localStorage.setItem("beatyx_queue_index", currentTrackIndex.toString());
   }, [currentTrackIndex]);
 
   useEffect(() => {
     if (url) {
-      window.sessionStorage.setItem("beatyx_track_url", url);
+      window.localStorage.setItem("beatyx_track_url", url);
     }
   }, [url]);
 
   useEffect(() => {
     if (trackInfo && Object.keys(trackInfo).length > 0) {
-      window.sessionStorage.setItem("beatyx_track_info", JSON.stringify(trackInfo));
+      window.localStorage.setItem("beatyx_track_info", JSON.stringify(trackInfo));
     }
   }, [trackInfo]);
 

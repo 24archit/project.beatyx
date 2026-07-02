@@ -24,4 +24,17 @@ router.get(
   })
 );
 
+router.get(
+  "/api/getArtistAlbums/:artistId",
+  setToken,
+  withTokenRetry(async (req, res) => {
+    const artistId = req.params.artistId;
+    const limit = req.query.limit || 8;
+    const offset = req.query.offset || 0;
+    const { getArtistAlbums } = require("../utils/spotifyApis");
+    const albums = await getArtistAlbums(artistId, limit, offset, req.session.accessToken);
+    res.json(albums);
+  })
+);
+
 module.exports = router;

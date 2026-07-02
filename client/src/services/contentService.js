@@ -38,6 +38,45 @@ export async function getTopTracksGlobal() {
   }
 }
 
+export async function getTrendingArtists() {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTrendingArtists`,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function getTrendingArtistsIndia() {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getTrendingArtistsIndia`,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function getUserTopItems() {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/home/api/getUserTopItems`,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 /**
  * Fetches artist information by ID.
  * @param {string} id - The Spotify Artist ID.
@@ -57,6 +96,19 @@ export async function getArtistInfo(id) {
   }
 }
 
+export async function getArtistAlbums(id, offset = 0) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/artist/api/getArtistAlbums/${id}?limit=12&offset=${offset}`,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching artist albums for id ${id}: ${error.message}`);
+  }
+}
+
 /**
  * Search for items on Spotify.
  * @param {string} query - The search query.
@@ -64,10 +116,11 @@ export async function getArtistInfo(id) {
  * @returns {Promise<Object>} Search results.
  * @throws {Error} If search fails.
  */
-export async function getSearchResult(query, type) {
+export async function getSearchResult(query, type, offset = 0) {
   try {
+    const limit = type === "track,artist,album,playlist,show,episode" ? 9 : 20;
     const response = await apiClient({
-      url: `${import.meta.env.VITE_SERVER_LINK}/search/api/getSearchResult?q=${query}&type=${type}`,
+      url: `${import.meta.env.VITE_SERVER_LINK}/search/api/getSearchResult?q=${query}&type=${type}&limit=${limit}&offset=${offset}`,
       method: "GET",
       headers: getAuthHeaders(),
     });
@@ -93,6 +146,19 @@ export async function getPlaylistInfo(id) {
     return response.data;
   } catch (error) {
     throw new Error(`Error fetching playlist data for id ${id}: ${error.message}`);
+  }
+}
+
+export async function getPlaylistTracks(id, offset = 0) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/playlist/api/getPlaylistTracks/${id}?limit=50&offset=${offset}`,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching playlist tracks for id ${id}: ${error.message}`);
   }
 }
 

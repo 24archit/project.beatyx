@@ -8,7 +8,8 @@ import spotifyLogo from "/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
 import { useSharedPlayer } from "@/features/player";
 import { addLikedSong, removeLikedSong } from "@/services/userService";
-import { Link } from "react-router-dom"; // Changed to Link for specific element wrapping
+import { Link } from "react-router-dom";
+import { LazyImage } from "./LazyImage.jsx";
 
 export function SectionCard({
   imgSrc = TrackLogo,
@@ -82,13 +83,15 @@ export function SectionCard({
       {/* 1. Image Wrapper (Aspect Ratio 1:1) */}
       <div className="card-img-wrapper">
         <Link to={navPath}>
-          <img
+          <LazyImage
             className="card-photo"
             src={imgSrc}
             alt={cardName}
-            loading="lazy"
-            draggable="true"
-            style={cardType === "artist" ? { borderRadius: "50%" } : {}}
+            style={
+              cardType === "artist"
+                ? { borderRadius: "50%", width: "100%", height: "100%" }
+                : { width: "100%", height: "100%" }
+            }
           />
         </Link>
 
@@ -106,7 +109,13 @@ export function SectionCard({
 
         {/* Spotify Logo Overlay */}
         {spotifyUrl && (
-          <a href={spotifyUrl} target="_blank" rel="noopener noreferrer" title="Open in Spotify" className="card-overlay-spotify">
+          <a
+            href={spotifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open in Spotify"
+            className="card-overlay-spotify"
+          >
             <img src={spotifyLogo} alt="Spotify" />
           </a>
         )}
@@ -129,8 +138,15 @@ export function SectionCard({
 
         {/* Like Button Overlay (Top Right) */}
         {isTrackCard && (
-          <div className="card-overlay-like" onClick={handleLikeClick} title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"}>
-            <i className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"} style={{ color: isLiked ? "#1db954" : "#fff", fontSize: "1.1rem" }}></i>
+          <div
+            className="card-overlay-like"
+            onClick={handleLikeClick}
+            title={isLiked ? "Remove from Liked Songs" : "Save to Liked Songs"}
+          >
+            <i
+              className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
+              style={{ color: isLiked ? "#1db954" : "#fff", fontSize: "1.1rem" }}
+            ></i>
           </div>
         )}
       </div>
@@ -139,7 +155,11 @@ export function SectionCard({
       <div className="card-text-content">
         <div className="card-title-row">
           <Link to={navPath} className="card-title-link">
-            <p className="card-name" style={isPlayingThis ? { color: "#1db954" } : {}} title={cardName}>
+            <p
+              className="card-name"
+              style={isPlayingThis ? { color: "#1db954" } : {}}
+              title={cardName}
+            >
               {cardName}
             </p>
           </Link>
@@ -148,14 +168,22 @@ export function SectionCard({
         <div className="card-subtitle-row">
           {cardType !== "playlist" && (
             <p className="card-subtitle" title={cardStat}>
-              {albumType && <span className="tag">{albumType === "album" ? "Album • " : "Single • "}</span>}
+              {albumType && (
+                <span className="tag">{albumType === "album" ? "Album • " : "Single • "}</span>
+              )}
               {cardStat}
             </p>
           )}
 
           {/* Kebab Menu */}
           <div className="card-menu-wrapper">
-            <IconButton onClick={handleMenuClick} aria-label="more options" title="More options" size="small" sx={{ color: "var(--text-secondary)", padding: "2px" }}>
+            <IconButton
+              onClick={handleMenuClick}
+              aria-label="more options"
+              title="More options"
+              size="small"
+              sx={{ color: "var(--text-secondary)", padding: "2px" }}
+            >
               <i className="fa-solid fa-ellipsis-v" style={{ fontSize: "1rem" }}></i>
             </IconButton>
             <Menu
@@ -166,9 +194,15 @@ export function SectionCard({
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               PaperProps={{ sx: { bgcolor: "var(--bg-surface-2)", color: "#fff" } }}
             >
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Edit</MenuItem>
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Delete</MenuItem>
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>Share</MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
+                Edit
+              </MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
+                Delete
+              </MenuItem>
+              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
+                Share
+              </MenuItem>
             </Menu>
           </div>
         </div>

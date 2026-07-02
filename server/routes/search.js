@@ -9,7 +9,9 @@ router.get(
   setToken,
   withTokenRetry(async (req, res) => {
     const { q, type } = req.query;
-    const data = await getSearchResult(q, type, req.session.accessToken);
+    const limit = req.query.limit || 9;
+    const offset = req.query.offset || 0;
+    const data = await getSearchResult(q, type, limit, offset, req.session.accessToken);
     res.send(data);
   })
 );

@@ -3,9 +3,7 @@ const axios = require("axios");
 // Ensure you have installed this package: npm install axios-retry
 const axiosRetry = require("axios-retry").default;
 
-const { getFreshTokens } = require("./getFreshTokens");
 const { getArtistShows } = require("./getArtistShows");
-const { getAccessToken } = require("./getAccessToken");
 
 // ==================================================================
 // 1. Axios Instance & Configuration
@@ -77,8 +75,8 @@ async function getArtistInfo(id, rightAccessToken) {
 }
 
 // Function to fetch search results
-async function getSearchResult(query, type, rightAccessToken) {
-  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=9`;
+async function getSearchResult(query, type, limit = 9, offset = 0, rightAccessToken) {
+  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=${limit}&offset=${offset}`;
   const { data } = await spotifyClient.get(url, {
     headers: {
       Authorization: `Bearer ${rightAccessToken}`,
@@ -91,6 +89,30 @@ async function getSearchResult(query, type, rightAccessToken) {
 // Function to fetch playlist details
 async function getPlaylist(id, rightAccessToken) {
   const url = `https://api.spotify.com/v1/playlists/${id}?market=IN&fields=name,description,public,external_urls.spotify,owner(display_name,id,type),images.url,tracks.items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`;
+  const { data } = await spotifyClient.get(url, {
+    headers: {
+      Authorization: `Bearer ${rightAccessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return data;
+}
+
+// Function to fetch more playlist tracks for infinite scroll
+async function getPlaylistTracks(id, limit = 50, offset = 0, rightAccessToken) {
+  const url = `https://api.spotify.com/v1/playlists/${id}/tracks?market=IN&limit=${limit}&offset=${offset}&fields=items(track(name,artists(name,id),external_urls.spotify,id,duration_ms,album(images.url)))`;
+  const { data } = await spotifyClient.get(url, {
+    headers: {
+      Authorization: `Bearer ${rightAccessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return data;
+}
+
+// Function to fetch artist albums with pagination
+async function getArtistAlbums(id, limit = 8, offset = 0, rightAccessToken) {
+  const url = `https://api.spotify.com/v1/artists/${id}/albums?include_groups=single%2Calbum%2Cappears_on%2Ccompilation&market=IN&limit=${limit}&offset=${offset}`;
   const { data } = await spotifyClient.get(url, {
     headers: {
       Authorization: `Bearer ${rightAccessToken}`,
@@ -300,6 +322,14 @@ async function getSeveralTracks(ids, rightAccessToken) {
   return data;
 }
 
+async function getSeveralArtists(ids, rightAccessToken) {
+  const url = `https://api.spotify.com/v1/artists?ids=${ids}`;
+  const { data } = await spotifyClient.get(url, {
+    headers: { Authorization: `Bearer ${rightAccessToken}` },
+  });
+  return data;
+}
+
 // Export all functions
 module.exports = {
   getTopTracksIndia,
@@ -307,6 +337,8 @@ module.exports = {
   getArtistInfo,
   getSearchResult,
   getPlaylist,
+  getPlaylistTracks,
+  getArtistAlbums,
   getAlbum,
   getCurrentUserInfo,
   getSeveralTracks,
@@ -323,4 +355,5 @@ module.exports = {
   getUserPlaylists,
   getUserSavedAlbums,
   getUserFollowedArtists,
+  getSeveralArtists,
 };

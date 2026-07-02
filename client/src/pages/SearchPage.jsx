@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getSearchResult } from "@/services/contentService";
 import SectionLoading from "../components/SectionLoading";
 import SearchPageTrackSection from "../components/SearchPageTrackSection";
@@ -9,7 +9,7 @@ import SearchPageArtistSection from "../components/SearchPageArtistSection";
 import SearchPageAlbumSection from "../components/SearchPageAlbumSection";
 import SearchPagePlaylistSection from "../components/SearchPagePlaylistSection";
 import { SectionNameLoad } from "../components/SectionName";
-import { SectionCardLoad } from "../components/SectionCard";
+import { SectionCard, SectionCardLoad } from "../components/SectionCard";
 
 export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
   const [searchParams] = useSearchParams();
@@ -18,17 +18,22 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const isAllSearch = type === "track,artist,album,playlist,show,episode";
+
   const {
-    data: searchResult,
+    data: infiniteSearchData,
     isLoading,
     isError,
     refetch,
-  } = useQuery({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["searchResult", query, type],
-    queryFn: async () => {
-      const data = await getSearchResult(query, type);
+    queryFn: async ({ pageParam = 0 }) => {
+      const data = await getSearchResult(query, type, pageParam);
 
-      if (type === "track,artist,album,playlist,show,episode") {
+      if (isAllSearch) {
         return {
           topResult: data.tracks?.items?.[0] ? [data.tracks.items[0]] : [],
           otherResult: data.tracks?.items?.slice(1) || [],
@@ -38,16 +43,64 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
         };
       } else {
         return {
-          topResult: data[`${type}s`]?.items?.[0] ? [data[`${type}s`].items[0]] : [],
-          otherResult: data[`${type}s`]?.items?.slice(1) || [],
+          topResult:
+            pageParam === 0 && data[`${type}s`]?.items?.[0] ? [data[`${type}s`].items[0]] : [],
+          otherResult:
+            pageParam === 0
+              ? data[`${type}s`]?.items?.slice(1) || []
+              : data[`${type}s`]?.items || [],
+          total: data[`${type}s`]?.total || 0,
         };
       }
     },
-    enabled: !!query && !!type,
+    getNextPageParam: (lastPage, allPages) => {
+      if (isAllSearch) return undefined; // No infinite scroll for "All" view
 
+      const currentCount = allPages.reduce(
+        (acc, page) => acc + page.topResult.length + page.otherResult.length,
+        0
+      );
+      if (currentCount >= lastPage.total) return undefined;
+      return allPages.length * 20; // 20 is the limit for specific searches
+    },
+    enabled: !!query && !!type,
     staleTime: 15 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
+  const searchResult = infiniteSearchData
+    ? {
+        topResult: infiniteSearchData.pages[0]?.topResult || [],
+        otherResult: infiniteSearchData.pages.flatMap((page) => page.otherResult) || [],
+        artistResult: infiniteSearchData.pages[0]?.artistResult || [],
+        albumResult: infiniteSearchData.pages[0]?.albumResult || [],
+        playlistResult: infiniteSearchData.pages[0]?.playlistResult || [],
+      }
+    : null;
+
+  const observerTarget = useRef(null);
+
+  useEffect(() => {
+    const currentTarget = observerTarget.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px 200px 0px" }
+    );
+
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) {
     return (
@@ -105,15 +158,43 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
         />
       )}
       {data.otherResult.length > 0 && (
-        <Component
-          iconClass="fa-brands fa-artstation"
-          iconId="artstation-icon"
-          name=" Other Related Results"
-          data={data.otherResult}
-          setPlayerMeta={setPlayerMeta}
-          setTrackInfo={setTrackInfo}
-        />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+            gap: "1.5rem",
+            padding: "1rem",
+          }}
+        >
+          {data.otherResult.map((item, index) => {
+            const imgSrc =
+              item.album?.images?.[0]?.url || item.images?.[0]?.url || "/Track-Logo.webp";
+            return (
+              <SectionCard
+                key={`${item.id}-${index}`}
+                imgSrc={imgSrc}
+                cardName={item.name}
+                cardStat={item.artists ? item.artists.map((a) => a.name).join(", ") : ""}
+                cardType={
+                  type === "artist"
+                    ? "artist"
+                    : type === "album"
+                      ? "album"
+                      : type === "playlist"
+                        ? "playlist"
+                        : "track"
+                }
+                cardId={item.id}
+                setPlayerMeta={setPlayerMeta}
+                setTrackInfo={setTrackInfo}
+              />
+            );
+          })}
+        </div>
       )}
+      <div ref={observerTarget} style={{ textAlign: "center", padding: "1rem", color: "#A4A3C2" }}>
+        {isFetchingNextPage && <p>Loading more results...</p>}
+      </div>
     </>
   );
 

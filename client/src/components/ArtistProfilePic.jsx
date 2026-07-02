@@ -1,9 +1,10 @@
 import "../assets/styles/ArtistProfilePic.css";
 import { Skeleton } from "@mui/material";
 import defaultProfilePic from "/profile-pic.webp";
+import { LazyImage } from "./LazyImage.jsx";
 
 export function ArtistProfilePic({ imgSrc = defaultProfilePic }) {
-  return <img src={imgSrc} alt="artist-profile-pic" id="artist-pic" loading="lazy" />;
+  return <LazyImage src={imgSrc} alt="artist-profile-pic" className="artist-pic-lazy" />;
 }
 
 export function ArtistProfilePicLoad() {

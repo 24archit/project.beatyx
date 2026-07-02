@@ -5,11 +5,12 @@ import { Helmet } from "react-helmet-async";
 import { ArtistMainInfo, ArtistMainInfoLoad } from "../components/ArtistMainInfo.jsx";
 import { ArtistTopTrackPart, ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart.jsx";
 import { SectionCard, SectionCardLoad } from "../components/SectionCard.jsx";
-import Carousel from "../components/Carousel.jsx";
 import UpcomingConcerts from "../components/UpcomingConcerts.jsx";
 import defaultProfilePic from "/profile-pic.webp";
+import { getArtistInfo, getArtistAlbums } from "@/services/contentService";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useRef } from "react";
 import { Skeleton } from "@mui/material";
-import { getArtistInfo } from "@/services/contentService";
 import "../assets/styles/ArtistPage.css";
 
 export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
@@ -22,10 +23,59 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
     staleTime: 15 * 60 * 1000,
   });
 
+  const {
+    data: infiniteAlbumsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["artistAlbums", id],
+    queryFn: ({ pageParam = 8 }) => getArtistAlbums(id, pageParam),
+    getNextPageParam: (lastPage, allPages) => {
+      const currentItems = lastPage?.items || [];
+      if (currentItems.length < 12) return undefined;
+      return 8 + allPages.length * 12;
+    },
+    enabled: !!data?.ArtistTopAlbums && data?.ArtistTopAlbums?.total > 8,
+    staleTime: 15 * 60 * 1000,
+  });
+
   const artistData = data?.ArtistData;
   const artistTopTracks = data?.ArtistTopTracks;
-  const artistAlbums = data?.ArtistTopAlbums;
+  const initialAlbums = data?.ArtistTopAlbums;
   const artistShows = data?.ArtistShows;
+
+  const allAlbums = initialAlbums
+    ? [...initialAlbums.items, ...(infiniteAlbumsData?.pages.flatMap((page) => page.items) || [])]
+    : [];
+
+  const observerTarget = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          hasNextPage &&
+          !isFetchingNextPage &&
+          selectedBtn === "albums"
+        ) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px 200px 0px" }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, selectedBtn]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
@@ -151,25 +201,19 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
             <ArtistTopTrackPartLoad />
           )
         ) : (
-          <div className="material">
-            <Carousel
-              showArrows={true}
-              showDots={true}
-              autoScroll={false}
-              responsive={{
-                mobile: 2,
-                tablet: 3,
-                medium: 4,
-                large: 5,
-                desktop: 6,
+          <div className="section">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                gap: "1.5rem",
+                padding: "1rem",
               }}
-              gap="1rem"
-              className="track-carousel"
             >
-              {artistAlbums ? (
-                artistAlbums.items.map((item, index) => (
+              {initialAlbums ? (
+                allAlbums.map((item, index) => (
                   <SectionCard
-                    key={index}
+                    key={`${item.id}-${index}`}
                     imgSrc={item.images[0]?.url || defaultProfilePic}
                     cardName={item.name}
                     cardStat={
@@ -201,7 +245,13 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
                   <SectionCardLoad />
                 </>
               )}
-            </Carousel>
+            </div>
+            <div
+              ref={observerTarget}
+              style={{ textAlign: "center", padding: "1rem", color: "#A4A3C2" }}
+            >
+              {isFetchingNextPage && <p>Loading more albums...</p>}
+            </div>
           </div>
         )}
       </div>

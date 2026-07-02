@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/services/userService";
 import { verifyAuth } from "@/features/auth/authService";
 import "../assets/styles/ProfilePage.css";
@@ -57,24 +58,28 @@ const ProfileSkeleton = () => (
 
 /* ─── Main Component ─────────────────────────────────────────── */
 const ProfilePage = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("beatyx");
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("beatyx");
+
+  const {
+    data,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: getUserProfile,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: (failureCount, err) => {
+      if (err?.response?.status === 401) return false;
+      return failureCount < 3;
+    },
+  });
 
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const response = await getUserProfile();
-        setData(response);
-      } catch (error) {
-        if (error.response?.status === 401) navigate("/");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProfile();
-  }, [navigate]);
+    if (error?.response?.status === 401) {
+      navigate("/");
+    }
+  }, [error, navigate]);
 
   if (loading) return <ProfileSkeleton />;
   if (!data) return null;
