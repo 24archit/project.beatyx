@@ -6,13 +6,19 @@ const User = require("../models/user");
 const { getUserAccessToken, getAccessToken } = require("../utils/getAccessToken");
 
 async function verifyAuth(req, res, next) {
+  let authToken;
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Authorization header missing or malformed" });
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    authToken = authHeader.split(" ")[1];
+  } else if (req.body && req.body.authToken) {
+    authToken = req.body.authToken;
+  } else if (req.query && req.query.authToken) {
+    authToken = req.query.authToken;
   }
-  const authToken = authHeader.split(" ")[1];
+
   if (!authToken || authToken === "null" || authToken === "undefined") {
-    return res.status(401).json({ message: "Token missing or invalid" });
+    return res.status(401).json({ message: "Authorization header missing or malformed" });
   }
 
   try {
