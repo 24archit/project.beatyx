@@ -194,58 +194,74 @@ export const PlayerProvider = ({
     setIsPrefetching(false);
   }, [queue, currentTrackIndex, isPrefetching, isTransitioning, url]);
 
-  const playNextTrack = useCallback(async () => {
-    if (isTransitioning || queue.length === 0) return;
-    setIsTransitioning(true);
+  const playNextTrack = useCallback(
+    async (isAutoAdvance = false) => {
+      if (isTransitioning || queue.length === 0) return;
+      setIsTransitioning(true);
 
-    while (isPrefetching) {
-      await new Promise((r) => setTimeout(r, 50));
-    }
-
-    let nextIndex = currentTrackIndex + 1;
-    if (nextIndex >= queue.length) nextIndex = 0; // Loop to start
-
-    let nextTrack = queue[nextIndex];
-    let attempts = 0;
-    const MAX_ATTEMPTS = queue.length; // Don't infinite loop forever if all tracks are broken
-
-    let nextUrl = nextTrackInfo?.audioLink?.url;
-    // If prefetched track doesn't match the expected next track, discard it
-    if (nextTrackInfo?.id !== nextTrack?.id) {
-      nextUrl = null;
-    }
-
-    while (!nextUrl && attempts < MAX_ATTEMPTS) {
-      try {
-        setLoadingTrackId(nextTrack.id);
-        const data = await getAudioLink(nextTrack.id);
-        if (data?.url) {
-          nextUrl = data.url;
-          break;
-        }
-      } catch (e) {
-        console.error(`playNextTrack fetch error (attempt ${attempts + 1})`, e);
+      while (isPrefetching) {
+        await new Promise((r) => setTimeout(r, 50));
       }
-      // Skip to the next track if fetch fails
-      attempts++;
-      if (attempts >= MAX_ATTEMPTS) break;
 
-      nextIndex++;
-      if (nextIndex >= queue.length) nextIndex = 0; // Loop to start
-      nextTrack = queue[nextIndex];
-    }
+      let nextIndex = currentTrackIndex + 1;
+      if (nextIndex >= queue.length) {
+        if (isAutoAdvance && queue.length === 1) {
+          setIsTransitioning(false);
+          setPlaying(false);
+          setProgress(0);
+          playerRef.current?.seekTo(0, "seconds");
 
-    if (nextUrl && nextTrack) {
-      setNextTrackInfo(null);
-      setCurrentTrackIndex(nextIndex);
-      loadTrack(nextUrl, nextTrack);
-    } else {
-      setIsTransitioning(false);
-      setPlaying(false);
-      setErrorMessage("No playable tracks found in the queue.");
-    }
-    setLoadingTrackId(null);
-  }, [queue, currentTrackIndex, isPrefetching, isTransitioning, nextTrackInfo, loadTrack]);
+          // Explicitly force YouTube iframe to pause, as seeking often triggers auto-play
+          const ip = playerRef.current?.getInternalPlayer?.();
+          ip?.pauseVideo?.();
+          return;
+        }
+        nextIndex = 0; // Loop to start on manual skip OR if queue has > 1 items
+      }
+
+      let nextTrack = queue[nextIndex];
+      let attempts = 0;
+      const MAX_ATTEMPTS = queue.length; // Don't infinite loop forever if all tracks are broken
+
+      let nextUrl = nextTrackInfo?.audioLink?.url;
+      // If prefetched track doesn't match the expected next track, discard it
+      if (nextTrackInfo?.id !== nextTrack?.id) {
+        nextUrl = null;
+      }
+
+      while (!nextUrl && attempts < MAX_ATTEMPTS) {
+        try {
+          setLoadingTrackId(nextTrack.id);
+          const data = await getAudioLink(nextTrack.id);
+          if (data?.url) {
+            nextUrl = data.url;
+            break;
+          }
+        } catch (e) {
+          console.error(`playNextTrack fetch error (attempt ${attempts + 1})`, e);
+        }
+        // Skip to the next track if fetch fails
+        attempts++;
+        if (attempts >= MAX_ATTEMPTS) break;
+
+        nextIndex++;
+        if (nextIndex >= queue.length) nextIndex = 0; // Loop to start
+        nextTrack = queue[nextIndex];
+      }
+
+      if (nextUrl && nextTrack) {
+        setNextTrackInfo(null);
+        setCurrentTrackIndex(nextIndex);
+        loadTrack(nextUrl, nextTrack);
+      } else {
+        setIsTransitioning(false);
+        setPlaying(false);
+        setErrorMessage("No playable tracks found in the queue.");
+      }
+      setLoadingTrackId(null);
+    },
+    [queue, currentTrackIndex, isPrefetching, isTransitioning, nextTrackInfo, loadTrack]
+  );
 
   const playPreviousTrack = useCallback(async () => {
     if (isTransitioning || queue.length === 0) return;
@@ -484,7 +500,7 @@ export const PlayerProvider = ({
       }
 
       // Automatically skip to the next track on error for a seamless experience
-      if (!isTransitioning) await playNextTrack();
+      if (!isTransitioning) await playNextTrack(true);
     },
     [isTransitioning, playNextTrack]
   );
@@ -497,7 +513,7 @@ export const PlayerProvider = ({
     if (!isTransitioning) {
       setProgress(1);
       setPlaying(false);
-      await playNextTrack();
+      await playNextTrack(true);
     }
   }, [isTransitioning, playNextTrack, skipNextEnded]);
 

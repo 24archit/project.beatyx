@@ -21,6 +21,7 @@ import HomePageArtistSection from "../components/HomePageArtistSection.jsx";
 import HeroSection from "../components/HeroSection.jsx";
 import CategoryPills from "../components/CategoryPills.jsx";
 import ConnectSpotifySection from "../components/ConnectSpotifySection.jsx";
+import HomePageConcertsBanner from "../components/HomePageConcertsBanner.jsx";
 import SectionLoading from "../components/SectionLoading.jsx";
 import { ScrollReveal } from "../components/ScrollReveal.jsx";
 import { useEffect } from "react";
@@ -134,6 +135,11 @@ export default function HomePage({ setPlayerMeta, setTrackInfo, isSpotifyConnect
 
           {/* 2. Hero Section */}
           <HeroSection data={featuredPlaylists} isLoading={loadingFeatured} />
+
+          {/* 2.2 Concerts Banner */}
+          <ScrollReveal>
+            <HomePageConcertsBanner />
+          </ScrollReveal>
 
           {/* 2.5 Recently Played (Local) */}
           {recentlyPlayed && recentlyPlayed.length > 0 && (

@@ -3,11 +3,12 @@ import "../assets/styles/TrackLineCard.css";
 import trackLogo from "/Track-Logo.webp";
 import { Skeleton } from "@mui/material";
 import prettyMilliseconds from "pretty-ms";
-import { getAudioLink } from "@/features/player/playerService";
 import { addLikedSong, removeLikedSong } from "@/services/userService";
 import { useSharedPlayer } from "@/features/player";
 import { Link } from "react-router-dom"; // Added import
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { shareTrack } from "@/utils/shareUtil";
+
 export function TrackLineCard({
   imgSrc = trackLogo,
   trackName,
@@ -32,6 +33,7 @@ export function TrackLineCard({
     toggleLikeLocal,
     loadingTrackId,
   } = useSharedPlayer();
+  const queryClient = useQueryClient();
 
   const isCurrentTrack = currentTrack?.id === cardId;
   const isPlayingThis = isCurrentTrack && playing;
@@ -76,6 +78,8 @@ export function TrackLineCard({
     try {
       if (isLiked) await removeLikedSong(cardId);
       else await addLikedSong(cardId);
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["likedSongsPage"] });
     } catch {
       toggleLikeLocal(cardId);
     }
@@ -171,14 +175,64 @@ export function TrackLineCard({
         <p>{prettyMilliseconds(duration, { colonNotation: true, secondsDecimalDigits: 0 })}</p>
       </div>
 
-      {/* 7. Play Button with Label */}
+      {/* 7. Share Button */}
+      <div
+        className="track-share-inline"
+        onClick={(e) => {
+          e.stopPropagation();
+          shareTrack(cardId, trackName);
+        }}
+        title="Share Track"
+      >
+        <i
+          className="fa-solid fa-share"
+          style={{ color: "var(--text-secondary)", padding: "0.5rem", cursor: "pointer" }}
+        ></i>
+      </div>
+
+      {/* 8. Kebab Menu */}
+      <div
+        className="track-kebab-menu"
+        onClick={(e) => {
+          e.stopPropagation();
+          document.dispatchEvent(
+            new CustomEvent("openPlaylistDialog", {
+              detail: {
+                trackData: {
+                  id: cardId,
+                  trackName,
+                  artistNames:
+                    typeof trackArtists === "string" ? trackArtists.split(", ") : artistNames,
+                  imgSrc,
+                  duration,
+                  spotifyUrl,
+                },
+              },
+            })
+          );
+        }}
+        title="Add to Playlist"
+      >
+        <i
+          className="fa-solid fa-ellipsis-h"
+          style={{ color: "var(--text-secondary)", padding: "0.5rem", cursor: "pointer" }}
+        ></i>
+      </div>
+
+      {/* 8. Play Button with Label */}
       <div
         className={`track-play ${isPlayingThis ? "active" : ""}`}
         onClick={handelOnClick}
-        title={isPlayingThis ? "Pause Track" : "Play Track"}
+        title={isPlayLoading ? "Loading..." : isPlayingThis ? "Pause Track" : "Play Track"}
       >
         <i
-          className={`fa-solid ${isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"}`}
+          className={`fa-solid ${
+            isPlayLoading
+              ? "fa-spinner fa-spin"
+              : isCurrentTrackLoaded && playing
+                ? "fa-pause"
+                : "fa-play"
+          }`}
           id="play-btn"
         ></i>
       </div>

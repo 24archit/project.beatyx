@@ -101,6 +101,30 @@
   letter-spacing: 0.01em;
 }
 
+.share-btn-desktop {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #a89ec4);
+  font-size: 1.1rem;
+  margin-left: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.share-btn-desktop:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.share-btn-desktop:active {
+  transform: scale(0.95);
+}
+
 /* --- Center: Controls --- */
 .player-controls {
   display: flex;

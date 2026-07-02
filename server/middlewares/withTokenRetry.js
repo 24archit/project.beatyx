@@ -6,10 +6,25 @@ const { getAccessToken, getUserAccessToken } = require("../utils/getAccessToken"
  * it forcefully refreshes the token and retries the handler once.
  */
 const withTokenRetry = (handler) => async (req, res, next) => {
+  let responded = false;
+  const safeRes = new Proxy(res, {
+    get(target, prop) {
+      if (prop === "json" || prop === "send" || prop === "status") {
+        responded = true;
+      }
+      return target[prop];
+    },
+  });
+
   try {
     // 1. Initial attempt
-    await handler(req, res, next);
+    await handler(req, safeRes, next);
   } catch (error) {
+    if (responded) {
+      console.error("[withTokenRetry] Error after response sent:", error.message);
+      return; // Do NOT attempt retry or send another response
+    }
+
     // 2. Check if the error is a 401 Unauthorized from Spotify
     const isUnauthorized =
       error.response?.status === 401 ||
@@ -45,8 +60,12 @@ const withTokenRetry = (handler) => async (req, res, next) => {
 
         // 3. Retry the handler with the new token
         try {
-          await handler(req, res, next);
+          await handler(req, safeRes, next);
         } catch (retryError) {
+          if (responded) {
+            console.error("[withTokenRetry] Retry error after response sent:", retryError.message);
+            return;
+          }
           console.error(
             "[withTokenRetry] Retry failed:",
             retryError.response?.data || retryError.message
@@ -54,16 +73,17 @@ const withTokenRetry = (handler) => async (req, res, next) => {
           res.status(400).json({ error: "Operation failed after token retry" });
         }
       } catch (refreshError) {
-        console.error("[withTokenRetry] Token refresh process failed:", refreshError.message);
-        res.status(400).json({ error: "Authentication refresh failed" });
+        if (!responded) {
+          console.error("[withTokenRetry] Token refresh process failed:", refreshError.message);
+          res.status(400).json({ error: "Authentication refresh failed" });
+        }
       }
     } else {
-      // Not a 401 error, handle normally
-      console.error(
-        "[withTokenRetry] Request failed (Non-401):",
-        error.response?.data || error.message
-      );
-      res.status(400).json({ error: "Operation failed" });
+      // Pass to Express global error handler instead of swallowing
+      const wrappedError = new Error(error.response?.data?.error?.message || error.message);
+      wrappedError.statusCode = error.response?.status || 500;
+      wrappedError.originalError = error;
+      return next(wrappedError);
     }
   }
 };

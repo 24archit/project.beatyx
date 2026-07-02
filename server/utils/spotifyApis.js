@@ -76,7 +76,7 @@ async function getArtistInfo(id, rightAccessToken) {
 
 // Function to fetch search results
 async function getSearchResult(query, type, limit = 9, offset = 0, rightAccessToken) {
-  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=IN&limit=${limit}&offset=${offset}`;
+  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&market=IN&limit=${limit}&offset=${offset}`;
   const { data } = await spotifyClient.get(url, {
     headers: {
       Authorization: `Bearer ${rightAccessToken}`,

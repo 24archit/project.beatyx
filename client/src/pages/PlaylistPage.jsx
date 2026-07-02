@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { getPlaylistInfo, getPlaylistTracks } from "@/services/contentService";
+import { getCustomPlaylist } from "@/services/customPlaylistService";
 import { PlaylistMainInfo } from "../components/PlaylistMainInfo";
 import { PlaylistTrackList } from "../components/PlaylistTrackList";
 import { ArtistTopTrackPartLoad } from "../components/ArtistTopTrackPart";
@@ -24,7 +25,41 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
     refetch,
   } = useQuery({
     queryKey: ["playlist", id],
-    queryFn: () => getPlaylistInfo(id).then((res) => res.playlist),
+    queryFn: async () => {
+      if (id.startsWith("btx_")) {
+        const customPl = await getCustomPlaylist(id);
+        return {
+          id: customPl._id,
+          name: customPl.name,
+          description: customPl.description || `Created by ${customPl.ownerId?.displayName}`,
+          owner: { display_name: customPl.ownerId?.displayName || "Beatyx User" },
+          images: customPl.tracks?.[0]?.imgSrc ? [{ url: customPl.tracks[0].imgSrc }] : [],
+          followers: { total: 0 },
+          tracks: {
+            total: customPl.tracks?.length || 0,
+            items: (customPl.tracks || []).map((t) => ({
+              track: {
+                id: t.id,
+                name: t.trackName,
+                artists:
+                  t.artists?.length > 0
+                    ? t.artists.map((a) => ({
+                        name: a.name,
+                        id: a.id,
+                        external_urls: { spotify: a.spotifyUrl },
+                      }))
+                    : (t.artistNames || []).map((name) => ({ name })),
+                duration_ms: t.duration,
+                external_urls: { spotify: t.spotifyUrl },
+                album: { images: [{ url: t.imgSrc }] },
+              },
+            })),
+          },
+        };
+      }
+      const res = await getPlaylistInfo(id);
+      return res.playlist;
+    },
 
     staleTime: 15 * 60 * 1000, // Cache data for 15 minutes
     refetchOnWindowFocus: false, // Don't refetch when window is focused
@@ -37,13 +72,21 @@ export default function PlaylistPage({ setPlayerMeta, setTrackInfo }) {
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["playlistTracks", id],
-    queryFn: ({ pageParam = 100 }) => getPlaylistTracks(id, pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      const currentItems = lastPage?.tracks?.items || [];
-      if (currentItems.length < 50) return undefined; // No more tracks
-      return 100 + allPages.length * 50;
+    queryFn: ({ pageParam = 100 }) => {
+      if (id.startsWith("btx_")) return { tracks: { items: [], total: 0 } };
+      return getPlaylistTracks(id, pageParam);
     },
-    enabled: !!playlistData && playlistData.tracks.total > 100, // Only fetch if playlist has >100 tracks
+    getNextPageParam: (lastPage, allPages) => {
+      if (id.startsWith("btx_")) return undefined;
+      const currentItems = lastPage?.tracks?.items || [];
+      if (currentItems.length < 50 && allPages.length > 0) return undefined; // No more tracks
+
+      const nextOffset = 100 + allPages.length * 50;
+      if (playlistData?.tracks?.total && nextOffset >= playlistData.tracks.total) return undefined;
+
+      return nextOffset;
+    },
+    enabled: !!playlistData && playlistData.tracks.total > 100 && !id.startsWith("btx_"), // Only fetch if playlist has >100 tracks
     staleTime: 15 * 60 * 1000,
   });
 

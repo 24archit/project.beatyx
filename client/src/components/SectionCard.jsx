@@ -7,9 +7,22 @@ import { format } from "indian-number-format";
 import spotifyLogo from "/Spotify_logo.webp";
 import { CardBtn } from "./CardBtn";
 import { useSharedPlayer } from "@/features/player";
-import { addLikedSong, removeLikedSong } from "@/services/userService";
+import {
+  addLikedSong,
+  removeLikedSong,
+  getUserProfile,
+  addSavedAlbum,
+  removeSavedAlbum,
+} from "@/services/userService";
 import { Link } from "react-router-dom";
 import { LazyImage } from "./LazyImage.jsx";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  saveCustomPlaylist,
+  unsaveCustomPlaylist,
+  getMySavedPlaylists,
+} from "@/services/customPlaylistService";
+import { shareContent } from "@/utils/shareUtil";
 
 export function SectionCard({
   imgSrc = TrackLogo,
@@ -25,13 +38,84 @@ export function SectionCard({
   setTrackInfo,
   spotifyUrl = "",
   artistNames = [],
+  isOwner = false,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { likedSongs, toggleLikeLocal, trackInfo, playing } = useSharedPlayer();
+  const queryClient = useQueryClient();
 
   const isTrackCard = cardType === "track";
   const isLiked = isTrackCard && likedSongs.includes(cardId);
   const isPlayingThis = isTrackCard && trackInfo?.id === cardId && playing;
+
+  const savePlaylistMutation = useMutation({
+    mutationFn: (id) => saveCustomPlaylist(id),
+    onSuccess: () => {
+      alert("Playlist saved to your library!");
+      queryClient.invalidateQueries(["savedPlaylists"]);
+    },
+    onError: (err) => {
+      alert(err.response?.data?.message || "Failed to save playlist");
+    },
+  });
+
+  const unsavePlaylistMutation = useMutation({
+    mutationFn: (id) => unsaveCustomPlaylist(id),
+    onSuccess: () => {
+      alert("Playlist removed from your library!");
+      queryClient.invalidateQueries(["savedPlaylists"]);
+    },
+    onError: (err) => {
+      alert(err.response?.data?.message || "Failed to remove playlist");
+    },
+  });
+
+  const authToken = window.localStorage.getItem("authToken");
+
+  const { data: savedData } = useQuery({
+    queryKey: ["savedPlaylists"],
+    queryFn: getMySavedPlaylists,
+    enabled: !!authToken,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: userProfile } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: getUserProfile,
+    enabled: !!authToken,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const saveAlbumMutation = useMutation({
+    mutationFn: (id) => addSavedAlbum(id),
+    onSuccess: () => {
+      alert("Album saved to your library!");
+      queryClient.invalidateQueries(["userProfile"]);
+    },
+    onError: (err) => {
+      alert(err.response?.data?.message || "Failed to save album");
+    },
+  });
+
+  const unsaveAlbumMutation = useMutation({
+    mutationFn: (id) => removeSavedAlbum(id),
+    onSuccess: () => {
+      alert("Album removed from your library!");
+      queryClient.invalidateQueries(["userProfile"]);
+    },
+    onError: (err) => {
+      alert(err.response?.data?.message || "Failed to remove album");
+    },
+  });
+
+  const isCustomPlaylist = cardType === "playlist" && String(cardId).startsWith("btx_");
+  const isSpotifyPlaylist = cardType === "playlist" && !isCustomPlaylist;
+  const isSavedPlaylist =
+    (isCustomPlaylist && savedData?.customSavedPlaylists?.some((pl) => pl._id === cardId)) ||
+    (isSpotifyPlaylist && savedData?.spotifySavedPlaylistIds?.includes(cardId));
+
+  const isSavedAlbum = cardType === "album" && userProfile?.user?.savedAlbums?.includes(cardId);
+  const isSaved = isSavedPlaylist || isSavedAlbum;
 
   // Helper to determine the link path
   const getNavPath = () => {
@@ -72,6 +156,8 @@ export function SectionCard({
     try {
       if (isLiked) await removeLikedSong(cardId);
       else await addLikedSong(cardId);
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["likedSongsPage"] });
     } catch (error) {
       console.error("Like failed", error);
       toggleLikeLocal(cardId);
@@ -149,6 +235,14 @@ export function SectionCard({
             ></i>
           </div>
         )}
+
+        {/* Saved Indicator (Badge) */}
+        {(cardType === "playlist" || cardType === "album") && isSaved && (
+          <div className="card-overlay-saved" title="Saved to Library">
+            <i className="fa-solid fa-bookmark"></i>
+            <span>Saved</span>
+          </div>
+        )}
       </div>
 
       {/* 2. Text Content */}
@@ -182,9 +276,18 @@ export function SectionCard({
               aria-label="more options"
               title="More options"
               size="small"
-              sx={{ color: "var(--text-secondary)", padding: "2px" }}
+              sx={{
+                color: "var(--text-secondary)",
+                padding: "4px",
+                borderRadius: "8px",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  color: "#fff",
+                  background: "rgba(168, 85, 247, 0.12)",
+                },
+              }}
             >
-              <i className="fa-solid fa-ellipsis-v" style={{ fontSize: "1rem" }}></i>
+              <i className="fa-solid fa-ellipsis-v" style={{ fontSize: "0.95rem" }}></i>
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -192,15 +295,142 @@ export function SectionCard({
               onClose={handleMenuClose}
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{ sx: { bgcolor: "var(--bg-surface-2)", color: "#fff" } }}
+              transitionDuration={180}
+              PaperProps={{
+                sx: {
+                  bgcolor: "rgba(14, 8, 28, 0.97)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  border: "1px solid rgba(168, 85, 247, 0.18)",
+                  borderRadius: "14px",
+                  boxShadow: "0 16px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)",
+                  color: "#fff",
+                  minWidth: "190px",
+                  overflow: "hidden",
+                  padding: "6px",
+                  "& .MuiMenuItem-root": {
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "0.82rem",
+                    fontWeight: 500,
+                    borderRadius: "9px",
+                    padding: "9px 14px",
+                    gap: "10px",
+                    color: "rgba(255,255,255,0.82)",
+                    transition: "all 0.15s ease",
+                    letterSpacing: "0.01em",
+                    "&:hover": {
+                      bgcolor: "rgba(168, 85, 247, 0.15)",
+                      color: "#fff",
+                    },
+                  },
+                  "& .MuiDivider-root": {
+                    borderColor: "rgba(255,255,255,0.07)",
+                    margin: "4px 0",
+                  },
+                },
+              }}
             >
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
-                Edit
-              </MenuItem>
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
-                Delete
-              </MenuItem>
-              <MenuItem onClick={handleMenuClose} sx={{ fontSize: "0.85rem" }}>
+              {isTrackCard && (
+                <MenuItem
+                  onClick={(e) => {
+                    handleMenuClose();
+                    e.stopPropagation();
+                    document.dispatchEvent(
+                      new CustomEvent("openPlaylistDialog", {
+                        detail: {
+                          trackData: {
+                            id: cardId,
+                            trackName: cardName,
+                            artistNames:
+                              typeof artistNames === "string"
+                                ? artistNames.split(", ")
+                                : artistNames,
+                            imgSrc,
+                            duration: 0,
+                            spotifyUrl,
+                          },
+                        },
+                      })
+                    );
+                  }}
+                >
+                  <i
+                    className="fa-solid fa-plus"
+                    style={{ width: 16, color: "var(--accent-primary)", fontSize: "0.8rem" }}
+                  ></i>
+                  Add to Playlist
+                </MenuItem>
+              )}
+              {((isCustomPlaylist && !isOwner) || isSpotifyPlaylist) && !isSavedPlaylist && (
+                <MenuItem
+                  onClick={(e) => {
+                    handleMenuClose();
+                    e.stopPropagation();
+                    savePlaylistMutation.mutate(cardId);
+                  }}
+                >
+                  <i
+                    className="fa-solid fa-bookmark"
+                    style={{ width: 16, color: "var(--accent-primary)", fontSize: "0.8rem" }}
+                  ></i>
+                  Save Playlist
+                </MenuItem>
+              )}
+              {((isCustomPlaylist && !isOwner) || isSpotifyPlaylist) && isSavedPlaylist && (
+                <MenuItem
+                  onClick={(e) => {
+                    handleMenuClose();
+                    e.stopPropagation();
+                    unsavePlaylistMutation.mutate(cardId);
+                  }}
+                  sx={{ color: "var(--accent-primary) !important" }}
+                >
+                  <i className="fa-solid fa-bookmark" style={{ width: 16, fontSize: "0.8rem" }}></i>
+                  Remove from Saved
+                </MenuItem>
+              )}
+              {cardType === "album" && !isSavedAlbum && (
+                <MenuItem
+                  onClick={(e) => {
+                    handleMenuClose();
+                    e.stopPropagation();
+                    saveAlbumMutation.mutate(cardId);
+                  }}
+                >
+                  <i
+                    className="fa-solid fa-floppy-disk"
+                    style={{ width: 16, color: "var(--accent-primary)", fontSize: "0.8rem" }}
+                  ></i>
+                  Save Album
+                </MenuItem>
+              )}
+              {cardType === "album" && isSavedAlbum && (
+                <MenuItem
+                  onClick={(e) => {
+                    handleMenuClose();
+                    e.stopPropagation();
+                    unsaveAlbumMutation.mutate(cardId);
+                  }}
+                  sx={{ color: "var(--accent-primary) !important" }}
+                >
+                  <i
+                    className="fa-solid fa-floppy-disk"
+                    style={{ width: 16, fontSize: "0.8rem" }}
+                  ></i>
+                  Remove from Saved
+                </MenuItem>
+              )}
+              <MenuItem
+                onClick={(e) => {
+                  handleMenuClose();
+                  e.stopPropagation();
+                  shareContent(navPath, cardName);
+                }}
+              >
+                <i
+                  className="fa-solid fa-share"
+                  style={{ width: 16, color: "var(--accent-primary)", fontSize: "0.8rem" }}
+                ></i>
                 Share
               </MenuItem>
             </Menu>
@@ -215,44 +445,47 @@ export function SectionCard({
 export function SectionCardLoad() {
   return (
     <div className="card-container">
-      <Skeleton
-        variant="rectangular"
-        width={200}
-        height={200}
-        sx={{
-          marginLeft: "1rem",
-          marginRight: "1rem",
-          bgcolor: "rgba(71, 164, 211, 0.261)",
-          borderRadius: "1rem",
-        }}
-        animation="wave"
-      />
-      <Skeleton
-        variant="rectangular"
-        width={200}
-        height={20}
-        sx={{
-          marginLeft: "1rem",
-          marginRight: "1rem",
-          marginTop: "0.7rem",
-          bgcolor: "rgba(71, 164, 211, 0.261)",
-          borderRadius: "1rem",
-        }}
-        animation="wave"
-      />
-      <Skeleton
-        variant="rectangular"
-        width={150}
-        height={10}
-        sx={{
-          marginLeft: "1rem",
-          marginRight: "1rem",
-          marginTop: "0.7rem",
-          bgcolor: "rgba(71, 164, 211, 0.261)",
-          borderRadius: "1rem",
-          alignSelf: "flex-start",
-        }}
-      />
+      <div className="card-img-wrapper">
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height="100%"
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            bgcolor: "rgba(71, 164, 211, 0.261)",
+          }}
+          animation="wave"
+        />
+      </div>
+      <div className="card-text-content">
+        <div className="card-title-row">
+          <Skeleton
+            variant="rectangular"
+            width="80%"
+            height={20}
+            sx={{
+              bgcolor: "rgba(71, 164, 211, 0.261)",
+              borderRadius: "4px",
+            }}
+            animation="wave"
+          />
+        </div>
+        <div className="card-subtitle-row">
+          <Skeleton
+            variant="rectangular"
+            width="60%"
+            height={12}
+            sx={{
+              bgcolor: "rgba(71, 164, 211, 0.261)",
+              borderRadius: "4px",
+              marginTop: "4px",
+            }}
+            animation="wave"
+          />
+        </div>
+      </div>
     </div>
   );
 }

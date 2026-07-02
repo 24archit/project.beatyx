@@ -80,3 +80,104 @@ export async function getLikedSongs() {
     return { likedSongs: [], items: [] };
   }
 }
+
+/**
+ * Follows an artist.
+ * @param {string} artistId - The Artist ID to follow.
+ * @returns {Promise<Object>} Success status.
+ */
+export async function followArtist(artistId) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/followArtist`,
+      method: "PUT",
+      data: { artistId },
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Unfollows an artist.
+ * @param {string} artistId - The Artist ID to unfollow.
+ * @returns {Promise<Object>} Success status.
+ */
+export async function unfollowArtist(artistId) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/unfollowArtist`,
+      method: "PUT",
+      data: { artistId },
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Fetches the user's followed artists.
+ * @param {boolean} idsOnly - If true, only fetches IDs and not full details.
+ * @returns {Promise<Object>} Followed artists data.
+ */
+export async function getFollowedArtists(idsOnly = false) {
+  const token = window.localStorage.getItem("authToken");
+  if (!token) return { followedArtists: [], items: [] };
+
+  try {
+    const url = idsOnly
+      ? `${import.meta.env.VITE_SERVER_LINK}/user/getFollowedArtists?idsOnly=true`
+      : `${import.meta.env.VITE_SERVER_LINK}/user/getFollowedArtists`;
+    const response = await apiClient({
+      url,
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching followed artists:", error);
+    return { followedArtists: [], items: [] };
+  }
+}
+
+/**
+ * Adds an album to the user's saved albums.
+ * @param {string} albumId - The Album ID to add.
+ * @returns {Promise<Object>} Success status.
+ */
+export async function addSavedAlbum(albumId) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/addSavedAlbum`,
+      method: "PUT",
+      data: { albumId },
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Removes an album from the user's saved albums.
+ * @param {string} albumId - The Album ID to remove.
+ * @returns {Promise<Object>} Success status.
+ */
+export async function removeSavedAlbum(albumId) {
+  try {
+    const response = await apiClient({
+      url: `${import.meta.env.VITE_SERVER_LINK}/user/removeSavedAlbum`,
+      method: "PUT",
+      data: { albumId },
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}

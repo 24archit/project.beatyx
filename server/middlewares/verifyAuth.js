@@ -6,9 +6,11 @@ const User = require("../models/user");
 const { getUserAccessToken, getAccessToken } = require("../utils/getAccessToken");
 
 async function verifyAuth(req, res, next) {
-  const authToken =
-    req.headers.authorization?.split(" ")[1] || req.body.authToken || req.query.authToken;
-
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Authorization header missing or malformed" });
+  }
+  const authToken = authHeader.split(" ")[1];
   if (!authToken || authToken === "null" || authToken === "undefined") {
     return res.status(401).json({ message: "Token missing or invalid" });
   }
@@ -16,7 +18,9 @@ async function verifyAuth(req, res, next) {
   try {
     const decoded = jwt.verify(authToken, secretKey);
 
-    const user = await User.findOne({ email: decoded.user.email });
+    const user = await User.findOne({ email: decoded.user.email }).select(
+      "email _id accessToken refreshToken updationTime"
+    );
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }

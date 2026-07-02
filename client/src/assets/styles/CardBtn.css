@@ -12,8 +12,11 @@
   font-size: 1.2rem;
   border: none;
   cursor: pointer;
-  box-shadow: 0 8px 8px rgba(0,0,0,0.3);
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   padding: 0;
 }
 
@@ -21,14 +24,15 @@
   margin-left: 4px; /* visually center the play icon */
 }
 
-.play-btn i.fa-pause {
-  margin-left: 0; /* pause icon is already centered */
+.play-btn i.fa-pause,
+.play-btn i.fa-spinner {
+  margin-left: 0; /* pause and spinner icons are already centered */
 }
 
 .play-btn:hover {
   background-color: #1ed760; /* slightly brighter on hover */
   transform: scale(1.05);
-  box-shadow: 0 12px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 12px 12px rgba(0, 0, 0, 0.4);
 }
 
 .play-btn:active {

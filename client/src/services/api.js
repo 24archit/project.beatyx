@@ -59,9 +59,9 @@ apiClient.interceptors.response.use(
       return apiClient(config);
     }
 
-    // Alert the user if we have exhausted retries and it was a retryable (network or server) error
+    // Log the error if we have exhausted retries and it was a retryable (network or server) error
     if (isRetryableError && config.retry.count >= config.retry.maxRetries) {
-      alert(
+      console.error(
         "Permanent server error or network issue. Please check your connection or try again later."
       );
     }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getUserProfile } from "@/services/userService";
+import { getUserProfile, getFollowedArtists } from "@/services/userService";
 import { verifyAuth } from "@/features/auth/authService";
+import { SectionCard } from "@/components/SectionCard";
 import "../assets/styles/ProfilePage.css";
 
 /* ─── Skeleton ──────────────────────────────────────────────── */
@@ -73,6 +74,13 @@ const ProfilePage = () => {
       if (err?.response?.status === 401) return false;
       return failureCount < 3;
     },
+  });
+
+  const { data: followedArtistsData } = useQuery({
+    queryKey: ["followedArtists"],
+    queryFn: () => getFollowedArtists(false),
+    staleTime: 5 * 60 * 1000,
+    enabled: !!data, // Only fetch if user profile is loaded
   });
 
   useEffect(() => {
@@ -227,47 +235,118 @@ const ProfilePage = () => {
       <div className="pp-tab-body">
         {/* ── BEATYX TAB ── */}
         {activeTab === "beatyx" && (
-          <div className="pp-folder-grid">
-            {/* Liked Songs card */}
-            <div className="pp-folder-card" onClick={() => navigate("/liked-songs")}>
-              <div className="pp-fc-icon pp-fc-icon--heart">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          <>
+            <div className="pp-folder-grid">
+              {/* Liked Songs card */}
+              <div className="pp-folder-card" onClick={() => navigate("/liked-songs")}>
+                <div className="pp-fc-icon pp-fc-icon--heart">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </div>
+                <div className="pp-fc-info">
+                  <h3>Liked Songs</h3>
+                  {user.likedSongs?.length > 0 ? (
+                    <p>{user.likedSongs.length} tracks saved</p>
+                  ) : (
+                    <p className="pp-no-data">No liked songs yet</p>
+                  )}
+                </div>
+                <svg
+                  className="pp-fc-arrow"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  width="18"
+                  height="18"
+                >
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
                 </svg>
               </div>
-              <div className="pp-fc-info">
-                <h3>Liked Songs</h3>
-                {user.likedSongs?.length > 0 ? (
-                  <p>{user.likedSongs.length} tracks saved</p>
-                ) : (
-                  <p className="pp-no-data">No liked songs yet</p>
-                )}
+
+              {/* Playlists card */}
+              <div className="pp-folder-card" onClick={() => navigate("/playlists")}>
+                <div className="pp-fc-icon pp-fc-icon--playlist">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+                  </svg>
+                </div>
+                <div className="pp-fc-info">
+                  <h3>My Playlists</h3>
+                  <p>Manage your custom playlists</p>
+                </div>
+                <svg
+                  className="pp-fc-arrow"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  width="18"
+                  height="18"
+                >
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+                </svg>
               </div>
-              <svg
-                className="pp-fc-arrow"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="18"
-                height="18"
-              >
-                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
-              </svg>
+
+              {/* Albums card */}
+              <div className="pp-folder-card" onClick={() => navigate("/albums")}>
+                <div className="pp-fc-icon" style={{ background: "rgba(255, 255, 255, 0.1)" }}>
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" />
+                  </svg>
+                </div>
+                <div className="pp-fc-info">
+                  <h3>Saved Albums</h3>
+                  {user.savedAlbums?.length > 0 ? (
+                    <p>{user.savedAlbums.length} albums saved</p>
+                  ) : (
+                    <p className="pp-no-data">No saved albums yet</p>
+                  )}
+                </div>
+                <svg
+                  className="pp-fc-arrow"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  width="18"
+                  height="18"
+                >
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+                </svg>
+              </div>
             </div>
 
-            {/* Playlists card */}
-            <div className="pp-folder-card pp-folder-card--disabled">
-              <div className="pp-fc-icon pp-fc-icon--playlist">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+            {/* Beatyx Followed Artists */}
+            <div className="pp-sp-section" style={{ marginTop: "2rem" }}>
+              <h3 className="pp-sp-section-title">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
-              </div>
-              <div className="pp-fc-info">
-                <h3>My Playlists</h3>
-                <p className="pp-no-data">Coming soon — playlist management</p>
-              </div>
-              <span className="pp-soon-badge">Soon</span>
+                Followed Artists
+              </h3>
+              {followedArtistsData?.items?.length > 0 ? (
+                <div className="pp-artist-grid">
+                  {followedArtistsData.items.map((artist) => (
+                    <div
+                      key={artist.id}
+                      className="pp-artist-card"
+                      onClick={() => navigate(`/artist/${artist.id}`)}
+                    >
+                      <div className="pp-artist-img-wrap">
+                        <img
+                          src={
+                            artist.images?.[1]?.url ||
+                            artist.images?.[0]?.url ||
+                            "/profile-pic.webp"
+                          }
+                          alt={artist.name}
+                        />
+                      </div>
+                      <p className="pp-artist-name">{artist.name}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="pp-no-data pp-no-data--center">No followed artists yet</p>
+              )}
             </div>
-          </div>
+          </>
         )}
 
         {/* ── SPOTIFY TAB ── */}

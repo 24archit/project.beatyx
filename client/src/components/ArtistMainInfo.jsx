@@ -4,7 +4,14 @@ import { ArtistProfilePic, ArtistProfilePicLoad } from "../components/ArtistProf
 import { FollowBtn } from "../components/FollowBtn.jsx";
 import { ArtistTrendScore } from "./ArtistTrendScore.jsx";
 
-export function ArtistMainInfo({ artistName, followers, trendScore, img }) {
+export function ArtistMainInfo({
+  artistName,
+  followers,
+  trendScore,
+  img,
+  isFollowing,
+  onToggleFollow,
+}) {
   return (
     <div className="mainInfo">
       <ArtistProfilePic imgSrc={img} />
@@ -14,7 +21,7 @@ export function ArtistMainInfo({ artistName, followers, trendScore, img }) {
         </div>
         <ArtistFollowersCount count={followers} />
         <ArtistTrendScore trendScore={trendScore} />
-        <FollowBtn />
+        <FollowBtn isFollowing={isFollowing} onClick={onToggleFollow} />
       </div>
     </div>
   );

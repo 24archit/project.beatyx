@@ -1,0 +1,27 @@
+/* PlaylistDialogs.css */
+.pd-list-mode,
+.pd-create-mode {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-list-mode {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for list mode */
+.pd-list-mode::-webkit-scrollbar {
+  width: 6px;
+}
+.pd-list-mode::-webkit-scrollbar-track {
+  background: transparent;
+}
+.pd-list-mode::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 10px;
+}
+.pd-list-mode::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}

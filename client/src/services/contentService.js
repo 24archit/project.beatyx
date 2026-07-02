@@ -253,3 +253,19 @@ export async function getCategoryPlaylists(id) {
     throw new Error(error.message);
   }
 }
+
+export async function getDiscoveryConcerts(country = "", artist = "") {
+  try {
+    let url = `${import.meta.env.VITE_SERVER_LINK}/home/api/getConcerts?`;
+    if (country) url += `country=${country}&`;
+    if (artist) url += `artist=${encodeURIComponent(artist)}&`;
+    url = url.slice(0, -1); // remove trailing ? or &
+    const response = await apiClient({
+      url,
+      method: "GET",
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}

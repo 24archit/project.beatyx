@@ -11,7 +11,13 @@ const {
   getUserSavedAlbums,
   getUserFollowedArtists,
 } = require("../utils/spotifyApis");
-const { getSeveralTracks } = require("../utils/spotifyApis");
+const { getSeveralTracks, getSeveralArtists } = require("../utils/spotifyApis");
+const { getAccessToken } = require("../utils/getAccessToken");
+const SPOTIFY_ID_REGEX = /^[A-Za-z0-9]{22}$/; // Spotify IDs are exactly 22 alphanumeric chars
+function isValidSpotifyId(id) {
+  return typeof id === "string" && SPOTIFY_ID_REGEX.test(id);
+}
+
 router.get("/profile", verifyAuth, async (req, res) => {
   try {
     const user = await User.findOne({ email: req.user.user.email }).select("-password");
@@ -24,7 +30,7 @@ router.get("/profile", verifyAuth, async (req, res) => {
 
     if (req.user.user.spotifyConnect) {
       try {
-        const accessToken = req.session.accessToken;
+        const accessToken = req.session?.accessToken;
         if (accessToken) {
           const [
             spotifyProfile,
@@ -100,7 +106,14 @@ router.put("/profile-update", verifyAuth, async (req, res) => {
 router.put("/addLikedSong", verifyAuth, async (req, res) => {
   try {
     const { trackId } = req.body;
-    if (!trackId) return res.status(400).json({ message: "Track ID required" });
+    if (!trackId || !isValidSpotifyId(trackId)) {
+      return res.status(400).json({ message: "Invalid Track ID format" });
+    }
+
+    const user = await User.findOne({ email: req.user.user.email }).select("likedSongs");
+    if (user.likedSongs && user.likedSongs.length >= 5000) {
+      return res.status(400).json({ message: "Liked songs limit reached" });
+    }
 
     await User.updateOne({ email: req.user.user.email }, { $addToSet: { likedSongs: trackId } });
 
@@ -114,7 +127,9 @@ router.put("/addLikedSong", verifyAuth, async (req, res) => {
 router.put("/removeLikedSong", verifyAuth, async (req, res) => {
   try {
     const { trackId } = req.body;
-    if (!trackId) return res.status(400).json({ message: "Track ID required" });
+    if (!trackId || !isValidSpotifyId(trackId)) {
+      return res.status(400).json({ message: "Invalid Track ID format" });
+    }
 
     await User.updateOne({ email: req.user.user.email }, { $pull: { likedSongs: trackId } });
 
@@ -140,7 +155,10 @@ router.get("/getLikedSongs", verifyAuth, async (req, res) => {
           chunks.push(likedSongIds.slice(i, i + 50));
         }
 
-        const accessToken = req.session.accessToken;
+        let accessToken = req.session?.accessToken;
+        if (!accessToken) {
+          accessToken = await getAccessToken();
+        }
         let allTracks = [];
 
         const promises = chunks.map((chunk) => {
@@ -168,6 +186,96 @@ router.get("/getLikedSongs", verifyAuth, async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getLikedSongs:", error.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+router.put("/followArtist", verifyAuth, async (req, res) => {
+  try {
+    const { artistId } = req.body;
+    if (!artistId || !isValidSpotifyId(artistId)) {
+      return res.status(400).json({ message: "Invalid Artist ID format" });
+    }
+
+    const user = await User.findOne({ email: req.user.user.email }).select("followedArtists");
+    if (user.followedArtists && user.followedArtists.length >= 5000) {
+      return res.status(400).json({ message: "Followed artists limit reached" });
+    }
+
+    await User.updateOne(
+      { email: req.user.user.email },
+      { $addToSet: { followedArtists: artistId } }
+    );
+
+    res.status(200).json({ message: "Followed artist successfully" });
+  } catch (error) {
+    console.error("Error following artist:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+router.put("/unfollowArtist", verifyAuth, async (req, res) => {
+  try {
+    const { artistId } = req.body;
+    if (!artistId || !isValidSpotifyId(artistId)) {
+      return res.status(400).json({ message: "Invalid Artist ID format" });
+    }
+
+    await User.updateOne({ email: req.user.user.email }, { $pull: { followedArtists: artistId } });
+
+    res.status(200).json({ message: "Unfollowed artist successfully" });
+  } catch (error) {
+    console.error("Error unfollowing artist:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+router.get("/getFollowedArtists", verifyAuth, async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.user.email }).select("followedArtists");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const followedArtistIds = user.followedArtists || [];
+    let formattedArtists = [];
+
+    if (followedArtistIds.length > 0 && req.query.idsOnly !== "true") {
+      try {
+        const chunks = [];
+        for (let i = 0; i < followedArtistIds.length; i += 50) {
+          chunks.push(followedArtistIds.slice(i, i + 50));
+        }
+
+        let accessToken = req.session?.accessToken;
+        if (!accessToken) {
+          accessToken = await getAccessToken();
+        }
+        let allArtists = [];
+
+        const promises = chunks.map((chunk) => {
+          const ids = chunk.join(",");
+          return getSeveralArtists(ids, accessToken);
+        });
+
+        const results = await Promise.all(promises);
+
+        results.forEach((result) => {
+          if (result && result.artists) {
+            allArtists = allArtists.concat(result.artists);
+          }
+        });
+
+        formattedArtists = allArtists;
+      } catch (fetchError) {
+        console.error("Failed to fetch artist details from Spotify:", fetchError.message);
+      }
+    }
+
+    res.status(200).json({
+      followedArtists: followedArtistIds,
+      items: formattedArtists,
+    });
+  } catch (error) {
+    console.error("Error in getFollowedArtists:", error.message);
     res.status(500).json({ message: "Server Error" });
   }
 });
@@ -202,6 +310,43 @@ router.delete("/account", verifyAuth, async (req, res) => {
   } catch (error) {
     console.error("Error deleting account:", error);
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+router.put("/addSavedAlbum", verifyAuth, async (req, res) => {
+  try {
+    const { albumId } = req.body;
+    if (!albumId || !isValidSpotifyId(albumId)) {
+      return res.status(400).json({ message: "Invalid Album ID format" });
+    }
+
+    const user = await User.findOne({ email: req.user.user.email }).select("savedAlbums");
+    if (user.savedAlbums && user.savedAlbums.length >= 5000) {
+      return res.status(400).json({ message: "Saved albums limit reached" });
+    }
+
+    await User.updateOne({ email: req.user.user.email }, { $addToSet: { savedAlbums: albumId } });
+
+    res.status(200).json({ message: "Saved album successfully" });
+  } catch (error) {
+    console.error("Error saving album:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+router.put("/removeSavedAlbum", verifyAuth, async (req, res) => {
+  try {
+    const { albumId } = req.body;
+    if (!albumId || !isValidSpotifyId(albumId)) {
+      return res.status(400).json({ message: "Invalid Album ID format" });
+    }
+
+    await User.updateOne({ email: req.user.user.email }, { $pull: { savedAlbums: albumId } });
+
+    res.status(200).json({ message: "Removed album successfully" });
+  } catch (error) {
+    console.error("Error removing album:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 

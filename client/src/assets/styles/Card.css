@@ -10,7 +10,9 @@
   border-radius: var(--radius-md, 12px);
   display: flex;
   flex-direction: column;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -66,14 +68,31 @@
   animation: cardWave 1s ease-in-out infinite;
 }
 
-.card-music-wave .bar:nth-child(1) { animation-duration: 1s;   height: 60%; }
-.card-music-wave .bar:nth-child(2) { animation-duration: 1.1s; height: 100%; }
-.card-music-wave .bar:nth-child(3) { animation-duration: 1.2s; height: 50%; }
-.card-music-wave .bar:nth-child(4) { animation-duration: 1.3s; height: 80%; }
+.card-music-wave .bar:nth-child(1) {
+  animation-duration: 1s;
+  height: 60%;
+}
+.card-music-wave .bar:nth-child(2) {
+  animation-duration: 1.1s;
+  height: 100%;
+}
+.card-music-wave .bar:nth-child(3) {
+  animation-duration: 1.2s;
+  height: 50%;
+}
+.card-music-wave .bar:nth-child(4) {
+  animation-duration: 1.3s;
+  height: 80%;
+}
 
 @keyframes cardWave {
-  0%, 100% { height: 40%; }
-  50%       { height: 100%; }
+  0%,
+  100% {
+    height: 40%;
+  }
+  50% {
+    height: 100%;
+  }
 }
 
 /* Spotify Logo Overlay */
@@ -84,7 +103,7 @@
   z-index: 3;
   width: 24px;
   height: 24px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -102,7 +121,7 @@
 
 .card-overlay-spotify:hover {
   opacity: 1;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 /* Like Button Overlay (Top Right) */
@@ -113,7 +132,7 @@
   z-index: 3;
   width: 28px;
   height: 28px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -128,8 +147,34 @@
 }
 
 .card-overlay-like:hover {
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   transform: scale(1.1);
+}
+
+/* Saved Playlist Indicator Badge */
+.card-overlay-saved {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  background: var(--accent-primary);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(4px);
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-overlay-saved i {
+  font-size: 0.75rem;
 }
 
 /* Play Button Overlay (FAB) */
@@ -171,7 +216,7 @@
 }
 
 .card-name {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary, #ffffff);
@@ -202,7 +247,7 @@
 }
 
 .card-subtitle {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--text-secondary, #a89ec4);
@@ -245,15 +290,15 @@
     padding: 8px;
     border-radius: 8px;
   }
-  
+
   .card-img-wrapper {
     margin-bottom: 8px;
   }
-  
+
   .card-name {
     font-size: 0.9rem;
   }
-  
+
   .card-subtitle {
     font-size: 0.75rem;
   }

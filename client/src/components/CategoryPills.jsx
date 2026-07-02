@@ -1,4 +1,5 @@
 // client/src/components/CategoryPills.jsx
+import { useRef, useEffect } from "react";
 import "../assets/styles/CategoryPills.css";
 import { Link } from "react-router-dom";
 
@@ -17,14 +18,26 @@ const DEFAULT_CATEGORIES = [
 
 export default function CategoryPills({ categories }) {
   const isConnected = categories && categories.length > 0;
-
-  // Simple Logic: Use fetched categories if connected, otherwise defaults.
-  // No filtering or injecting "Made For You".
   const dataToDisplay = isConnected ? categories : DEFAULT_CATEGORIES;
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onWheel = (e) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
 
   return (
     <div className="category-pills-wrapper">
-      <div className="category-pills-container">
+      <div className="category-pills-container" ref={containerRef}>
         {dataToDisplay.map((cat) => (
           <Link
             key={cat.id}

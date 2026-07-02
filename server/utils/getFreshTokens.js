@@ -1,5 +1,7 @@
 require("dotenv").config();
 const axios = require("axios");
+const crypto = require("crypto");
+const hashEmail = (email) => crypto.createHash("sha256").update(email).digest("hex").slice(0, 12);
 const UniToken = require("../models/uniToken");
 const User = require("../models/user");
 
@@ -71,14 +73,14 @@ async function getUserFreshTokens(refreshToken, email) {
     return body.access_token;
   } catch (error) {
     console.error(
-      `Error fetching user tokens for ${email}:`,
+      `Error fetching user tokens for [${hashEmail(email)}]:`,
       error.response?.data || error.message
     );
 
     // If the refresh token is invalid or revoked by the user, clear it from DB to stop endless failing loops
     if (error.response?.data?.error === "invalid_grant") {
       console.warn(
-        `[UserRevoked] Refresh token for ${email} is invalid/revoked. Disconnecting Spotify.`
+        `[UserRevoked] Refresh token for [${hashEmail(email)}] is invalid/revoked. Disconnecting Spotify.`
       );
       await User.updateOne(
         { email: email },

@@ -9,12 +9,21 @@ const crypto = require("crypto");
 const querystring = require("querystring");
 const { getCurrentUserInfo } = require("../utils/spotifyApis");
 const verifyAuth = require("../middlewares/verifyAuth");
+const rateLimit = require("express-rate-limit");
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // max 10 auth attempts per IP per window
+  message: "Too many authentication attempts. Please try again in 15 minutes.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 /**
  * Handles user signup.
  * @route POST /auth/signup
  */
-router.post("/signup", async (req, res) => {
+router.post("/signup", authLimiter, async (req, res) => {
   const { displayName, email, password } = req.body;
 
   try {
@@ -37,7 +46,11 @@ router.post("/signup", async (req, res) => {
         email: email,
       },
     };
-    const authToken = JWT.sign(payload, process.env.JWT_SECRET);
+    const authToken = JWT.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+      issuer: "beatyx-api",
+      audience: "beatyx-client",
+    });
 
     return res.status(201).json({
       success: true,
@@ -59,21 +72,13 @@ router.post("/signup", async (req, res) => {
  * Handles user login.
  * @route POST /auth/login
  */
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: "Oops! You have not registered with this email. Please register.",
-      });
-    }
-
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      return res.status(402).json({ success: false, error: "Invalid password" });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ success: false, error: "Invalid email or password." });
     }
     // 3) On success, issue JWT
     const payload = {
@@ -82,7 +87,11 @@ router.post("/login", async (req, res) => {
         email: email,
       },
     };
-    const authToken = JWT.sign(payload, process.env.JWT_SECRET);
+    const authToken = JWT.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+      issuer: "beatyx-api",
+      audience: "beatyx-client",
+    });
 
     return res.status(200).json({ success: true, authToken });
   } catch (error) {
@@ -98,6 +107,23 @@ router.post("/login", async (req, res) => {
 router.get("/verifyauth", verifyAuth, async (req, res) => {
   res.status(200).json({ isVerified: true, isSpotifyConnect: req.user.user.spotifyConnect });
 });
+const ALLOWED_REDIRECTS = [
+  process.env.CLIENT_LINK,
+  "http://localhost:5173",
+  "capacitor://localhost",
+];
+function isSafeRedirect(url) {
+  try {
+    const parsed = new URL(url);
+    return ALLOWED_REDIRECTS.some((allowed) => {
+      const allowedParsed = new URL(allowed);
+      return parsed.origin === allowedParsed.origin;
+    });
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Initiates the Spotify connection process.
  * @route POST /api/connectSpotify
@@ -107,7 +133,7 @@ router.all("/api/connectSpotify", verifyAuth, (req, res) => {
     const state = crypto.randomBytes(16).toString("hex");
     req.session.email = req.user.user.email;
     req.session.oauthState = state;
-    if (req.query.appRedirect) {
+    if (req.query.appRedirect && isSafeRedirect(req.query.appRedirect)) {
       req.session.appRedirect = req.query.appRedirect;
     }
 
@@ -204,7 +230,10 @@ router.get("/callback", async (req, res) => {
       return res.status(404).send("User not found.");
     }
 
-    const redirectUrl = req.session.appRedirect || process.env.CLIENT_LINK;
+    const redirectUrl =
+      req.session.appRedirect && isSafeRedirect(req.session.appRedirect)
+        ? req.session.appRedirect
+        : process.env.CLIENT_LINK;
     delete req.session.email;
     delete req.session.oauthState;
     delete req.session.appRedirect;

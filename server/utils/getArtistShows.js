@@ -139,4 +139,58 @@ async function getArtistShows(artistId, rightAccessToken, artistName = "") {
     throw new Error(`Error fetching shows for artist ${artistId}: ${err.message}`);
   }
 }
-module.exports = { getArtistShows };
+async function getDiscoveryShows(countryCode, size = 20, artist = "") {
+  if (!TM_API_KEY) {
+    throw new Error("Ticketmaster API key (TM_API_KEY) is not set.");
+  }
+
+  try {
+    const params = {
+      apikey: TM_API_KEY,
+      classificationName: "music",
+      size,
+      sort: "date,asc",
+    };
+    if (countryCode) {
+      params.countryCode = countryCode;
+    }
+    if (artist) {
+      params.keyword = artist;
+    }
+
+    const eventsResp = await axios.get("https://app.ticketmaster.com/discovery/v2/events.json", {
+      params,
+    });
+
+    const events = eventsResp.data._embedded?.events || [];
+
+    const detailedShows = events.map((evt) => {
+      const basic = {
+        name: evt.name,
+        id: evt.id,
+        date: evt.dates.start?.dateTime,
+        venue: evt._embedded?.venues?.[0]?.name,
+        city: evt._embedded?.venues?.[0]?.city?.name,
+        country: evt._embedded?.venues?.[0]?.country?.name,
+        url: evt.url,
+        purchaseUrl: evt.sales?.public?.url,
+      };
+
+      const img = evt.images?.find((i) => i.ratio === "16_9") || evt.images?.[0];
+      return {
+        ...basic,
+        images: img ? [{ url: img.url, ratio: img.ratio }] : [],
+        info: evt.info || evt.pleaseNote || null,
+        description: evt.description || null,
+        priceRanges: evt.priceRanges || [],
+      };
+    });
+
+    return detailedShows;
+  } catch (error) {
+    console.error("Error fetching discovery shows:", error.message);
+    throw new Error(`Error fetching discovery shows: ${error.message}`);
+  }
+}
+
+module.exports = { getArtistShows, getDiscoveryShows };

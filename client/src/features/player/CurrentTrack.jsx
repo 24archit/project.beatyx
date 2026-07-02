@@ -3,13 +3,11 @@ import prettyMilliseconds from "pretty-ms";
 import TrackLogo from "/Track-Logo.webp";
 import { useSharedPlayer } from "./useSharedPlayer";
 import "./CurrentTrackButton.css";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { useNavigate } from "react-router-dom";
+import { shareTrack } from "@/utils/shareUtil";
 
 const CurrentTrackButton = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoopEnabled, setIsLoopEnabled] = useState(false);
-  const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -64,10 +62,42 @@ const CurrentTrackButton = () => {
   const currentTime = Math.round(progress * duration) || 0;
   const totalTime = Math.round(duration) || 0;
 
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    if (window.location.hash === "#player") {
+      window.history.back();
+    }
+  };
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+    if (window.location.hash !== "#player") {
+      window.history.pushState(
+        null,
+        "",
+        window.location.pathname + window.location.search + "#player"
+      );
+    }
+  };
+
   const toggleDrawer = (e) => {
     if (e) removeFocus(e);
-    setIsDrawerOpen(!isDrawerOpen);
+    if (isDrawerOpen) {
+      closeDrawer();
+    } else {
+      openDrawer();
+    }
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isDrawerOpen && window.location.hash !== "#player") {
+        setIsDrawerOpen(false);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isDrawerOpen]);
 
   // Enhanced handlers with focus removal
   const handlePlayPauseClick = (e) => {
@@ -85,24 +115,21 @@ const CurrentTrackButton = () => {
     removeFocus(e);
   };
 
-  const handleLoop = (e) => {
-    setIsLoopEnabled(!isLoopEnabled);
-    removeFocus(e);
-  };
-
-  const handleShuffle = (e) => {
-    setIsShuffleEnabled(!isShuffleEnabled);
-    removeFocus(e);
-  };
-
   const handleShare = (e) => {
     removeFocus(e);
+    if (trackInfo?.id) {
+      shareTrack(trackInfo.id, trackInfo.trackName);
+    }
   };
 
   const handleMobileQueueNav = (e) => {
     removeFocus(e);
-    setIsDrawerOpen(false); // Close drawer
-    navigate("/queue");
+    setIsDrawerOpen(false);
+    if (window.location.hash === "#player") {
+      navigate("/queue", { replace: true });
+    } else {
+      navigate("/queue");
+    }
   };
 
   return (
@@ -238,24 +265,6 @@ const CurrentTrackButton = () => {
 
           {/* Secondary Controls */}
           <div className="secondary-controls">
-            <button
-              className={`control-btn secondary-btn ${isLoopEnabled ? "active" : ""}`}
-              onClick={handleLoop}
-              disabled={!url}
-              aria-label="Toggle Loop"
-            >
-              <i className="fa-solid fa-repeat"></i>
-            </button>
-
-            <button
-              className={`control-btn secondary-btn ${isShuffleEnabled ? "active" : ""}`}
-              onClick={handleShuffle}
-              disabled={!url}
-              aria-label="Toggle Shuffle"
-            >
-              <i className="fa-solid fa-shuffle"></i>
-            </button>
-
             <button
               className="control-btn secondary-btn"
               onClick={handleShare}

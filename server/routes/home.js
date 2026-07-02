@@ -12,6 +12,7 @@ const {
   getUserTopArtists,
   getUserTopTracks,
 } = require("../utils/spotifyApis");
+const { getDiscoveryShows } = require("../utils/getArtistShows");
 
 const setToken = require("../middlewares/setToken");
 const withTokenRetry = require("../middlewares/withTokenRetry");
@@ -235,5 +236,27 @@ router.get(
     }
   })
 );
+
+/**
+ * Fetches discovery concerts.
+ * @route GET /api/getConcerts
+ * @param {string} [country] - Optional country code
+ */
+router.get("/api/getConcerts", async (req, res) => {
+  try {
+    const { country, artist } = req.query;
+    const cacheKey = `discovery-concerts-${country || "global"}-${artist || "none"}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+    const concerts = await getDiscoveryShows(country, 20, artist);
+    cache.set(cacheKey, concerts);
+    res.json(concerts);
+  } catch (error) {
+    console.error("Error fetching concerts:", error.message);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+});
 
 module.exports = router;

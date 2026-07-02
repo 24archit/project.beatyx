@@ -2,6 +2,19 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 let isConnected = false;
 
+mongoose.connection.on("disconnected", () => {
+  isConnected = false;
+  console.error("MongoDB disconnected. Attempting reconnection...");
+});
+mongoose.connection.on("reconnected", () => {
+  isConnected = true;
+  console.log("MongoDB reconnected successfully.");
+});
+mongoose.connection.on("error", (err) => {
+  isConnected = false;
+  console.error("MongoDB connection error:", err.message);
+});
+
 async function connectToDb() {
   mongoose.set("strictQuery", true);
 
@@ -24,7 +37,8 @@ async function connectToDb() {
     // eslint-disable-next-line no-console
     console.log("MongoDB connected successfully! ⚡");
   } catch (error) {
-    console.error("Database connection error:", error);
+    console.error("FATAL: Database connection failed:", error.message);
+    process.exit(1);
   }
 }
 

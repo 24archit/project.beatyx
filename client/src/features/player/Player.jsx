@@ -7,6 +7,7 @@ import { useSharedPlayer } from "./useSharedPlayer";
 import { AnimatedWave } from "./AnimatedWave";
 import { DefaultTrackIcon } from "./DefaultTrackIcon";
 import { QueueList } from "../../components/QueueList";
+import { shareTrack } from "@/utils/shareUtil";
 
 const Player = () => {
   const [isDesktopQueueOpen, setIsDesktopQueueOpen] = useState(false);
@@ -80,13 +81,21 @@ const Player = () => {
           </div>
           <span className="track-name">{trackInfo?.trackName || "—"}</span>
         </Link>
+        <button
+          className="share-btn-desktop"
+          onClick={(e) => {
+            e.currentTarget.blur();
+            if (trackInfo?.id) shareTrack(trackInfo.id, trackInfo.trackName);
+          }}
+          aria-label="Share Track"
+          title="Share Track"
+        >
+          <i className="fa-solid fa-share"></i>
+        </button>
       </div>
 
       <div className="player-center">
         <div className="player-controls">
-          <button className="other-btn" aria-label="Shuffle">
-            <i className="fa-solid fa-shuffle"></i>
-          </button>
           <button className="backward-btn" onClick={handlePrev} aria-label="Previous Track">
             <i className="fa-solid fa-backward-step"></i>
           </button>
@@ -108,9 +117,6 @@ const Player = () => {
 
           <button className="backward-btn" onClick={handleNext} aria-label="Next Track">
             <i className="fa-solid fa-forward-step"></i>
-          </button>
-          <button className="other-btn" aria-label="Loop">
-            <i className="fa-solid fa-repeat"></i>
           </button>
         </div>
 

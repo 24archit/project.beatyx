@@ -1,8 +1,9 @@
 import { useSearchParams } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useEffect, useRef } from "react";
 import { getSearchResult } from "@/services/contentService";
+import { searchCustomPlaylists } from "@/services/customPlaylistService";
 import SectionLoading from "../components/SectionLoading";
 import SearchPageTrackSection from "../components/SearchPageTrackSection";
 import SearchPageArtistSection from "../components/SearchPageArtistSection";
@@ -56,16 +57,32 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
     getNextPageParam: (lastPage, allPages) => {
       if (isAllSearch) return undefined; // No infinite scroll for "All" view
 
+      const nextOffset = allPages.length * 20;
+      // Spotify API limits offset to a maximum of 1000
+      if (nextOffset >= 1000) return undefined;
+
       const currentCount = allPages.reduce(
         (acc, page) => acc + page.topResult.length + page.otherResult.length,
         0
       );
-      if (currentCount >= lastPage.total) return undefined;
-      return allPages.length * 20; // 20 is the limit for specific searches
+
+      if (lastPage.total && currentCount >= lastPage.total) return undefined;
+
+      const lastPageCount = lastPage.topResult.length + lastPage.otherResult.length;
+      if (lastPageCount < 20 && allPages.length > 0) return undefined; // Less than limit means no more pages
+
+      return nextOffset;
     },
     enabled: !!query && !!type,
     staleTime: 15 * 60 * 1000,
     refetchOnWindowFocus: false,
+  });
+
+  const { data: customPlaylistsData, isLoading: isCustomLoading } = useQuery({
+    queryKey: ["customPlaylistsSearch", query],
+    queryFn: () => searchCustomPlaylists(query),
+    enabled: !!query && (isAllSearch || type === "playlist"),
+    staleTime: 5 * 60 * 1000,
   });
 
   const searchResult = infiniteSearchData
@@ -206,7 +223,27 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
     case "album":
       return renderSection(SearchPageAlbumSection, "Albums", searchResult);
     case "playlist":
-      return renderSection(SearchPagePlaylistSection, "Playlists", searchResult);
+      return (
+        <>
+          {renderSection(SearchPagePlaylistSection, "Playlists", searchResult)}
+          {customPlaylistsData?.length > 0 && (
+            <SearchPagePlaylistSection
+              iconClass="fa-solid fa-music"
+              iconId="artstation-icon"
+              name=" Beatyx Custom Playlists"
+              data={customPlaylistsData.map((pl) => ({
+                id: pl._id,
+                name: pl.name,
+                description: pl.description || `Created by ${pl.ownerId?.displayName}`,
+                images: pl.tracks?.[0]?.imgSrc ? [{ url: pl.tracks[0].imgSrc }] : [],
+                owner: { display_name: pl.ownerId?.displayName || "Beatyx User" },
+                type: "playlist",
+                isOwner: pl.isOwner,
+              }))}
+            />
+          )}
+        </>
+      );
     default:
       return (
         <>
@@ -255,6 +292,22 @@ export default function SearchPage({ setPlayerMeta, setTrackInfo }) {
               iconId="artstation-icon"
               name=' "Playlists" Related To Your Search'
               data={searchResult.playlistResult}
+            />
+          )}
+          {customPlaylistsData?.length > 0 && (
+            <SearchPagePlaylistSection
+              iconClass="fa-solid fa-music"
+              iconId="artstation-icon"
+              name=" Beatyx Custom Playlists"
+              data={customPlaylistsData.map((pl) => ({
+                id: pl._id,
+                name: pl.name,
+                description: pl.description || `Created by ${pl.ownerId?.displayName}`,
+                images: pl.tracks?.[0]?.imgSrc ? [{ url: pl.tracks[0].imgSrc }] : [],
+                owner: { display_name: pl.ownerId?.displayName || "Beatyx User" },
+                type: "playlist",
+                isOwner: pl.isOwner,
+              }))}
             />
           )}
         </>

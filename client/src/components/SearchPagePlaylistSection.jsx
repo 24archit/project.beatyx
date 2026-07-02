@@ -51,7 +51,7 @@ export default function SearchPagePlaylistSection({ iconClass, iconId, name, dat
               }
               cardType="playlist"
               cardId={item.id}
-              spotifyUrl={item.external_urls.spotify}
+              spotifyUrl={item.external_urls?.spotify}
             />
           ))}
         </Carousel>

@@ -11,7 +11,7 @@ router.get("/api/getAudioLink/:trackId", async (req, res) => {
     }
     res.json(audioLink);
   } catch {
-    res.status(400).json({ error: "Not able to fetch audio Link" });
+    res.status(404).json({ error: "Audio link not found for this track" });
   }
 });
 

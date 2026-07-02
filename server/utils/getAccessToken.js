@@ -1,40 +1,44 @@
 const UniToken = require("../models/uniToken");
 const User = require("../models/user");
 const { getFreshTokens, getUserFreshTokens } = require("./getFreshTokens");
-const TOKEN_EXPIRY_TIME = 50 * 60 * 1000;
+const crypto = require("crypto");
+const hashEmail = (email) => crypto.createHash("sha256").update(email).digest("hex").slice(0, 12);
+const TOKEN_EXPIRY_TIME = 45 * 60 * 1000; // 45 minutes (Spotify tokens last 60min — use 45 to be safe)
+const CLOCK_SKEW_BUFFER = 30 * 1000; // 30 second buffer
 
+let refreshPromise = null; // In-flight deduplication
 async function getAccessToken(forceRefresh = false) {
   const Token = await UniToken.findOne();
-
   if (!Token) {
     console.error("[TokenError] Token not found in DB.");
     throw new Error("Token not found. Please initialize the token collection.");
   }
-
-  const currentTime = new Date();
-  const tokenAge = currentTime - new Date(Token.updationTime);
-
-  if (tokenAge >= TOKEN_EXPIRY_TIME || forceRefresh) {
-    if (forceRefresh) console.warn("[TokenWarning] Force refresh requested for UniToken...");
-    else console.warn("[TokenWarning] Token expired. Attempting to refresh...");
-
-    try {
-      const newAccessToken = await getFreshTokens();
-
+  const tokenAge = Date.now() - new Date(Token.updationTime).getTime();
+  if (tokenAge < TOKEN_EXPIRY_TIME - CLOCK_SKEW_BUFFER && !forceRefresh) {
+    return Token.accessToken; // Fast path — no refresh needed
+  }
+  // If a refresh is already in-flight, wait for it instead of stampeding
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+  // This process is now the single refresher
+  refreshPromise = getFreshTokens()
+    .then((newAccessToken) => {
       if (!newAccessToken) {
-        console.error("[RefreshError] getFreshTokens() returned null or undefined.");
         throw new Error("Failed to refresh the token. Returned value was empty.");
       }
-
       return newAccessToken;
-    } catch (refreshError) {
-      console.error("[RefreshError] Failed while refreshing token:", refreshError);
-      throw new Error("Token refresh failed. Please check the refresh logic or API credentials.");
-    }
-  }
-
-  return Token.accessToken;
+    })
+    .catch((err) => {
+      throw new Error("Token refresh failed: " + err.message);
+    })
+    .finally(() => {
+      refreshPromise = null; // Release lock when done
+    });
+  return refreshPromise;
 }
+
+const userRefreshPromises = new Map(); // In-flight deduplication per user
 
 async function getUserAccessToken(email, forceRefresh = false) {
   try {
@@ -51,28 +55,42 @@ async function getUserAccessToken(email, forceRefresh = false) {
       return { spotifyConnect: false };
     }
 
-    const currentTime = new Date();
-    const tokenAge = currentTime - new Date(user.updationTime);
+    const tokenAge = Date.now() - new Date(user.updationTime).getTime();
 
-    if (tokenAge >= TOKEN_EXPIRY_TIME || forceRefresh) {
-      if (forceRefresh) console.warn(`[TokenExpired] Force refresh requested for user ${email}...`);
-      else console.warn(`[TokenExpired] Token expired for the user. Refreshing...`);
-
-      const newAccessToken = await getUserFreshTokens(user.refreshToken, email);
-
-      if (!newAccessToken) {
-        console.error(`[RefreshError] Refresh token failed for ${email}`);
-        return {
-          error: true,
-          message: "Token refresh failed",
-          spotifyConnect: false,
-        };
-      }
-
-      return { spotifyConnect: true, accessToken: newAccessToken };
+    if (tokenAge < TOKEN_EXPIRY_TIME - CLOCK_SKEW_BUFFER && !forceRefresh) {
+      return { spotifyConnect: true, accessToken };
     }
 
-    return { spotifyConnect: true, accessToken };
+    if (userRefreshPromises.has(email)) {
+      return userRefreshPromises.get(email);
+    }
+
+    const refreshPromise = getUserFreshTokens(user.refreshToken, email)
+      .then((newAccessToken) => {
+        if (!newAccessToken) {
+          console.error(`[RefreshError] Refresh token failed for [${hashEmail(email)}]`);
+          return {
+            error: true,
+            message: "Token refresh failed",
+            spotifyConnect: false,
+          };
+        }
+        return { spotifyConnect: true, accessToken: newAccessToken };
+      })
+      .catch((err) => {
+        console.error(`[AccessTokenError] Failed to retrieve token:`, err);
+        return {
+          error: true,
+          message: "Unexpected error retrieving token",
+          spotifyConnect: false,
+        };
+      })
+      .finally(() => {
+        userRefreshPromises.delete(email);
+      });
+
+    userRefreshPromises.set(email, refreshPromise);
+    return refreshPromise;
   } catch (error) {
     console.error(`[AccessTokenError] Failed to retrieve token:`, error);
     return {

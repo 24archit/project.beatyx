@@ -8,14 +8,45 @@ import { SectionCard, SectionCardLoad } from "../components/SectionCard.jsx";
 import UpcomingConcerts from "../components/UpcomingConcerts.jsx";
 import defaultProfilePic from "/profile-pic.webp";
 import { getArtistInfo, getArtistAlbums } from "@/services/contentService";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
 import { Skeleton } from "@mui/material";
 import "../assets/styles/ArtistPage.css";
+import { followArtist, unfollowArtist, getFollowedArtists } from "@/services/userService";
 
 export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [selectedBtn, setSelectedBtn] = useState("topTracks");
+
+  const { data: followData, refetch: refetchFollow } = useQuery({
+    queryKey: ["followedArtistsIds"],
+    queryFn: () => getFollowedArtists(true),
+    enabled: !!window.localStorage.getItem("authToken"),
+  });
+
+  const isFollowing = followData?.followedArtists?.includes(id) || false;
+
+  const handleToggleFollow = async () => {
+    const token = window.localStorage.getItem("authToken");
+    if (!token) {
+      alert("Please log in to follow artists.");
+      return;
+    }
+
+    try {
+      if (isFollowing) {
+        await unfollowArtist(id);
+      } else {
+        await followArtist(id);
+      }
+      refetchFollow();
+      queryClient.invalidateQueries({ queryKey: ["followedArtists"] });
+    } catch (error) {
+      console.error("Failed to toggle follow:", error);
+      alert("Failed to update follow status.");
+    }
+  };
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["artist", id],
@@ -33,8 +64,13 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
     queryFn: ({ pageParam = 8 }) => getArtistAlbums(id, pageParam),
     getNextPageParam: (lastPage, allPages) => {
       const currentItems = lastPage?.items || [];
-      if (currentItems.length < 12) return undefined;
-      return 8 + allPages.length * 12;
+      if (currentItems.length < 12 && allPages.length > 0) return undefined;
+
+      const nextOffset = 8 + allPages.length * 12;
+      if (data?.ArtistTopAlbums?.total && nextOffset >= data.ArtistTopAlbums.total)
+        return undefined;
+
+      return nextOffset;
     },
     enabled: !!data?.ArtistTopAlbums && data?.ArtistTopAlbums?.total > 8,
     staleTime: 15 * 60 * 1000,
@@ -141,6 +177,8 @@ export default function ArtistPage({ setPlayerMeta, setTrackInfo }) {
               followers={artistData.followers.total}
               trendScore={artistData.popularity}
               img={artistData.images.length > 0 ? artistData.images[0].url : defaultProfilePic}
+              isFollowing={isFollowing}
+              onToggleFollow={handleToggleFollow}
             />
 
             <div className="buttons-container">

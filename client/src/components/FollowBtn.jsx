@@ -1,11 +1,11 @@
 import "../assets/styles/FollowBtn.css";
 import { Skeleton } from "@mui/material";
-export function FollowBtn() {
+export function FollowBtn({ isFollowing, onClick }) {
   return (
     <>
       <div className="follow-btn-container">
-        <button id="followbtn">
-          <span>Follow</span>
+        <button id="followbtn" className={isFollowing ? "following" : ""} onClick={onClick}>
+          <span>{isFollowing ? "Following" : "Follow"}</span>
         </button>
       </div>
     </>
