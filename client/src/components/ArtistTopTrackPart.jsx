@@ -4,6 +4,15 @@ import { Link } from "react-router-dom";
 import TrackLogo from "/Track-Logo.webp";
 import React from "react";
 export function ArtistTopTrackPart(props) {
+  const currentQueue = props.data.tracks
+    .filter((item) => item.id)
+    .map((item) => ({
+      id: item.id,
+      trackName: item.name,
+      imgSrc: item.album.images.length > 0 ? item.album.images[0].url : TrackLogo,
+      artistNames: item.artists || ["Unknown Artist"],
+    }));
+
   return (
     <div className="artist-top-track-container">
       {props.data.tracks.map((item, index) => (
@@ -30,6 +39,8 @@ export function ArtistTopTrackPart(props) {
           setPlayerMeta={props.setPlayerMeta}
           setTrackInfo={props.setTrackInfo}
           artistNames={item.artists}
+          queue={currentQueue}
+          indexInQueue={index}
         />
       ))}
     </div>

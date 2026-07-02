@@ -12,7 +12,7 @@
 }
 
 .logo-symbol img {
-  width: 130px;
+  width: 180px;
   height: auto;
   display: block;
   object-fit: contain;
@@ -20,7 +20,7 @@
 
 @media (max-width: 768px) {
   .logo-symbol img {
-    width: 115px;
+    width: 150px;
   }
   .logo {
     padding: 2px;
@@ -29,6 +29,6 @@
 
 @media (max-width: 400px) {
   .logo-symbol img {
-    width: 105px;
+    width: 135px;
   }
 }

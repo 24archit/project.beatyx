@@ -4,6 +4,15 @@ import { Link } from "react-router-dom";
 import TrackLogo from "/Track-Logo.webp";
 import React from "react";
 export function PlaylistTrackList(props) {
+  const currentQueue = props.data
+    .filter((item) => item.track && item.track.id) // basic validation
+    .map((item) => ({
+      id: item.track.id,
+      trackName: item.track.name,
+      imgSrc: item.track.album?.images?.[0]?.url || TrackLogo,
+      artistNames: item.track.artists || ["Unknown Artist"],
+    }));
+
   return (
     <div className="playlist-track-container">
       {props.data.map((item, index) => (
@@ -42,6 +51,8 @@ export function PlaylistTrackList(props) {
                 setTrackInfo={props.setTrackInfo}
                 isPlaylist={props.isPlaylist}
                 artistNames={item.track.artists}
+                queue={currentQueue}
+                indexInQueue={index}
               />
             )}
         </React.Fragment>

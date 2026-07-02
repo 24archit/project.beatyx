@@ -12,7 +12,6 @@ const {
   getUserFollowedArtists,
 } = require("../utils/spotifyApis");
 const { getSeveralTracks } = require("../utils/spotifyApis");
-const currPlaylist = require("../models/currPlaylist");
 router.get("/profile", verifyAuth, async (req, res) => {
   try {
     const user = await User.findOne({ email: req.user.user.email }).select("-password");
@@ -163,21 +162,9 @@ router.get("/getLikedSongs", verifyAuth, async (req, res) => {
       }
     }
 
-    const playlistId = `liked_songs_${req.user.user.email}`;
-
-    const playlistResult = await currPlaylist.findOneAndUpdate(
-      { playlistId },
-      {
-        tracks: formattedTracks,
-        playlistId: playlistId,
-      },
-      { upsert: true, new: true }
-    );
-
     res.status(200).json({
       likedSongs: likedSongIds,
       items: formattedTracks,
-      currPlaylistId: playlistResult._id,
     });
   } catch (error) {
     console.error("Error in getLikedSongs:", error.message);
@@ -210,9 +197,6 @@ router.delete("/account", verifyAuth, async (req, res) => {
   try {
     const email = req.user.user.email;
     await User.deleteOne({ email });
-    // Cleanup playlists (liked songs)
-    const playlistId = `liked_songs_${email}`;
-    await currPlaylist.deleteOne({ playlistId });
 
     res.status(200).json({ success: true, message: "Account deleted successfully." });
   } catch (error) {

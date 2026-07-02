@@ -1,15 +1,16 @@
 import { useState, Suspense, useEffect } from "react";
-import ReactPlayer from "react-player/youtube";
 import prettyMilliseconds from "pretty-ms";
 import TrackLogo from "/Track-Logo.webp";
 import { useSharedPlayer } from "./useSharedPlayer";
 import "./CurrentTrackButton.css";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import { useNavigate } from "react-router-dom";
 
 const CurrentTrackButton = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoopEnabled, setIsLoopEnabled] = useState(false);
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
+  const navigate = useNavigate();
 
   const {
     // State
@@ -65,30 +66,8 @@ const CurrentTrackButton = () => {
 
   const toggleDrawer = (e) => {
     if (e) removeFocus(e);
-    
-    if (!isDrawerOpen) {
-      window.history.pushState({ drawer: "open" }, "");
-      setIsDrawerOpen(true);
-    } else {
-      if (window.history.state?.drawer === "open") {
-        window.history.back();
-      } else {
-        setIsDrawerOpen(false);
-      }
-    }
+    setIsDrawerOpen(!isDrawerOpen);
   };
-
-  // Handle hardware back button
-  useEffect(() => {
-    const handlePopState = () => {
-      if (isDrawerOpen) {
-        setIsDrawerOpen(false);
-      }
-    };
-    
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [isDrawerOpen]);
 
   // Enhanced handlers with focus removal
   const handlePlayPauseClick = (e) => {
@@ -120,48 +99,14 @@ const CurrentTrackButton = () => {
     removeFocus(e);
   };
 
+  const handleMobileQueueNav = (e) => {
+    removeFocus(e);
+    setIsDrawerOpen(false); // Close drawer
+    navigate("/queue");
+  };
+
   return (
     <>
-      {/* Hidden ReactPlayer */}
-      <div style={{ position: "fixed", bottom: 0, right: 0, width: "10px", height: "10px", zIndex: -10, pointerEvents: "none", overflow: "hidden", opacity: 0.01 }}>
-        <Suspense fallback={null}>
-          {url && (
-            <ReactPlayer
-              ref={playerRef}
-              url={url}
-              playing={playing}
-              volume={volume}
-              width="100%"
-              height="100%"
-              pip={true}
-              playsinline={true}
-              config={{
-                youtube: {
-                  playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    modestbranding: 1,
-                    origin: window.location.origin,
-                    disableRemotePlayback: 1,
-                    playsinline: 1,
-                    background: 1,
-                  },
-                },
-              }}
-              onReady={handleReady}
-              onPlay={handlePlay}
-              onPause={handlePause}
-              onDuration={handleDuration}
-              onEnded={handleEnded}
-              onError={handleError}
-              onProgress={handleProgress}
-              onBuffer={handleBuffer}
-              onBufferEnd={handleBufferEnd}
-            />
-          )}
-        </Suspense>
-      </div>
-
       {/* Floating Mini Player */}
       <div className="ctb-mini-player" onClick={toggleDrawer}>
         <div className="ctb-mini-left">
@@ -176,19 +121,28 @@ const CurrentTrackButton = () => {
           </div>
         </div>
         <div className="ctb-mini-right">
-           <button 
-             className="ctb-mini-play-btn" 
-             onClick={(e) => { 
-               e.stopPropagation(); 
-               handlePlayPauseClick(e); 
-             }}
-           >
-              {isBuffering ? (
-                <div className="spinner-ring" style={{ width: 14, height: 14, borderWidth: 2, borderColor: "rgba(0,0,0,0.2)", borderTopColor: "#000" }}></div>
-              ) : (
-                <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}></i>
-              )}
-           </button>
+          <button
+            className="ctb-mini-play-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlayPauseClick(e);
+            }}
+          >
+            {isBuffering ? (
+              <div
+                className="spinner-ring"
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderWidth: 2,
+                  borderColor: "rgba(0,0,0,0.2)",
+                  borderTopColor: "#000",
+                }}
+              ></div>
+            ) : (
+              <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`}></i>
+            )}
+          </button>
         </div>
       </div>
 
@@ -201,10 +155,15 @@ const CurrentTrackButton = () => {
 
         {/* Drawer Content */}
         <div className="drawer-content">
-          {/* Close Button */}
-          <button className="close-btn" onClick={toggleDrawer}>
-            <i className="fa-solid fa-chevron-down"></i>
-          </button>
+          {/* Header Row: Close Button & Queue Button */}
+          <div className="drawer-header-row">
+            <button className="close-btn" onClick={toggleDrawer}>
+              <i className="fa-solid fa-chevron-down"></i>
+            </button>
+            <button className="mobile-queue-btn" onClick={handleMobileQueueNav}>
+              <i className="fa-solid fa-list-ul"></i> Queue
+            </button>
+          </div>
 
           {/* Large Album Art */}
           <div className="large-artwork">

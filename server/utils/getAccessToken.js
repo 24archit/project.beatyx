@@ -3,7 +3,7 @@ const User = require("../models/user");
 const { getFreshTokens, getUserFreshTokens } = require("./getFreshTokens");
 const TOKEN_EXPIRY_TIME = 50 * 60 * 1000;
 
-async function getAccessToken() {
+async function getAccessToken(forceRefresh = false) {
   const Token = await UniToken.findOne();
 
   if (!Token) {
@@ -14,8 +14,9 @@ async function getAccessToken() {
   const currentTime = new Date();
   const tokenAge = currentTime - new Date(Token.updationTime);
 
-  if (tokenAge >= TOKEN_EXPIRY_TIME) {
-    console.warn("[TokenWarning] Token expired. Attempting to refresh...");
+  if (tokenAge >= TOKEN_EXPIRY_TIME || forceRefresh) {
+    if (forceRefresh) console.warn("[TokenWarning] Force refresh requested for UniToken...");
+    else console.warn("[TokenWarning] Token expired. Attempting to refresh...");
 
     try {
       const newAccessToken = await getFreshTokens();
@@ -35,7 +36,7 @@ async function getAccessToken() {
   return Token.accessToken;
 }
 
-async function getUserAccessToken(email) {
+async function getUserAccessToken(email, forceRefresh = false) {
   try {
     const user = await User.findOne({ email });
 
@@ -53,8 +54,9 @@ async function getUserAccessToken(email) {
     const currentTime = new Date();
     const tokenAge = currentTime - new Date(user.updationTime);
 
-    if (tokenAge >= TOKEN_EXPIRY_TIME) {
-      console.warn(`[TokenExpired] Token expired for the user. Refreshing...`);
+    if (tokenAge >= TOKEN_EXPIRY_TIME || forceRefresh) {
+      if (forceRefresh) console.warn(`[TokenExpired] Force refresh requested for user ${email}...`);
+      else console.warn(`[TokenExpired] Token expired for the user. Refreshing...`);
 
       const newAccessToken = await getUserFreshTokens(user.refreshToken, email);
 

@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const { getTrack, getRecommendations, getArtistTopTracks } = require("../utils/spotifyApis");
-const currPlaylist = require("../models/currPlaylist");
 const setToken = require("../middlewares/setToken");
-
-router.get("/api/getTrackInfo/:id", setToken, async (req, res) => {
-  try {
+const withTokenRetry = require("../middlewares/withTokenRetry");
+router.get(
+  "/api/getTrackInfo/:id",
+  setToken,
+  withTokenRetry(async (req, res) => {
     const trackId = req.params.id;
     const accessToken = req.session.accessToken;
 
@@ -36,22 +37,11 @@ router.get("/api/getTrackInfo/:id", setToken, async (req, res) => {
 
     const formattedTracks = recommendations.map((track) => ({ track }));
 
-    const playlistId = `track_radio_${trackId}`;
-    const result = await currPlaylist.findOneAndUpdate(
-      { playlistId },
-      { tracks: formattedTracks },
-      { upsert: true, new: true }
-    );
-
     res.json({
       track: trackData,
       recommendations: formattedTracks,
-      currPlaylistId: result._id,
     });
-  } catch (error) {
-    console.error("Error in getTrackInfo:", error.message);
-    res.status(400).json({ error: "Unable to fetch track info" });
-  }
-});
+  })
+);
 
 module.exports = router;

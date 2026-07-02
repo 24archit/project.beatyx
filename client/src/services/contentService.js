@@ -90,7 +90,6 @@ export async function getPlaylistInfo(id) {
       method: "GET",
       headers: getAuthHeaders(),
     });
-    window.sessionStorage.setItem("currPlaylistId", response.data.currPlaylistId);
     return response.data;
   } catch (error) {
     throw new Error(`Error fetching playlist data for id ${id}: ${error.message}`);

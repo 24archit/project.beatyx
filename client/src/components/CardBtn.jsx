@@ -1,9 +1,7 @@
 // client/src/components/CardBtn.jsx
 import "../assets/styles/CardBtn.css";
-import { getAudioLink } from "@/features/player/playerService";
 import { useNavigate } from "react-router-dom";
 import { useSharedPlayer } from "@/features/player";
-import { useState } from "react";
 export function CardBtn({
   iconId,
   logoClass,
@@ -17,11 +15,17 @@ export function CardBtn({
   artistNames,
 }) {
   const navigate = useNavigate();
-  const { trackInfo: currentTrack, playing, togglePlayPause } = useSharedPlayer();
-  const [isPlayLoading, setIsPlayLoading] = useState(false);
+  const {
+    trackInfo: currentTrack,
+    playing,
+    togglePlayPause,
+    playQueue,
+    loadingTrackId,
+  } = useSharedPlayer();
   const isTrackCard = cardType === "track";
   const isCurrentTrack = isTrackCard && currentTrack?.id === cardId;
   const isPlayingThis = isCurrentTrack && playing;
+  const isPlayLoading = loadingTrackId === cardId;
 
   const handelOnClick = async (e) => {
     e.stopPropagation();
@@ -38,25 +42,21 @@ export function CardBtn({
     }
 
     try {
-      setIsPlayLoading(true);
-      const data = await getAudioLink(cardId);
-      const url = data != null ? data.url : "";
-
-      const newTrackInfo = {
-        id: cardId,
-        trackName: cardName,
-        imgSrc: imgSrc,
-        artistNames: artistNames && artistNames.length > 0 ? artistNames : ["Unknown Artist"],
-      };
-
-      setPlayerMeta(url);
-      setTrackInfo(newTrackInfo);
+      await playQueue(
+        [
+          {
+            id: cardId,
+            trackName: cardName,
+            imgSrc: imgSrc,
+            artistNames: artistNames && artistNames.length > 0 ? artistNames : ["Unknown Artist"],
+          },
+        ],
+        0
+      );
       e.target.blur();
     } catch (error) {
       console.error("Error:", error.message || "Cannot SetUrl To Player");
       alert("This audio is not available right now");
-    } finally {
-      setIsPlayLoading(false);
     }
   };
 

@@ -69,10 +69,6 @@ export default function LikedSongsPage({ setPlayerMeta, setTrackInfo }) {
     if (data?.likedSongs) {
       setLikedSongs(data.likedSongs);
     }
-    // 2. NEW: Set currPlaylistId for the Queue System
-    if (data?.currPlaylistId) {
-      window.sessionStorage.setItem("currPlaylistId", data.currPlaylistId);
-    }
   }, [data, setLikedSongs]);
 
   useEffect(() => {

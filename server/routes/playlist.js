@@ -1,14 +1,16 @@
 const router = require("express").Router();
 const { getPlaylist } = require("../utils/spotifyApis");
-const currPlaylist = require("../models/currPlaylist");
 const setToken = require("../middlewares/setToken");
+const withTokenRetry = require("../middlewares/withTokenRetry");
 
 /**
  * Fetches playlist information and updates the current playlist state.
  * @route GET /api/getPlaylistInfo/:playlistId
  */
-router.get("/api/getPlaylistInfo/:playlistId", setToken, async (req, res) => {
-  try {
+router.get(
+  "/api/getPlaylistInfo/:playlistId",
+  setToken,
+  withTokenRetry(async (req, res) => {
     const playlistId = req.params.playlistId;
     const playlist = await getPlaylist(playlistId, req.session.accessToken);
 
@@ -16,17 +18,8 @@ router.get("/api/getPlaylistInfo/:playlistId", setToken, async (req, res) => {
       throw new Error("Error fetching the playlist");
     }
 
-    const result = await currPlaylist.findOneAndUpdate(
-      { playlistId },
-      { tracks: playlist.tracks.items },
-      { upsert: true, new: true }
-    );
-
-    res.json({ playlist, currPlaylistId: result._id });
-  } catch (error) {
-    console.error("Error fetching playlist:", error.message);
-    res.status(400).json({ error: "Not able to fetch playlist" });
-  }
-});
+    res.json({ playlist });
+  })
+);
 
 module.exports = router;

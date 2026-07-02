@@ -20,20 +20,23 @@ export function TrackLineCard({
   spotifyUrl,
   isPlaylist = false,
   artistNames = [],
+  queue = [],
+  indexInQueue = 0,
 }) {
   const {
     trackInfo: currentTrack,
     playing,
     togglePlayPause,
-
+    playQueue,
     likedSongs,
     toggleLikeLocal,
+    loadingTrackId,
   } = useSharedPlayer();
 
   const isCurrentTrack = currentTrack?.id === cardId;
   const isPlayingThis = isCurrentTrack && playing;
   const isLiked = likedSongs.includes(cardId);
-  const [isPlayLoading, setIsPlayLoading] = useState(false);
+  const isPlayLoading = loadingTrackId === cardId;
   const isCurrentTrackLoaded = currentTrack?.trackName === trackName;
   const handelOnClick = async (e) => {
     e.stopPropagation();
@@ -44,23 +47,17 @@ export function TrackLineCard({
     }
 
     try {
-      setIsPlayLoading(true);
-      const currPlaylistId = window.sessionStorage.getItem("currPlaylistId");
-      const queueId = window.sessionStorage.getItem("queueId");
-      const data = await getAudioLink(cardId, isPlaylist, trackRank - 1, currPlaylistId, queueId);
-      const url = data != null ? data.url : "";
-      const newTrackInfo = { id: cardId, trackName, imgSrc, artistNames };
-
-      if (setTrackInfo) setTrackInfo(newTrackInfo);
-      if (setPlayerMeta) setPlayerMeta(url);
+      if (queue && queue.length > 0) {
+        await playQueue(queue, indexInQueue);
+      } else {
+        await playQueue([{ id: cardId, trackName, imgSrc, artistNames }], 0);
+      }
       e.target.blur();
     } catch (error) {
       console.error(error);
       alert(
         "Audio Source Unavailable\n\nWe couldn't retrieve the audio source for this track right now."
       );
-    } finally {
-      setIsPlayLoading(false);
     }
   };
 
@@ -113,9 +110,26 @@ export function TrackLineCard({
       </div>
 
       {/* 3. Image - Wrapped in Link */}
-      <div className="img-container">
+      <div className="img-container" style={{ position: "relative" }}>
         <Link to={`/track/${cardId}`}>
-          <img src={imgSrc} alt="track-image" loading="lazy"></img>
+          <img
+            src={imgSrc}
+            alt="track-image"
+            loading="lazy"
+            style={{ opacity: isPlayLoading ? 0.5 : 1 }}
+          ></img>
+          {isPlayLoading && (
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <div className="spinner-ring" style={{ width: 20, height: 20 }}></div>
+            </div>
+          )}
         </Link>
       </div>
 
@@ -163,14 +177,10 @@ export function TrackLineCard({
         onClick={handelOnClick}
         title={isPlayingThis ? "Pause Track" : "Play Track"}
       >
-        {isPlayLoading ? (
-          <i className="fa-solid fa-spinner fa-spin" id="play-btn"></i>
-        ) : (
-          <i
-            className={`fa-solid ${isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"}`}
-            id="play-btn"
-          ></i>
-        )}
+        <i
+          className={`fa-solid ${isCurrentTrackLoaded && playing ? "fa-pause" : "fa-play"}`}
+          id="play-btn"
+        ></i>
       </div>
     </div>
   );

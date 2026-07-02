@@ -1,0 +1,241 @@
+.queue-list-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.queue-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  color: #fff;
+}
+
+.queue-section-title:first-child {
+  margin-top: 0;
+}
+
+.queue-item {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.8rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.queue-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.queue-item:hover .queue-item-img-container .play-overlay {
+  opacity: 1;
+}
+
+.queue-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.queue-item-img-container {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.queue-item-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.queue-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queue-wave-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  height: 50%;
+}
+
+.queue-wave-bars .bar {
+  width: 3px;
+  background-color: var(--accent-primary, #a855f7);
+  border-radius: 2px;
+  transform-origin: bottom;
+  transform: scaleY(0.2);
+  transition: transform 0.2s ease;
+}
+
+.queue-wave-bars .bar.is-playing {
+  animation: queueWaveAnim 1s ease-in-out infinite;
+}
+
+.queue-wave-bars .bar:nth-child(1) {
+  animation-delay: 0s;
+  height: 40%;
+}
+.queue-wave-bars .bar:nth-child(2) {
+  animation-delay: 0.2s;
+  height: 70%;
+}
+.queue-wave-bars .bar:nth-child(3) {
+  animation-delay: 0.4s;
+  height: 100%;
+}
+.queue-wave-bars .bar:nth-child(4) {
+  animation-delay: 0.1s;
+  height: 60%;
+}
+
+@keyframes queueWaveAnim {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.queue-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  overflow: hidden;
+}
+
+.queue-item-title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.active-title {
+  color: var(--accent-primary, #a855f7);
+}
+
+.queue-item-title:hover {
+  text-decoration: underline;
+}
+
+.queue-item-artist {
+  color: #b3b3b3;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-dimmed {
+  opacity: 0.6;
+}
+
+.queue-item-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 32px;
+}
+
+.queue-action-btn {
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.35rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  opacity: 0; /* Hidden by default, show on hover of parent */
+}
+
+.queue-item:hover .queue-action-btn {
+  opacity: 1;
+}
+
+.queue-action-btn:hover {
+  color: #fff;
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.empty-queue-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: #b3b3b3;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-queue-container h2 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+/* Mobile specific styling for queue */
+@media (max-width: 768px) {
+  .queue-list-container {
+    padding: 0.5rem;
+  }
+
+  .queue-action-btn {
+    opacity: 1; /* Always show buttons on mobile since hover isn't natural */
+  }
+}

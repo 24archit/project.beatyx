@@ -1,6 +1,7 @@
 // src/context/PlayerProvider.jsx
-import { useState, useRef, useEffect, useCallback } from "react";
-import { getNextAudioLink, getPreviousAudioLink } from "./playerService";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import ReactPlayer from "react-player/youtube";
+import { getAudioLink } from "./playerService";
 import { getLikedSongs } from "@/services/userService";
 // Throttle helper
 function useThrottle(callback, delay) {
@@ -27,8 +28,41 @@ export const PlayerProvider = ({
   initialIsSpotifyConnected = false,
 }) => {
   // — Core playback state
-  const [url, setUrl] = useState(initialUrl);
-  const [trackInfo, setTrackInfo] = useState(initialTrackInfo);
+  const [url, setUrl] = useState(() => {
+    try {
+      const stored = window.sessionStorage.getItem("beatyx_track_url");
+      return stored && stored !== "undefined" ? stored : initialUrl;
+    } catch {
+      return initialUrl;
+    }
+  });
+
+  const [trackInfo, setTrackInfo] = useState(() => {
+    let parsed = null;
+    try {
+      const stored = window.sessionStorage.getItem("beatyx_track_info");
+      parsed = stored && stored !== "undefined" ? JSON.parse(stored) : null;
+    } catch {
+      // Ignore initial parse error
+    }
+
+    if (!parsed || Object.keys(parsed).length === 0) {
+      try {
+        const storedQueue = window.sessionStorage.getItem("beatyx_queue");
+        const storedIndex = window.sessionStorage.getItem("beatyx_queue_index");
+        if (storedQueue && storedIndex !== null && storedIndex !== "undefined") {
+          const parsedQueue = JSON.parse(storedQueue);
+          const parsedIndex = parseInt(storedIndex, 10);
+          if (parsedQueue[parsedIndex]) {
+            parsed = parsedQueue[parsedIndex];
+          }
+        }
+      } catch {
+        // Ignore fallback parse error
+      }
+    }
+    return parsed || initialTrackInfo;
+  });
   const [volume, setVolume] = useState(0.9);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -39,10 +73,50 @@ export const PlayerProvider = ({
   const [isAuth, setIsAuth] = useState(initialIsAuth);
   const [isSpotifyConnected, setIsSpotifyConnected] = useState(initialIsSpotifyConnected);
 
+  // — Queue state (Session Persisted)
+  const [queue, setQueue] = useState(() => {
+    try {
+      const stored = window.sessionStorage.getItem("beatyx_queue");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
+    try {
+      const stored = window.sessionStorage.getItem("beatyx_queue_index");
+      return stored ? parseInt(stored, 10) : -1;
+    } catch {
+      return -1;
+    }
+  });
+
+  // Sync queue state to sessionStorage
+  useEffect(() => {
+    window.sessionStorage.setItem("beatyx_queue", JSON.stringify(queue));
+  }, [queue]);
+
+  useEffect(() => {
+    window.sessionStorage.setItem("beatyx_queue_index", currentTrackIndex.toString());
+  }, [currentTrackIndex]);
+
+  useEffect(() => {
+    if (url) {
+      window.sessionStorage.setItem("beatyx_track_url", url);
+    }
+  }, [url]);
+
+  useEffect(() => {
+    if (trackInfo && Object.keys(trackInfo).length > 0) {
+      window.sessionStorage.setItem("beatyx_track_info", JSON.stringify(trackInfo));
+    }
+  }, [trackInfo]);
+
   // — Prefetch & transition
   const [nextTrackInfo, setNextTrackInfo] = useState(null);
   const [isPrefetching, setIsPrefetching] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [loadingTrackId, setLoadingTrackId] = useState(null);
   const [skipNextEnded, setSkipNextEnded] = useState(false);
 
   const prefetchedForUrlRef = useRef(null);
@@ -72,155 +146,200 @@ export const PlayerProvider = ({
     }
   };
 
-  // — Helpers
-  const extractVideoId = useCallback((videoUrl) => {
-    if (!videoUrl) return null;
-    try {
-      const urlObj = new URL(videoUrl);
-      if (urlObj.hostname === "youtu.be") {
-        return urlObj.pathname.slice(1);
-      }
-      if (/youtube\.com/.test(urlObj.hostname)) {
-        const v = urlObj.searchParams.get("v") || urlObj.searchParams.get("vi");
-        if (v && /^[\w-]{11}$/.test(v)) return v;
-        for (let seg of urlObj.pathname.split("/")) {
-          if (/^[\w-]{11}$/.test(seg)) return seg;
-        }
-        if (urlObj.hash) {
-          for (let seg of urlObj.hash.slice(1).split("/")) {
-            if (/^[\w-]{11}$/.test(seg)) return seg;
-          }
-        }
-      }
-    } catch (e) {
-      console.error("extractVideoId error", e);
-    }
-    return null;
-  }, []);
-
-  const getQueueId = useCallback(() => {
-    try {
-      return window.sessionStorage.getItem("queueId");
-    } catch {
-      return null;
-    }
-  }, []);
-
   const getInternalPlayer = useCallback(() => {
     return playerRef.current?.getInternalPlayer?.() || null;
   }, []);
 
   // — Track loading & navigation
-  const loadTrack = useCallback(
-    (trackUrl, trackDetails) => {
-      // Just update React state, let react-player handle the media transitions internally.
-      // Manually calling internal player methods + setTimeout loses the mobile user-gesture token.
-      setUrl(trackUrl);
-      setTrackInfo(trackDetails);
-      setPlaying(true);
-      setProgress(0);
-      setDuration(0);
-      setErrorMessage("");
-      setIsBuffering(true);
-      setIsTransitioning(false);
-    },
-    []
-  );
+  const loadTrack = useCallback((trackUrl, trackDetails) => {
+    // Just update React state, let react-player handle the media transitions internally.
+    // Manually calling internal player methods + setTimeout loses the mobile user-gesture token.
+    setUrl(trackUrl);
+    setTrackInfo(trackDetails);
+    setPlaying(true);
+    setProgress(0);
+    setDuration(0);
+    setErrorMessage("");
+    setIsBuffering(true);
+    setIsTransitioning(false);
+  }, []);
 
   const prefetchNextTrack = useCallback(async () => {
     if (isPrefetching || isTransitioning) return;
+    const nextTrack = queue[currentTrackIndex + 1];
+    if (!nextTrack) return;
+
     setIsPrefetching(true);
     prefetchedForUrlRef.current = url;
-    const q = getQueueId();
-    if (!q) {
-      setIsPrefetching(false);
-      return;
-    }
+
     try {
-      const nxt = await getNextAudioLink(q);
-      if (nxt?.audioLink?.url) {
-        setNextTrackInfo(nxt);
+      const data = await getAudioLink(nextTrack.id);
+      if (data?.url) {
+        setNextTrackInfo({ id: nextTrack.id, audioLink: { url: data.url } });
       }
     } catch (e) {
       console.error("prefetchNextTrack error", e);
     }
     setIsPrefetching(false);
-  }, [getQueueId, isPrefetching, isTransitioning, url]);
+  }, [queue, currentTrackIndex, isPrefetching, isTransitioning, url]);
 
   const playNextTrack = useCallback(async () => {
-    if (isTransitioning) return;
+    if (isTransitioning || queue.length === 0) return;
     setIsTransitioning(true);
 
     while (isPrefetching) {
       await new Promise((r) => setTimeout(r, 50));
     }
 
+    let nextIndex = currentTrackIndex + 1;
+    if (nextIndex >= queue.length) nextIndex = 0; // Loop to start
+
+    let nextTrack = queue[nextIndex];
+    let attempts = 0;
+    const MAX_ATTEMPTS = queue.length; // Don't infinite loop forever if all tracks are broken
+
     let nextUrl = nextTrackInfo?.audioLink?.url;
-    let details = nextTrackInfo
-      ? {
-          id: nextTrackInfo.id, // <--- ADD THIS LINE
-          trackName: nextTrackInfo.trackName,
-          imgSrc: nextTrackInfo.imgSrc,
-          artistNames: nextTrackInfo.artistNames || ["Unknown Artist"],
-        }
-      : null;
+    // If prefetched track doesn't match the expected next track, discard it
+    if (nextTrackInfo?.id !== nextTrack?.id) {
+      nextUrl = null;
+    }
 
-    if (!nextUrl) {
-      const q = getQueueId();
-      if (!q) return setIsTransitioning(false);
-
+    while (!nextUrl && attempts < MAX_ATTEMPTS) {
       try {
-        const nxt = await getNextAudioLink(q);
-        if (nxt?.audioLink?.url) {
-          nextUrl = nxt.audioLink.url;
-          details = {
-            id: nxt.id, // <--- ADD THIS LINE
-            trackName: nxt.trackName,
-            imgSrc: nxt.imgSrc,
-            artistNames: nxt.artistNames || ["Unknown Artist"],
-          };
+        setLoadingTrackId(nextTrack.id);
+        const data = await getAudioLink(nextTrack.id);
+        if (data?.url) {
+          nextUrl = data.url;
+          break;
         }
       } catch (e) {
-        console.error("playNextTrack fetch error", e);
-        setIsTransitioning(false);
-        return;
+        console.error(`playNextTrack fetch error (attempt ${attempts + 1})`, e);
       }
+      // Skip to the next track if fetch fails
+      attempts++;
+      if (attempts >= MAX_ATTEMPTS) break;
+
+      nextIndex++;
+      if (nextIndex >= queue.length) nextIndex = 0; // Loop to start
+      nextTrack = queue[nextIndex];
     }
 
-    if (nextUrl) {
+    if (nextUrl && nextTrack) {
       setNextTrackInfo(null);
-      loadTrack(nextUrl, details);
+      setCurrentTrackIndex(nextIndex);
+      loadTrack(nextUrl, nextTrack);
     } else {
       setIsTransitioning(false);
+      setPlaying(false);
+      setErrorMessage("No playable tracks found in the queue.");
     }
-  }, [getQueueId, isPrefetching, isTransitioning, nextTrackInfo, loadTrack]);
+    setLoadingTrackId(null);
+  }, [queue, currentTrackIndex, isPrefetching, isTransitioning, nextTrackInfo, loadTrack]);
 
   const playPreviousTrack = useCallback(async () => {
-    if (isTransitioning) return;
+    if (isTransitioning || queue.length === 0) return;
     setIsTransitioning(true);
 
-    const q = getQueueId();
-    if (!q) return setIsTransitioning(false);
+    let prevIndex = currentTrackIndex - 1;
+    if (prevIndex < 0) prevIndex = queue.length - 1; // Loop to end
+    let prevTrack = queue[prevIndex];
 
-    try {
-      const prev = await getPreviousAudioLink(q);
-      const urlToPlay = prev?.audioLink?.url;
-      const details = {
-        id: prev.id, // <--- ADD THIS LINE
-        trackName: prev.trackName,
-        imgSrc: prev.imgSrc,
-        artistNames: prev.artistNames || ["Unknown Artist"],
-      };
-      if (urlToPlay) {
-        loadTrack(urlToPlay, details);
-      } else {
-        setIsTransitioning(false);
+    let prevUrl = null;
+    let attempts = 0;
+    const MAX_ATTEMPTS = queue.length;
+
+    while (!prevUrl && attempts < MAX_ATTEMPTS) {
+      try {
+        setLoadingTrackId(prevTrack.id);
+        const data = await getAudioLink(prevTrack.id);
+        if (data?.url) {
+          prevUrl = data.url;
+          break;
+        }
+      } catch (e) {
+        console.error("playPreviousTrack error", e);
       }
-    } catch (e) {
-      console.error("playPreviousTrack error", e);
-      setIsTransitioning(false);
+      attempts++;
+      if (attempts >= MAX_ATTEMPTS) break;
+
+      prevIndex--;
+      if (prevIndex < 0) prevIndex = queue.length - 1;
+      prevTrack = queue[prevIndex];
     }
-  }, [getQueueId, isTransitioning, loadTrack]);
+
+    if (prevUrl && prevTrack) {
+      setCurrentTrackIndex(prevIndex);
+      loadTrack(prevUrl, prevTrack);
+    } else {
+      setIsTransitioning(false);
+      setErrorMessage("No playable tracks found in the queue.");
+    }
+    setLoadingTrackId(null);
+  }, [queue, currentTrackIndex, isTransitioning, loadTrack]);
+
+  const removeFromQueue = useCallback((indexToRemove) => {
+    setQueue((prevQueue) => {
+      const newQueue = [...prevQueue];
+      newQueue.splice(indexToRemove, 1);
+      return newQueue;
+    });
+
+    setCurrentTrackIndex((prevIndex) => {
+      if (indexToRemove < prevIndex) {
+        return prevIndex - 1; // Shift back if removed track was before current
+      }
+      return prevIndex;
+    });
+  }, []);
+
+  const playQueue = useCallback(
+    async (newQueue, startIndex = 0) => {
+      const track = newQueue[startIndex];
+      if (!track) return;
+
+      try {
+        setIsTransitioning(true);
+        setErrorMessage("");
+        setLoadingTrackId(track.id);
+        const data = await getAudioLink(track.id);
+        if (data?.url) {
+          setQueue(newQueue);
+          setCurrentTrackIndex(startIndex);
+          loadTrack(data.url, track);
+        } else {
+          throw new Error("No URL returned");
+        }
+      } catch (error) {
+        console.error("playQueue error", error);
+        setErrorMessage("Error playing this track.");
+        setTimeout(() => setErrorMessage(""), 3000);
+        if (newQueue === queue) {
+          removeFromQueue(startIndex);
+        }
+      } finally {
+        setIsTransitioning(false);
+        setLoadingTrackId(null);
+      }
+    },
+    [loadTrack, queue, removeFromQueue]
+  );
+
+  const addNextToQueue = useCallback(
+    (track) => {
+      setQueue((prevQueue) => {
+        const newQueue = [...prevQueue];
+        // Insert right after current track
+        const insertAt = currentTrackIndex >= 0 ? currentTrackIndex + 1 : 0;
+        newQueue.splice(insertAt, 0, track);
+        return newQueue;
+      });
+      // If the queue was empty, play it immediately
+      if (queue.length === 0) {
+        playQueue([track], 0);
+      }
+    },
+    [currentTrackIndex, queue.length, playQueue]
+  );
 
   // — Handlers
   const handleNext = useCallback(
@@ -347,12 +466,13 @@ export const PlayerProvider = ({
       setSkipNextEnded(true);
 
       consecutiveErrorsRef.current += 1;
-      if (consecutiveErrorsRef.current > 3) {
-        alert("Too many playback errors. Playback paused.");
+      if (consecutiveErrorsRef.current > 5) {
+        // Only alert if we've tried multiple times and keep failing
+        console.warn("Too many playback errors. Playback paused.");
         return; // Circuit breaker: don't automatically skip anymore
       }
 
-      alert("Error playing this track. Skipping.");
+      // Automatically skip to the next track on error for a seamless experience
       if (!isTransitioning) await playNextTrack();
     },
     [isTransitioning, playNextTrack]
@@ -376,7 +496,9 @@ export const PlayerProvider = ({
   }, [initialUrl]);
 
   useEffect(() => {
-    if (initialTrackInfo) setTrackInfo(initialTrackInfo);
+    if (initialTrackInfo && Object.keys(initialTrackInfo).length > 0) {
+      setTrackInfo(initialTrackInfo);
+    }
   }, [initialTrackInfo]);
 
   // Sync auth states when parent changes
@@ -452,6 +574,8 @@ export const PlayerProvider = ({
     setUrl,
     trackInfo,
     setTrackInfo,
+    queue,
+    currentTrackIndex,
     volume,
     setVolume,
     playing,
@@ -462,6 +586,7 @@ export const PlayerProvider = ({
     setIsPlayerReady,
     isBuffering,
     errorMessage,
+    loadingTrackId,
     isAuth,
     setIsAuth,
     isSpotifyConnected,
@@ -485,6 +610,9 @@ export const PlayerProvider = ({
     handlePlay,
     handlePause,
     handleReady,
+    playQueue,
+    removeFromQueue,
+    addNextToQueue,
 
     likedSongs, // Export state
     setLikedSongs, // Export setter
@@ -492,5 +620,59 @@ export const PlayerProvider = ({
     toggleLikeLocal,
   };
 
-  return <PlayerContext.Provider value={contextValue}>{children}</PlayerContext.Provider>;
+  return (
+    <PlayerContext.Provider value={contextValue}>
+      {children}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          right: 0,
+          width: "10px",
+          height: "10px",
+          zIndex: -10,
+          pointerEvents: "none",
+          overflow: "hidden",
+          opacity: 0.01,
+        }}
+      >
+        <Suspense fallback={null}>
+          {url && (
+            <ReactPlayer
+              ref={playerRef}
+              url={url}
+              playing={playing}
+              volume={volume}
+              width="100%"
+              height="100%"
+              pip={true}
+              playsinline={true}
+              config={{
+                youtube: {
+                  playerVars: {
+                    autoplay: 0,
+                    controls: 0,
+                    modestbranding: 1,
+                    origin: window.location.origin,
+                    disableRemotePlayback: 1,
+                    playsinline: 1,
+                    background: 1,
+                  },
+                },
+              }}
+              onReady={handleReady}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onDuration={handleDuration}
+              onEnded={handleEnded}
+              onError={handleError}
+              onProgress={handleProgress}
+              onBuffer={handleBuffer}
+              onBufferEnd={handleBufferEnd}
+            />
+          )}
+        </Suspense>
+      </div>
+    </PlayerContext.Provider>
+  );
 };

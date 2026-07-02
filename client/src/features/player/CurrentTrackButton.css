@@ -4,7 +4,7 @@
 @media (max-width: 1200px) {
   .ctb-mini-player {
     position: fixed;
-    bottom: 20px; 
+    bottom: 20px;
     left: 12px;
     right: 12px;
     height: 60px;
@@ -20,7 +20,9 @@
     padding: 0 16px 0 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
+    transition:
+      transform 0.2s,
+      background 0.2s;
   }
 
   .ctb-mini-player:active {
@@ -87,13 +89,13 @@
     outline: none;
     transition: transform 0.1s;
   }
-  
+
   .ctb-mini-play-btn:active {
     transform: scale(0.9);
   }
 
   .ctb-mini-play-btn i {
-    margin-left: 2px; 
+    margin-left: 2px;
   }
 
   .ctb-mini-play-btn .fa-pause {
@@ -108,11 +110,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(20, 10, 30, 0.95) 0%,
-    rgba(12, 6, 22, 0.98) 100%
-  );
+  background: linear-gradient(180deg, rgba(20, 10, 30, 0.95) 0%, rgba(12, 6, 22, 0.98) 100%);
   -webkit-backdrop-filter: blur(40px);
   backdrop-filter: blur(40px);
   z-index: 10000;
@@ -148,7 +146,6 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* Drawer Content */
 .drawer-content {
   padding: 50px 32px 32px;
   display: flex;
@@ -158,10 +155,17 @@
   position: relative;
 }
 
-.close-btn {
+.drawer-header-row {
   position: absolute;
-  top: 60px;
-  left: 32px;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
   width: 40px;
   height: 40px;
   border: none;
@@ -180,6 +184,25 @@
 .close-btn:hover {
   color: #fff;
   transform: scale(1.1);
+}
+
+.mobile-queue-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.mobile-queue-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .close-btn:focus {
@@ -247,7 +270,11 @@
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  background: linear-gradient(to right, #ffffff var(--progress, 0%), rgba(255, 255, 255, 0.1) var(--progress, 0%));
+  background: linear-gradient(
+    to right,
+    #ffffff var(--progress, 0%),
+    rgba(255, 255, 255, 0.1) var(--progress, 0%)
+  );
   border-radius: 4px;
   margin-bottom: 12px;
   transition: height 0.2s ease;
@@ -260,7 +287,7 @@
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s ease;
 }
 
@@ -275,7 +302,7 @@
   background: #ffffff;
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .progress-slider-drawer:focus {
@@ -288,7 +315,7 @@
   color: #a89ec4;
   font-size: 13px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-variant-numeric: tabular-nums;
 }
 

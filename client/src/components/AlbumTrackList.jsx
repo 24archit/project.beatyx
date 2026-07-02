@@ -3,6 +3,15 @@ import { TrackLineCard } from "./TrackLineCard";
 import { Link } from "react-router-dom";
 import React from "react";
 export function AlbumTrackList(props) {
+  const currentQueue = props.data
+    .filter((item) => item.id)
+    .map((item) => ({
+      id: item.id,
+      trackName: item.name,
+      imgSrc: props.trackImg,
+      artistNames: item.artists || ["Unknown Artist"],
+    }));
+
   return (
     <div className="playlist-track-container">
       {props.data.map((item, index) => (
@@ -29,6 +38,8 @@ export function AlbumTrackList(props) {
           setPlayerMeta={props.setPlayerMeta}
           setTrackInfo={props.setTrackInfo}
           artistNames={item.artists}
+          queue={currentQueue}
+          indexInQueue={index}
         />
       ))}
     </div>

@@ -1,14 +1,34 @@
 // src/components/Player.jsx
-import { Suspense } from "react";
-import ReactPlayer from "react-player/youtube";
+import { Suspense, useState, useEffect } from "react";
 import prettyMilliseconds from "pretty-ms";
 import { Link } from "react-router-dom";
 import "./Player.css";
 import { useSharedPlayer } from "./useSharedPlayer";
 import { AnimatedWave } from "./AnimatedWave";
 import { DefaultTrackIcon } from "./DefaultTrackIcon";
+import { QueueList } from "../../components/QueueList";
 
 const Player = () => {
+  const [isDesktopQueueOpen, setIsDesktopQueueOpen] = useState(false);
+
+  const toggleDesktopQueue = (e) => {
+    e.stopPropagation();
+    setIsDesktopQueueOpen(!isDesktopQueueOpen);
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      if (isDesktopQueueOpen) {
+        setIsDesktopQueueOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isDesktopQueueOpen]);
+
   const {
     // State
     url,
@@ -153,43 +173,34 @@ const Player = () => {
         </div>
       )}
 
-      <div style={{ position: "fixed", bottom: 0, right: 0, width: "10px", height: "10px", zIndex: -10, pointerEvents: "none", overflow: "hidden", opacity: 0.01 }}>
-        <Suspense fallback={null}>
-          {url && (
-            <ReactPlayer
-              ref={playerRef}
-              url={url}
-              playing={playing}
-              volume={volume}
-              width="100%"
-              height="100%"
-              pip={true}
-              playsinline={true}
-              config={{
-                youtube: {
-                  playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    modestbranding: 1,
-                    origin: window.location.origin,
-                    playsinline: 1,
-                    disableRemotePlayback: 1,
-                    background: 1,
-                  },
-                },
-              }}
-              onReady={handleReady}
-              onPlay={handlePlay}
-              onPause={handlePause}
-              onDuration={handleDuration}
-              onEnded={handleEnded}
-              onError={handleError}
-              onProgress={handleProgress}
-              onBuffer={handleBuffer}
-              onBufferEnd={handleBufferEnd}
-            />
-          )}
-        </Suspense>
+      {/* Desktop Queue Toggle Tab (Top Right Edge) */}
+      <button
+        className={`queue-edge-tab ${isDesktopQueueOpen ? "open" : ""}`}
+        onClick={toggleDesktopQueue}
+        aria-label="Toggle Queue Drawer"
+      >
+        <i className="fa-solid fa-list-ul"></i>
+        <span>Queue</span>
+        <i
+          className={`fa-solid ${isDesktopQueueOpen ? "fa-chevron-down" : "fa-chevron-up"}`}
+          style={{ marginLeft: "4px", fontSize: "0.85em" }}
+        ></i>
+      </button>
+
+      {/* Desktop Queue Drawer (Floating above player) */}
+      <div
+        className={`desktop-queue-drawer ${isDesktopQueueOpen ? "open" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="desktop-queue-header">
+          <h3>Play Next</h3>
+          <button className="desktop-queue-close" onClick={toggleDesktopQueue}>
+            <i className="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div className="desktop-queue-content">
+          <QueueList />
+        </div>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import HomePage from "./pages/HomePage";
 import ArtistPage from "./pages/ArtistPage";
 import PlaylistPage from "./pages/PlaylistPage";
 import AlbumPage from "./pages/AlbumPage";
+import QueuePage from "./pages/QueuePage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TrackPage from "./pages/TrackPage";
@@ -168,6 +169,7 @@ function App() {
                     <LikedSongsPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
                   }
                 />
+                <Route path="/queue" element={<QueuePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>
 
