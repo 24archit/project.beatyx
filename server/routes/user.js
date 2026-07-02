@@ -2,7 +2,15 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const verifyAuth = require("../middlewares/verifyAuth");
-const { getCurrentUserInfo, getUserTopArtists, getUserTopTracks } = require("../utils/spotifyApis");
+const {
+  getCurrentUserInfo,
+  getUserTopArtists,
+  getUserTopTracks,
+  getUserSavedTracks,
+  getUserPlaylists,
+  getUserSavedAlbums,
+  getUserFollowedArtists,
+} = require("../utils/spotifyApis");
 const { getSeveralTracks } = require("../utils/spotifyApis");
 const currPlaylist = require("../models/currPlaylist");
 router.get("/profile", verifyAuth, async (req, res) => {
@@ -15,24 +23,47 @@ router.get("/profile", verifyAuth, async (req, res) => {
 
     let spotifyData = { isConnected: false };
 
-    if (user.refreshToken) {
+    if (req.user.user.spotifyConnect) {
       try {
         const accessToken = req.session.accessToken;
         if (accessToken) {
-          const [spotifyProfile, topArtists, topTracks] = await Promise.all([
+          const [
+            spotifyProfile,
+            topArtists,
+            topTracks,
+            savedTracks,
+            playlists,
+            savedAlbums,
+            followedArtists,
+          ] = await Promise.all([
             getCurrentUserInfo(accessToken),
             getUserTopArtists(accessToken),
             getUserTopTracks(accessToken),
+            getUserSavedTracks(accessToken),
+            getUserPlaylists(accessToken),
+            getUserSavedAlbums(accessToken),
+            getUserFollowedArtists(accessToken),
           ]);
 
           const safeTopArtists = topArtists && topArtists.items ? topArtists.items : [];
           const safeTopTracks = topTracks && topTracks.items ? topTracks.items : [];
+          const safeSavedTracks = savedTracks && savedTracks.items ? savedTracks.items : [];
+          const safePlaylists = playlists && playlists.items ? playlists.items : [];
+          const safeSavedAlbums = savedAlbums && savedAlbums.items ? savedAlbums.items : [];
+          const safeFollowedArtists =
+            followedArtists && followedArtists.artists && followedArtists.artists.items
+              ? followedArtists.artists.items
+              : [];
 
           spotifyData = {
             isConnected: true,
             profile: spotifyProfile,
             topArtists: safeTopArtists,
             topTracks: safeTopTracks,
+            savedTracks: safeSavedTracks,
+            playlists: safePlaylists,
+            savedAlbums: safeSavedAlbums,
+            followedArtists: safeFollowedArtists,
           };
         }
       } catch (spotifyError) {
@@ -50,6 +81,23 @@ router.get("/profile", verifyAuth, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+router.put("/profile-update", verifyAuth, async (req, res) => {
+  try {
+    const { displayName, profilePic } = req.body;
+    const updateData = {};
+    if (displayName) updateData.displayName = displayName;
+    if (profilePic) updateData.profilePic = profilePic;
+
+    await User.updateOne({ email: req.user.user.email }, { $set: updateData });
+
+    res.status(200).json({ success: true, message: "Profile updated successfully." });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
 router.put("/addLikedSong", verifyAuth, async (req, res) => {
   try {
     const { trackId } = req.body;
@@ -136,4 +184,41 @@ router.get("/getLikedSongs", verifyAuth, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+router.put("/disconnect-spotify", verifyAuth, async (req, res) => {
+  try {
+    await User.updateOne(
+      { email: req.user.user.email },
+      {
+        $set: {
+          accessToken: "",
+          refreshToken: "",
+          spotifyId: "",
+          spotify_url: "",
+          spotifyAccountType: "",
+        },
+      }
+    );
+    res.status(200).json({ success: true, message: "Spotify disconnected successfully." });
+  } catch (error) {
+    console.error("Error disconnecting Spotify:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+router.delete("/account", verifyAuth, async (req, res) => {
+  try {
+    const email = req.user.user.email;
+    await User.deleteOne({ email });
+    // Cleanup playlists (liked songs)
+    const playlistId = `liked_songs_${email}`;
+    await currPlaylist.deleteOne({ playlistId });
+
+    res.status(200).json({ success: true, message: "Account deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
 module.exports = router;

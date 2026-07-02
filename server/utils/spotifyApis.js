@@ -23,38 +23,6 @@ axiosRetry(spotifyClient, {
   },
 });
 
-// B. Response Interceptor (Handles 401 Unauthorized Automatically)
-spotifyClient.interceptors.response.use(
-  (response) => response, // Return successful responses as is
-  async (error) => {
-    const originalRequest = error.config;
-
-    // If 401 (Unauthorized) and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        // 1. Generate new token in DB
-        await getFreshTokens();
-
-        // 2. Fetch the NEW token string
-        const newToken = await getAccessToken();
-
-        // 3. Update auth header
-        if (newToken) {
-          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-
-          // 4. Retry original request with new token
-          return spotifyClient(originalRequest);
-        }
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
 // ==================================================================
 // 2. API Functions
 // ==================================================================
@@ -245,6 +213,67 @@ async function getTrack(id, rightAccessToken) {
   return data;
 }
 
+async function getUserSavedTracks(rightAccessToken) {
+  try {
+    const url = "https://api.spotify.com/v1/me/tracks?limit=50";
+    const { data } = await spotifyClient.get(url, {
+      headers: { Authorization: `Bearer ${rightAccessToken}` },
+    });
+    console.log(`[Spotify API] Saved Tracks fetched: ${data.items?.length || 0} items`);
+    return data;
+  } catch (error) {
+    console.error("[Spotify API] getUserSavedTracks Error:", error.response?.data || error.message);
+    return { items: [] };
+  }
+}
+
+async function getUserPlaylists(rightAccessToken) {
+  try {
+    const url = "https://api.spotify.com/v1/me/playlists?limit=50";
+    const { data } = await spotifyClient.get(url, {
+      headers: { Authorization: `Bearer ${rightAccessToken}` },
+    });
+    console.log(`[Spotify API] Playlists fetched: ${data.items?.length || 0} items`);
+    return data;
+  } catch (error) {
+    console.error("[Spotify API] getUserPlaylists Error:", error.response?.data || error.message);
+    return { items: [] };
+  }
+}
+
+async function getUserSavedAlbums(rightAccessToken) {
+  try {
+    const url = "https://api.spotify.com/v1/me/albums?limit=50";
+    const { data } = await spotifyClient.get(url, {
+      headers: { Authorization: `Bearer ${rightAccessToken}` },
+    });
+    console.log(`[Spotify API] Saved Albums fetched: ${data.items?.length || 0} items`);
+    return data;
+  } catch (error) {
+    console.error("[Spotify API] getUserSavedAlbums Error:", error.response?.data || error.message);
+    return { items: [] };
+  }
+}
+
+async function getUserFollowedArtists(rightAccessToken) {
+  try {
+    const url = "https://api.spotify.com/v1/me/following?type=artist&limit=50";
+    const { data } = await spotifyClient.get(url, {
+      headers: { Authorization: `Bearer ${rightAccessToken}` },
+    });
+    console.log(
+      `[Spotify API] Followed Artists fetched: ${data.artists?.items?.length || 0} items`
+    );
+    return data;
+  } catch (error) {
+    console.error(
+      "[Spotify API] getUserFollowedArtists Error:",
+      error.response?.data || error.message
+    );
+    return { artists: { items: [] } };
+  }
+}
+
 // Function to fetch recommendations (Using official API)
 async function getRecommendations(seedTrackId, seedArtistId, rightAccessToken) {
   const url = `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTrackId}&seed_artists=${seedArtistId}&limit=20&market=IN`;
@@ -290,4 +319,8 @@ module.exports = {
   getTrack,
   getRecommendations,
   getArtistTopTracks,
+  getUserSavedTracks,
+  getUserPlaylists,
+  getUserSavedAlbums,
+  getUserFollowedArtists,
 };

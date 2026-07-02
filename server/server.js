@@ -19,6 +19,7 @@ const userRoutes = require("./routes/user.js");
 const trackRoutes = require("./routes/track.js");
 const cors = require("cors");
 const { connectToDb } = require("./utils/connectToDb");
+const verifyApiSecret = require("./middlewares/verifyApiSecret");
 const session = require("express-session");
 const MongoStore = require("connect-mongo").default || require("connect-mongo");
 const corsOptions = {
@@ -28,7 +29,7 @@ const corsOptions = {
     "http://127.0.0.1:5173",
     "http://localhost",
     "capacitor://localhost",
-    "http://10.112.92.110:5173"
+    "http://10.112.92.110:5173",
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
@@ -67,6 +68,8 @@ app.use(
 );
 connectToDb();
 
+app.use(verifyApiSecret);
+
 app.use("/home", homeRoutes);
 app.use("/auth", authRoutes);
 app.use("/artist", artistRoutes);
@@ -77,7 +80,7 @@ app.use("/album", albumRoutes);
 app.use("/user", userRoutes);
 app.use("/track", trackRoutes);
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error("❌ Global Error:", err.stack);
 
   const statusCode = err.statusCode || 500;

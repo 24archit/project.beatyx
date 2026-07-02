@@ -3,10 +3,11 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secretKey = process.env.JWT_SECRET;
 const User = require("../models/user");
-const { getUserAccessToken } = require("../utils/getAccessToken");
+const { getUserAccessToken, getAccessToken } = require("../utils/getAccessToken");
 
 async function verifyAuth(req, res, next) {
-  const authToken = req.headers.authorization?.split(" ")[1] || req.body.authToken || req.query.authToken;
+  const authToken =
+    req.headers.authorization?.split(" ")[1] || req.body.authToken || req.query.authToken;
 
   if (!authToken || authToken === "null" || authToken === "undefined") {
     return res.status(401).json({ message: "Token missing or invalid" });
@@ -24,7 +25,9 @@ async function verifyAuth(req, res, next) {
     decoded.user.spotifyConnect = response.spotifyConnect;
 
     req.user = decoded;
-    req.session.accessToken = response.accessToken;
+    req.session.accessToken = response.spotifyConnect
+      ? response.accessToken
+      : await getAccessToken();
 
     return next();
   } catch (err) {

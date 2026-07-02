@@ -16,6 +16,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const headers = getAuthHeaders();
   config.headers.Authorization = headers.Authorization;
+  config.headers["x-api-secret"] = import.meta.env.VITE_API_SECRET;
   return config;
 });
 

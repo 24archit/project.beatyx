@@ -2,7 +2,7 @@
    BEATYX — Global Design System & CSS Custom Properties
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 /* --- Design Tokens --- */
 :root {
@@ -69,7 +69,12 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background-color: var(--bg-base);
   color: var(--text-primary);
   -webkit-user-select: none;
@@ -103,7 +108,7 @@ body {
 /* --- Buttons Reset --- */
 button {
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 button:focus,
@@ -123,7 +128,7 @@ button:focus-visible {
   height: 2.4rem;
   padding: 0 1.2rem;
   border-radius: var(--radius-full);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -229,7 +234,7 @@ button:focus-visible {
 #username {
   color: var(--text-primary);
   font-size: 0.875rem;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -253,7 +258,7 @@ main {
   :root {
     --nav-height: 7.5rem;
   }
-  
+
   main {
     margin-top: var(--nav-height);
     padding: 1rem 0.75rem 6rem 0.75rem;
@@ -292,10 +297,4 @@ main {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-}
-
-/* --- reCAPTCHA --- */
-.grecaptcha-badge {
-  z-index: 9999 !important;
-  position: fixed !important;
 }

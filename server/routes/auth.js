@@ -117,6 +117,9 @@ router.all("/api/connectSpotify", verifyAuth, (req, res) => {
       "user-top-read",
       "playlist-modify-public",
       "playlist-modify-private",
+      "playlist-read-private",
+      "user-library-read",
+      "user-follow-read",
     ].join(" ");
 
     const redirect_uri = process.env.REDIRECT_URI;
@@ -134,6 +137,7 @@ router.all("/api/connectSpotify", verifyAuth, (req, res) => {
         scope: scope,
         redirect_uri: redirect_uri,
         state: state,
+        show_dialog: "true",
       });
 
     res.redirect(authURL);

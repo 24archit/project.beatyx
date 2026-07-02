@@ -22,6 +22,8 @@ import ProfilePage from "./pages/ProfilePage";
 import LikedSongsPage from "./pages/LikedSongsPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import AccountSettingsPage from "./pages/AccountSettingsPage";
+import GoodbyePage from "./pages/GoodbyePage";
 
 // Context
 
@@ -39,14 +41,9 @@ const queryClient = new QueryClient({
   },
 });
 
-function Layout({ isAuth, playerMeta, trackInfo, isMobile, isSpotifyConnected }) {
+function Layout({ isMobile }) {
   return (
-    <PlayerProvider
-      initialUrl={playerMeta}
-      initialTrackInfo={trackInfo}
-      initialIsAuth={isAuth}
-      initialIsSpotifyConnected={isSpotifyConnected}
-    >
+    <>
       <NavBar />
       <div className="content">
         <main>
@@ -55,7 +52,7 @@ function Layout({ isAuth, playerMeta, trackInfo, isMobile, isSpotifyConnected })
       </div>
       <Footer />
       {isMobile ? <CurrentTrackButton /> : <Player />}
-    </PlayerProvider>
+    </>
   );
 }
 
@@ -84,8 +81,8 @@ function App() {
         if (Capacitor.isNativePlatform()) {
           const { App: CapApp } = await import("@capacitor/app");
           const { Browser } = await import("@capacitor/browser");
-          CapApp.addListener('appUrlOpen', (data) => {
-            if (data.url.includes('beatyx://callback')) {
+          CapApp.addListener("appUrlOpen", (data) => {
+            if (data.url.includes("beatyx://callback")) {
               Browser.close();
               window.location.reload(); // Reload to fetch updated connection status
             }
@@ -118,70 +115,72 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <Routes>
-            <Route
-              element={
-                <Layout
-                  isAuth={isAuth}
-                  playerMeta={playerMeta}
-                  setPlayerMeta={setPlayerMeta}
-                  trackInfo={trackInfo}
-                  setTrackInfo={setTrackInfo}
-                  isMobile={isMobile}
-                  isSpotifyConnected={isSpotifyConnected}
+          <PlayerProvider
+            initialUrl={playerMeta}
+            initialTrackInfo={trackInfo}
+            initialIsAuth={isAuth}
+            initialIsSpotifyConnected={isSpotifyConnected}
+          >
+            <Routes>
+              <Route element={<Layout isMobile={isMobile} />}>
+                {/* PASS PROP HERE */}
+                <Route
+                  path="/"
+                  element={
+                    <HomePage
+                      setPlayerMeta={setPlayerMeta}
+                      setTrackInfo={setTrackInfo}
+                      isSpotifyConnected={isSpotifyConnected}
+                    />
+                  }
                 />
-              }
-            >
-              {/* PASS PROP HERE */}
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    setPlayerMeta={setPlayerMeta}
-                    setTrackInfo={setTrackInfo}
-                    isSpotifyConnected={isSpotifyConnected}
-                  />
-                }
-              />
-              <Route
-                path="/artist/:id"
-                element={<ArtistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/playlist/:id"
-                element={<PlaylistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/album/:id"
-                element={<AlbumPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/category/:id"
-                element={<CategoryPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/search"
-                element={<SearchPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/track/:id" // CHANGED: Added /:id parameter
-                element={<TrackPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
-              />
-              <Route
-                path="/liked-songs" // Route URL
-                element={
-                  <LikedSongsPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
-                }
-              />
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
-            
-            {/* Auth Pages (Outside Layout for clean full-screen view) */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+                <Route
+                  path="/artist/:id"
+                  element={<ArtistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
+                />
+                <Route
+                  path="/playlist/:id"
+                  element={
+                    <PlaylistPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
+                  }
+                />
+                <Route
+                  path="/album/:id"
+                  element={<AlbumPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
+                />
+                <Route
+                  path="/category/:id"
+                  element={
+                    <CategoryPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
+                  }
+                />
+                <Route
+                  path="/search"
+                  element={<SearchPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
+                />
+                <Route
+                  path="/track/:id" // CHANGED: Added /:id parameter
+                  element={<TrackPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />}
+                />
+                <Route
+                  path="/liked-songs" // Route URL
+                  element={
+                    <LikedSongsPage setPlayerMeta={setPlayerMeta} setTrackInfo={setTrackInfo} />
+                  }
+                />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+
+              {/* Auth Pages (Outside Layout for clean full-screen view) */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+
+              <Route path="/settings" element={<AccountSettingsPage />} />
+              <Route path="/goodbye" element={<GoodbyePage />} />
+
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </PlayerProvider>
         </Router>
         <Analytics />
         <SpeedInsights />

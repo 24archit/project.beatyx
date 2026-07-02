@@ -48,13 +48,14 @@
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 /* Spotify Connected badge */
 .auth-status {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .spotify-connected-badge {
@@ -177,5 +178,35 @@
   }
   .nav-hamburger {
     left: 0.75rem;
+  }
+}
+
+/* ── Profile avatar button in navbar ── */
+.nav-avatar-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.nav-avatar-btn:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--shadow-glow);
+  transform: scale(1.08);
+}
+
+/* Show on desktop only */
+.desktop-only {
+  display: flex;
+}
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
   }
 }

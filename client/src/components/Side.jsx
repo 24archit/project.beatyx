@@ -45,13 +45,6 @@ export default function Side({ isAuth, isSpotifyConnected }) {
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
-  const handleLogout = () => {
-    const confirmed = window.confirm("Are you sure you want to logout?");
-    if (!confirmed) return;
-    window.localStorage.clear();
-    window.location.href = "/";
-  };
-
   const menuItems = [
     {
       label: "Home",
@@ -104,13 +97,25 @@ export default function Side({ isAuth, isSpotifyConnected }) {
       >
         {isOpen ? (
           /* X icon */
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         ) : (
           /* Hamburger icon */
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
             <line x1="3" y1="18" x2="21" y2="18" />
@@ -138,7 +143,13 @@ export default function Side({ isAuth, isSpotifyConnected }) {
             <div className="drawer-header">
               <Logo />
               <button className="drawer-close-btn" onClick={closeDrawer} aria-label="Close menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -247,18 +258,6 @@ export default function Side({ isAuth, isSpotifyConnected }) {
                 </div>
               )}
             </div>
-
-            {/* Logout button (only when logged in) */}
-            {authToken && (
-              <div className="drawer-footer">
-                <button className="drawer-logout-btn" onClick={handleLogout}>
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                  </svg>
-                  Logout
-                </button>
-              </div>
-            )}
           </aside>
         </>,
         document.body
