@@ -2,7 +2,20 @@
 import "./assets/styles/App.css";
 import { useEffect, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
-import { Routes, Route, BrowserRouter as Router, Outlet } from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router, Outlet, useLocation } from "react-router-dom";
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-9HHZDMD7NC");
+
+function RouteTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+
+  return null;
+}
 
 // Components
 import NavBar from "./components/NavBar";
@@ -159,6 +172,7 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
+          <RouteTracker />
           <PlayerProvider
             initialUrl={playerMeta}
             initialTrackInfo={trackInfo}

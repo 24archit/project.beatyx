@@ -29,7 +29,8 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo").default || require("connect-mongo");
 const corsOptions = {
   origin: [
-    `${process.env.CLIENT_LINK}`,
+    process.env.CLIENT_LINK ? process.env.CLIENT_LINK.replace(/\/$/, "") : "",
+    "https://beatyx.vercel.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost",
