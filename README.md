@@ -1,7 +1,7 @@
 # 🎵 Beatyx — Beat The Bits
 
 <p align="center">
-  <img src="https://beatyx.vercel.app/logo.png" alt="Beatyx Logo" width="120" />
+  <img src="https://beatyx.24archit.in/logo.png" alt="Beatyx Logo" width="120" />
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://beatyx.vercel.app" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-beatyx.vercel.app-1DB954?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://beatyx.24archit.in" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-beatyx.24archit.in-1DB954?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React 18" />
   <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
@@ -20,7 +20,7 @@
 
 ## 🌐 Live Demo
 
-> **Try it now:** [https://beatyx.vercel.app](https://beatyx.vercel.app)
+> **Try it now:** [https://beatyx.24archit.in](https://beatyx.24archit.in)
 
 ---
 
